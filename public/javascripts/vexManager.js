@@ -39,6 +39,10 @@ function randomNote() {
   return notas[Math.floor(Math.random() * notas.length)]
 }
 
+function randomNoteFromSet(noteSet) {
+  return noteSet[Math.floor(Math.random() * noteSet.length)];
+}
+
 function randomClef(trebleRatio) {
   return Math.random() > trebleRatio ? "treble" : "bass"
 }
@@ -68,4 +72,4 @@ function getOctave(note, clef) {
   return octaveMap[note] || null;
 }
 
-export { dibujarNota, emptyClef, randomNote, randomClef, getNote, getOctave, resetCanvas };
+export { dibujarNota, emptyClef, randomNote, randomNoteFromSet, randomClef, getNote, getOctave, resetCanvas };

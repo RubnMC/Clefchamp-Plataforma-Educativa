@@ -142,6 +142,29 @@
   cursor: not-allowed;
 }
 
+.playDiffBtn {
+  color: #F2E7DC;
+  background-color: #350D40;
+  border: 0.1em solid #350D40;
+  border-radius: 1em;
+  font-size: 1.1em;
+  padding: 0.7em 0.5em;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.playDiffBtn:hover:not(:disabled) {
+  background-color: #5a1a70;
+  border-color: #5a1a70;
+}
+
+.playDiffBtn:disabled {
+  color: #F2E7DC;
+  background-color: #1E012680;
+  border-color: transparent;
+  cursor: not-allowed;
+}
+
 .cancelButton {
   color:  #350D40;
   background-color:#F2E7DC;

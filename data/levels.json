@@ -1,0 +1,10 @@
+[
+  { "id": "notes-do-re-mi-fa",  "mode": "random",   "notes": ["c4","d4","e4","f4"] },
+  { "id": "notes-sol-la-si",    "mode": "random",   "notes": ["g4","a4","b4"] },
+  { "id": "chord-c-major",      "mode": "random",   "notes": ["c4","e4","g4"] },
+  { "id": "arp-c-major",        "mode": "random",   "notes": ["c4","d4","e4","f4","g4","a4","b4","c5"] },
+  { "id": "arp-desc-c-major",   "mode": "random",   "notes": ["c4","e4","g4","c5"] },
+  { "id": "oda-1",              "mode": "sequence", "notes": ["e4","e4","f4","g4","g4","f4","e4","d4"] },
+  { "id": "oda-2",              "mode": "sequence", "notes": ["c4","c4","d4","e4","d4","c4","c4","d4"] },
+  { "id": "oda-3",              "mode": "sequence", "notes": ["d4","d4","e4","c4","d4","e4","f4","e4"] }
+]

@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const mysql = require("mysql");
+const fs = require("fs");
+const path = require("path");
 
 const mysqlConfig = require("../config/db");
 const DAO = require("../config/dao");
@@ -46,6 +48,14 @@ router.get("/atrapado/normal", isLoggedIn, (request,response) => {
 router.get("/atrapado/hard", isLoggedIn, (request,response) => {
   response.render("gameScreen", {mode: "HARD"})
 })
+
+router.get('/levels', (req, res) => {
+  const filePath = path.join(__dirname, '../data/levels.json');
+  fs.readFile(filePath, 'utf-8', (err, data) => {
+    if (err) return res.status(500).json({ message: 'Error leyendo el archivo de niveles' });
+    res.json(JSON.parse(data));
+  });
+});
 
 router.get('/getExperienceRequired/:level', isLoggedIn, (request,response) => {
   const level = request.params.level; 

@@ -1,4 +1,4 @@
-import { dibujarNota, emptyClef, randomNote, randomClef, getNote, getOctave, resetCanvas } from './vexManager.js';
+import { dibujarNota, emptyClef, randomNote, randomNoteFromSet, randomClef, getNote, getOctave, resetCanvas } from './vexManager.js';
 import { Cronometro } from './cronometro.js';
 import { flashBackground, fadeOut, addPointsAnimation, addProgresively, growAndBack, secuencialShow, popAnimation} from './animations.js'
 import { getConfig } from './levelConfig.js'
@@ -25,6 +25,9 @@ const GameState = {
         results: [],
         individualTime: 0,
         gameStarted: false,
+        levelNotes: null,
+        levelMode: null,
+        sequenceCursor: 0,
         streak: 0,
         difficulty: null,
         points: 0,
@@ -105,6 +108,11 @@ const GameState = {
         // Inicializar cronómetro
         this.cronometro = new Cronometro();
         
+        // Cargar notas del nivel seleccionado
+        const levelData = await this.fetchLevelNotes();
+        this.current.levelNotes = levelData ? levelData.notes : null;
+        this.current.levelMode  = levelData ? levelData.mode  : null;
+
         // Mostrar tutorial
         emptyClef();
         
@@ -225,7 +233,17 @@ const GameState = {
             this.endGame();
             return;
         }
-        let note = randomNote();
+        let note;
+        if (this.current.levelNotes) {
+            if (this.current.levelMode === 'sequence') {
+                note = this.current.levelNotes[this.current.sequenceCursor % this.current.levelNotes.length];
+                this.current.sequenceCursor++;
+            } else {
+                note = randomNoteFromSet(this.current.levelNotes);
+            }
+        } else {
+            note = randomNote();
+        }
         let clef = randomClef(this.config.CLEF_PROB);
         dibujarNota(note, clef);
         this.current.expectedNote = getNote(note, clef);
@@ -370,6 +388,19 @@ const GameState = {
         return levelUp;
     },
 
+    async fetchLevelNotes() {
+        const selectedId = localStorage.getItem('selectedLevelId');
+        if (!selectedId) return null;
+        try {
+            const response = await fetch('/play/levels');
+            const levels = await response.json();
+            const level = levels.find(l => l.id === selectedId);
+            return level ? { notes: level.notes, mode: level.mode || 'random' } : null;
+        } catch (e) {
+            return null;
+        }
+    },
+
     async getLocals() {
         try {
             const response = await fetch('/users/api/getLocals');
@@ -500,8 +531,9 @@ const GameState = {
         this.current.greatCounter = 0;
         this.current.goodCounter = 0;
         this.current.okCounter = 0;        
-        this.current.notes = [];        
-        this.current.results = [];        
+        this.current.notes = [];
+        this.current.results = [];
+        this.current.sequenceCursor = 0;
         // Reiniciar interfaz
         this.elements.$progressBar.css("width", "0%");
         this.elements.$streak.css('opacity', 0);
