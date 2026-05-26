@@ -68,7 +68,7 @@ const GameState = {
         if(this.current.difficulty !== "TRIAL") await this.getLocals()
         Object.assign(this.config, getConfig(this.current.difficulty));
         generateGame(this.config.ROUNDS, this.config.CLEF_PROB, this.config.DURATION);
-        localStorage.setItem("lastPlayed",this.current.difficulty)
+        localStorage.setItem("lastPlayed", this.current.difficulty)
         // Inicializar mapeos de teclas
         this.keyMapping.keyMap = Object.fromEntries(this.keyMapping.notes.map(({ key, note }) => [key, note]));
         this.keyMapping.visualKeyMap = Object.fromEntries(this.keyMapping.notes.map(({ key, note }) => [key, `.note${note}`]));
@@ -90,7 +90,9 @@ const GameState = {
             $levelSpan: $("#levelSpan"),
             $experienceSpan: $("#experienceSpan"),
             $resultSpan: $("#resultSpan"),
-            $playAgainBtn: $("#playAgainBtn"), 
+            $progressText: $("#progressText"),
+            $continueBtn: $("#continueBtn"),
+            $playAgainBtn: $("#playAgainBtn"),
             $playAgainDiv: $("#playAgainDiv"),
             $pointsSpan: $("#pointsSpan"),
             $scoreAdded: $("#scoreAdded"),
@@ -107,6 +109,7 @@ const GameState = {
         this.cronometro = new Cronometro();
         
         // Mostrar tutorial
+        this.elements.$progressText.text(`0 / ${this.config.ROUNDS}`);
         emptyClef();
         emptyMiniClef();
         
@@ -179,6 +182,7 @@ const GameState = {
         });
     
         // Agregar el evento para volver a jugar
+        this.elements.$continueBtn.on("click", () => this.endGame());
         this.elements.$playAgainBtn.on("click", () => this.resetGame());
         this.elements.$startAgain.on("click", () => this.resetGame());
     },
@@ -199,9 +203,10 @@ const GameState = {
         if (event.code === "Space") {
             event.preventDefault();
             if (this.elements.$startBtn.is(":visible")) {
-                this.startGame()
-            }
-            else if (this.current.contador === this.config.ROUNDS) {
+                this.startGame();
+            } else if (this.elements.$continueBtn.is(":visible")) {
+                this.endGame();
+            } else if (this.current.contador === this.config.ROUNDS) {
                 this.resetGame();
             }
         }
@@ -225,7 +230,8 @@ const GameState = {
 
     updateGame() {
         if (this.current.contador === this.config.ROUNDS) {
-            this.endGame();
+            this.cronometro.pause();
+            this.elements.$continueBtn.removeClass("d-none").addClass("d-flex");
             return;
         }
         const idx = this.current.contador;
@@ -292,8 +298,8 @@ const GameState = {
     },
 
     endGame() {
-        this.elements.$divFeedback.removeClass("d-flex").addClass("d-none")
-        this.cronometro.pause();
+        this.elements.$continueBtn.removeClass("d-flex").addClass("d-none");
+        this.elements.$divFeedback.removeClass("d-flex").addClass("d-none");
         emptyClef();
         emptyMiniClef();
         this.openResultDiv();
@@ -463,6 +469,7 @@ const GameState = {
 
     updateUI() {
         this.elements.$progressBar.css("width", ((this.current.contador / this.config.ROUNDS) * 100) + "%");
+        this.elements.$progressText.text(`${this.current.contador} / ${this.config.ROUNDS}`);
         
         if (this.current.streak > 2) {
             this.elements.$streakNumber.text(this.current.streak);
@@ -472,7 +479,7 @@ const GameState = {
         }
         
         addProgresively(this.elements.$pointsSpan, parseInt(this.elements.$pointsSpan.text()),this.current.points, 200)
-        growAndBack(this.elements.$divFeedback);
+        // growAndBack(this.elements.$divFeedback);
         
         if(this.current.pointsToAdd > 0) {
             addPointsAnimation(this.elements.$scoreAdded, this.current.pointsToAdd)
@@ -512,7 +519,9 @@ const GameState = {
         this.current.results = [];        
         // Reiniciar interfaz
         this.elements.$progressBar.css("width", "0%");
+        this.elements.$progressText.text(`0 / ${this.config.ROUNDS}`);
         this.elements.$streak.css('opacity', 0);
+        this.elements.$continueBtn.removeClass("d-flex").addClass("d-none");
         this.elements.$startBtn.removeClass("d-none").addClass("d-flex");
         this.elements.$pointsSpan.text(0)
         // Reiniciar cronómetro

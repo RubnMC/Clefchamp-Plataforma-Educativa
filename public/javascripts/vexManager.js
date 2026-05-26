@@ -2,7 +2,7 @@ const { Renderer, Stave, StaveNote, Voice, Formatter, StaveConnector } = Vex.Flo
 
 const NOTE_POOL = ['b3','c4','d4','e4','f4','g4','a4','b4','c5','d5','e5','f5','g5','a5','b5'];
 const BEATS_PER_MEASURE = 4;
-const MEASURES_PER_STAFF = 4;
+const MEASURES_PER_STAFF = 10;
 const DURATION_BEATS = { 'w': 4, 'h': 2, 'q': 1, '8': 0.5, '16': 0.25 };
 
 // Space reserved in the first measure for clef + time signature
@@ -57,26 +57,22 @@ function generateGame(count, clefProb, duration = 'q') {
 function buildAndRender() {
   const parent = document.getElementById('canvasParent');
   parent.innerHTML = '';
+  parent.style.overflowY = 'auto';
+  parent.style.maxHeight = '260px';
   staffData = [];
   currentStaffIdx = 0;
 
   const total = allNotes.length;
   const notesPerStaff = notesPerMeasure * MEASURES_PER_STAFF;
-  const numStaffs = Math.ceil(total / notesPerStaff);
+  const end = Math.min(notesPerStaff, total);
 
-  for (let s = 0; s < numStaffs; s++) {
-    const start = s * notesPerStaff;
-    const end = Math.min(start + notesPerStaff, total);
-    const div = document.createElement('div');
-    div.className = 'staff-section';
-    div.style.display = s === 0 ? 'block' : 'none';
-    parent.appendChild(div);
+  const div = document.createElement('div');
+  div.className = 'staff-section';
+  parent.appendChild(div);
 
-    const noteEls = renderStaff(div, start, end);
-    staffData.push({ div, noteEls, start, end });
-  }
-
-  staffData.forEach(sd => sd.noteEls.forEach(el => { if (el) el.style.opacity = '0'; }));
+  const noteEls = renderStaff(div, 0, end);
+  staffData.push({ div, noteEls, start: 0, end });
+  noteEls.forEach(el => { if (el) el.style.opacity = '0'; });
 }
 
 function renderStaff(container, start, end) {
@@ -208,12 +204,26 @@ function renderStaff(container, start, end) {
 }
 
 function advanceNote(idx) {
-  const staffIdx = Math.floor(idx / (notesPerMeasure * MEASURES_PER_STAFF));
+  const notesPerStaff = notesPerMeasure * MEASURES_PER_STAFF;
+  const staffIdx = Math.floor(idx / notesPerStaff);
 
   if (staffIdx !== currentStaffIdx) {
-    staffData[currentStaffIdx].div.style.display = 'none';
+    const total = allNotes.length;
+    const start = staffIdx * notesPerStaff;
+    const end = Math.min(start + notesPerStaff, total);
+
+    const div = document.createElement('div');
+    div.className = 'staff-section';
+
+    const parent = document.getElementById('canvasParent');
+    parent.appendChild(div);
+
+    const noteEls = renderStaff(div, start, end);
+    staffData.push({ div, noteEls, start, end });
+    noteEls.forEach(el => { if (el) el.style.opacity = '0'; });
+
     currentStaffIdx = staffIdx;
-    staffData[currentStaffIdx].div.style.display = 'block';
+    parent.scrollTop = parent.scrollHeight;
   }
 
   const sd = staffData[staffIdx];
@@ -290,6 +300,8 @@ function emptyMiniClef() {
 
 function emptyClef() {
   const parent = document.getElementById('canvasParent');
+  parent.style.overflowY = '';
+  parent.style.maxHeight = '';
   parent.innerHTML = '<div id="emptyStaff"></div>';
   const div = document.getElementById('emptyStaff');
 
@@ -339,6 +351,7 @@ function colorNote(idx, color) {
   if (!sd) return;
   const el = sd.noteEls[idx - sd.start];
   if (el) {
+    el.style.opacity = '1';
     el.style.fill = color;
     el.style.stroke = color;
   }
