@@ -484,9 +484,17 @@ input[type="password"] {
   pointer-events: none;
 }
 
-#myCanvas {
-  transform: scale(1.4);  
-  display: inline-block;
+.staff-section svg {
+  display: block;
+}
+
+#miniCanvas {
+  width: 130px;
+  flex-shrink: 0;
+}
+
+#miniCanvas svg {
+  display: block;
 }
 
 .pcHidden {
@@ -941,7 +949,9 @@ input[type="color"]::-webkit-color-swatch {
 }
 
 #canvasParent {
-  justify-content: flex-end;
+  overflow: hidden;
+  width: 60%;
+  margin: 0 auto;
 }
 
 .puntuation {
@@ -1170,7 +1180,7 @@ input[type="color"]::-webkit-color-swatch {
     left: 81.6%;
   }
   #canvasParent {
-    justify-content: center;
+    overflow: hidden;
   }
   .puntuation {
     margin: auto;

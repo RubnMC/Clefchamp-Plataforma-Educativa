@@ -1,17 +1,17 @@
-<div id="divFeedback" class="rounded-4 px-4">
+<div id="divFeedback" class="rounded-4 px-3">
   <div id="scoreDiv">
     <h1 class="puntuation" id="pointsSpan">0</h1>
-    <h1 class="puntuation" id="scoreAdded">0</h1> 
+    <h1 class="puntuation" id="scoreAdded">0</h1>
   </div>
   <div class="row">
     <h1 id="successMessage" class="text-center" style="opacity:0">Placeholder</h1>
   </div>
-  <div class="row w-50 mx-auto">
-    
-    <div id="canvasParent" class="col-lg-4 col-12 d-flex pb-5 ">
-    </div>
-    <div id="bothContainer" class="col-lg-8  ps-5 ">
-      <div id="container" class="contenedor  ">
+
+
+  <div class="d-flex align-items-center justify-content-center gap-4">
+    <div id="miniCanvas"></div>
+    <div id="bothContainer" class="d-flex flex-column align-items-center">
+      <div id="container" class="contenedor">
         <div class="piano">
           <button class="tecla-blanca notec" >Do</button>
           <button class="tecla-negra REb4" disabled></button>
@@ -39,6 +39,9 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div id="canvasParent" class="pb-2">
   </div>
   <div class="row">
     <h1 id="streak" class="text-center" style="opacity:0">Racha: <span id="streakNumber">3</span></h1>

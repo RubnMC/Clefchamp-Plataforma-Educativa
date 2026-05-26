@@ -1,4 +1,4 @@
-import { dibujarNota, emptyClef, randomNote, randomClef, getNote, getOctave, resetCanvas } from './vexManager.js';
+import { generateGame, buildAndRender, advanceNote, colorNote, drawCurrentNote, emptyMiniClef, emptyClef, getNote, getOctave, getNoteAt, getClefAt, getDurationAt } from './vexManager.js';
 import { Cronometro } from './cronometro.js';
 import { flashBackground, fadeOut, addPointsAnimation, addProgresively, growAndBack, secuencialShow, popAnimation} from './animations.js'
 import { getConfig } from './levelConfig.js'
@@ -67,6 +67,7 @@ const GameState = {
         this.current.difficulty = window.location.pathname.split("/")[3].toUpperCase();
         if(this.current.difficulty !== "TRIAL") await this.getLocals()
         Object.assign(this.config, getConfig(this.current.difficulty));
+        generateGame(this.config.ROUNDS, this.config.CLEF_PROB, this.config.DURATION);
         localStorage.setItem("lastPlayed",this.current.difficulty)
         // Inicializar mapeos de teclas
         this.keyMapping.keyMap = Object.fromEntries(this.keyMapping.notes.map(({ key, note }) => [key, note]));
@@ -107,6 +108,7 @@ const GameState = {
         
         // Mostrar tutorial
         emptyClef();
+        emptyMiniClef();
         
         if (this.current.difficulty === "TRIAL" || this.userData.locals.preferences.showTutorial) new bootstrap.Modal(this.elements.$tutorialModal).show();
         else this.elements.$scoreDiv.removeClass("d-none")
@@ -213,6 +215,7 @@ const GameState = {
     },
 
     startGame() {
+        buildAndRender();
         growAndBack(this.elements.$divFeedback);
         this.elements.$startBtn.removeClass("d-flex").addClass("d-none");
         this.cronometro.start();
@@ -225,11 +228,13 @@ const GameState = {
             this.endGame();
             return;
         }
-        let note = randomNote();
-        let clef = randomClef(this.config.CLEF_PROB);
-        dibujarNota(note, clef);
+        const idx = this.current.contador;
+        const note = getNoteAt(idx);
+        const clef = getClefAt(idx);
+        advanceNote(idx);
+        drawCurrentNote(note, clef, getDurationAt(idx));
         this.current.expectedNote = getNote(note, clef);
-        this.current.notes.push(getNote(note,clef) + getOctave(note,clef))
+        this.current.notes.push(getNote(note, clef) + getOctave(note, clef));
     },
 
     checkCorrect(keyEvent) {
@@ -244,6 +249,7 @@ const GameState = {
     },
 
     handleCorrectNote() {
+        colorNote(this.current.contador - 1, '#22c55e');
         this.current.results.push(true)
         this.current.aciertos++;
         this.current.streak++;
@@ -277,6 +283,7 @@ const GameState = {
     },
 
     handleWrongNote(pressedNote) {
+        colorNote(this.current.contador - 1, '#ef4444');
         this.current.results.push(false)
         this.current.fallos++;
         this.current.streak = 0;
@@ -288,6 +295,7 @@ const GameState = {
         this.elements.$divFeedback.removeClass("d-flex").addClass("d-none")
         this.cronometro.pause();
         emptyClef();
+        emptyMiniClef();
         this.openResultDiv();
         if(this.current.difficulty === "TRIAL") setTimeout(() => this.showFidelization(), 500);
         else setTimeout(() => this.showResults(), 500);
@@ -510,8 +518,10 @@ const GameState = {
         // Reiniciar cronómetro
         this.cronometro = new Cronometro();
         
-        // Vaciar pentagrama
+        // Pre-generate notes for next round and show empty staff
+        generateGame(this.config.ROUNDS, this.config.CLEF_PROB, this.config.DURATION);
         emptyClef();
+        emptyMiniClef();
     }
 };
 $(function() {
