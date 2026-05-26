@@ -3,38 +3,26 @@
   <%-include('partials/head') %>
   <body class="colorNuevo5">
     <%-include('partials/header') %>
-    <div class="vh-90 container-fluid p-4">
-      <div class="row g-4" style="height:calc(90vh - 2rem);">
+    <div class="vh-90 scrollable">
+      <div class="container-fluid p-4">
+        <div class="row g-4">
 
-        <!-- Left Column - Level List -->
-        <div class="col-12 col-lg-4 d-flex flex-column" style="min-height:0;">
-          <div class="bg-15 rounded-4 p-3 mb-3 phoneHidden flex-shrink-0">
-            <h2 class="text-center mb-0">Elige un nivel</h2>
-          </div>
-          <div id="levelList" style="overflow-y:auto; flex:1; padding-right:4px;"></div>
-        </div>
-
-        <!-- Right Column - Level Detail -->
-        <div class="col-12 col-lg-8 d-flex flex-column gap-4" style="min-height:0;">
-          <div id="levelDetailPanel" class="bg-15 rounded-4 p-4 flex-grow-1" style="overflow-y:auto; min-height:0;">
-            <div id="noLevelSelected" class="h-100 d-flex flex-column justify-content-center align-items-center text-center">
-              <p style="font-size:1.1rem;opacity:0.4;margin:0;">Selecciona un nivel para ver sus detalles</p>
+          <!-- Left Column - Level Detail -->
+          <div class="col-12 col-lg-4">
+            <div id="levelDetailPanel" class="bg-15 rounded-4 p-4">
+              <div id="levelDetail"></div>
             </div>
-            <div id="levelDetail" style="display:none;"></div>
           </div>
-          <div class="flex-shrink-0 d-flex gap-2">
-            <a id="playEasy" class="flex-fill d-block">
-              <button class="playDiffBtn w-100" data-diff="easy" disabled>Fácil</button>
-            </a>
-            <a id="playNormal" class="flex-fill d-block">
-              <button class="playDiffBtn w-100" data-diff="normal" disabled>Normal</button>
-            </a>
-            <a id="playHard" class="flex-fill d-block">
-              <button class="playDiffBtn w-100" data-diff="hard" disabled>Difícil</button>
-            </a>
-          </div>
-        </div>
 
+          <!-- Right Column - Level List -->
+          <div class="col-12 col-lg-8">
+            <div class="bg-15 rounded-4 p-3 mb-3 phoneHidden">
+              <h2 class="text-center mb-0">Elige un nivel</h2>
+            </div>
+            <div id="levelList"></div>
+          </div>
+
+        </div>
       </div>
     </div>
     <%-include('partials/footer') %>

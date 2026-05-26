@@ -2,8 +2,14 @@ const LEVELS_LIST = [
   LevelButtons.LEVEL_NOTES_DRMF,
   LevelButtons.LEVEL_NOTES_SLS,
   LevelButtons.LEVEL_CHORD_CMAJOR,
+  LevelButtons.LEVEL_CHORD_GMAJOR,
+  LevelButtons.LEVEL_CHORD_FMAJOR,
+  LevelButtons.LEVEL_CHORD_AMINOR,
   LevelButtons.LEVEL_ARP_CMAJOR,
   LevelButtons.LEVEL_ARP_DESC_CMAJOR,
+  LevelButtons.LEVEL_MEL_MARY,
+  LevelButtons.LEVEL_MEL_CUMPLE,
+  LevelButtons.LEVEL_MEL_CAMPANITA,
   LevelButtons.LEVEL_ODA_1,
   LevelButtons.LEVEL_ODA_2,
   LevelButtons.LEVEL_ODA_3,
@@ -15,33 +21,42 @@ const KIND_COLOR = {
   ARP:   '#A5724A',
 };
 
-LevelButtons.renderList('#levelList', 'VRow', LEVELS_LIST, 'available', '8px');
+const levelGrid = $('<div>').css({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(3, 1fr)',
+  gap: '18px',
+  padding: '4px 8px 8px 2px',
+});
+LEVELS_LIST.forEach(lvl => {
+  const btn = LevelButtons.VARIANTS.V5Brutal('available', { ...lvl, brutalSize: 46 });
+  btn.data('level', lvl).css('width', '100%');
+  levelGrid.append(btn);
+});
+$('#levelList').empty().append(levelGrid);
 
 $('#levelList').on('click', 'button', function () {
   const level = $(this).data('level');
   if (!level) return;
 
-  // Reset all rows, highlight selected
+  // Reset all cards, highlight selected
   $('#levelList button').css({
-    border: `1px solid ${LevelButtons.C.rule}`,
+    border: `2.5px solid ${LevelButtons.C.ink}`,
     background: LevelButtons.C.paper,
-    boxShadow: 'none',
+    boxShadow: `5px 5px 0 0 ${LevelButtons.C.ink}`,
   });
   $(this).css({
-    border: '1.5px solid #C8553D',
+    border: '2.5px solid #C8553D',
     background: 'rgba(200,85,61,0.05)',
-    boxShadow: '0 0 0 1px #C8553D',
+    boxShadow: '5px 5px 0 0 #C8553D',
   });
 
   localStorage.setItem('selectedLevelId', level.id);
   showLevelDetail(level);
-  activatePlayBtns();
 });
 
 function showLevelDetail(level) {
   const C         = LevelButtons.C;
   const kindColor = KIND_COLOR[level.brutalKind] || C.terra;
-  const staffHTML = LevelButtons.staffSVG(300, 90, C.ink, C.terra, level.staffMode, level.staffNotes, true);
 
   const detail = $('<div>').css({ display: 'flex', flexDirection: 'column', gap: '18px' });
 
@@ -79,27 +94,24 @@ function showLevelDetail(level) {
     }).text(level.notes),
   );
 
-  // Staff visualization
-  const staffBox = $('<div>').css({
-    background: 'rgba(255,255,255,0.65)', borderRadius: 12,
-    padding: '16px', border: `1px solid ${C.rule}`,
-  }).html(staffHTML);
-
   // Description
   const desc = $('<p>').css({
     fontSize: 15, lineHeight: 1.65, color: C.ink2, margin: 0,
   }).text(level.description || '');
 
-  detail.append(badges, titleBlock, staffBox, desc);
+  // Play button
+  const playBtn = $('<a>').attr('href', './atrapado/normal').css({
+    display: 'block', textAlign: 'center', textDecoration: 'none',
+    padding: '14px', marginTop: '4px',
+    background: C.ink, color: C.cream,
+    border: `2.5px solid ${C.ink}`,
+    boxShadow: `5px 5px 0 0 ${C.terra}`,
+    fontFamily: '"Geist Mono",monospace', fontSize: 13,
+    letterSpacing: '0.12em', textTransform: 'uppercase',
+    cursor: 'pointer',
+  }).text('jugar ▸');
 
-  $('#noLevelSelected').hide();
+  detail.append(badges, titleBlock, desc, playBtn);
+
   $('#levelDetail').empty().append(detail).fadeIn(200);
-}
-
-function activatePlayBtns() {
-  ['easy', 'normal', 'hard'].forEach(diff => {
-    const anchor = $(`#play${diff.charAt(0).toUpperCase() + diff.slice(1)}`);
-    anchor.attr('href', `./atrapado/${diff}`);
-    anchor.find('button').prop('disabled', false);
-  });
 }

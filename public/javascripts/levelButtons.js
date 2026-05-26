@@ -104,9 +104,74 @@ const LevelButtons = (() => {
     description: 'El puente de la Oda: Re Re Mi Do Re Mi Fa Mi. Este fragmento conecta las dos frases principales y añade movimiento y tensión antes del regreso al tema.',
   };
 
+  const LEVEL_CHORD_GMAJOR = {
+    id: 'chord-g-major', num: '04', category: 'Acordes',
+    name: 'Sol mayor', cifrado: 'G', cifradoLong: 'GMaj', roman: 'V',
+    notes: 'sol – si – re', notesSpread: 'sol · si · re', notesSep: 'sol si re',
+    detail: '3 notas', brutalMain: 'SOL', brutalSub: 'mayor',
+    brutalHeaderRight: 'G / SOL SI RE', brutalKind: 'CHORD',
+    staffMode: 'triad', pianoMode: 'triad',
+    staffNotes: ['G4','B4','D5'], pianoHighlight: [1,4,6],
+    description: 'El acorde de Sol mayor (G) se construye sobre el quinto grado de la escala de Do. Junto a Do mayor y Fa mayor forma la tríada armónica base de innumerables canciones populares.',
+  };
+
+  const LEVEL_CHORD_FMAJOR = {
+    id: 'chord-f-major', num: '05', category: 'Acordes',
+    name: 'Fa mayor', cifrado: 'F', cifradoLong: 'FMaj', roman: 'IV',
+    notes: 'fa – la – do', notesSpread: 'fa · la · do', notesSep: 'fa la do',
+    detail: '3 notas', brutalMain: 'FA', brutalSub: 'mayor',
+    brutalHeaderRight: 'F / FA LA DO', brutalKind: 'CHORD',
+    staffMode: 'triad', pianoMode: 'triad',
+    staffNotes: ['F4','A4','C5'], pianoHighlight: [0,3,5],
+    description: 'El acorde de Fa mayor (F) ocupa el cuarto grado de la escala de Do. Junto a Do y Sol cierra la progresión I-IV-V, la base armónica más usada en pop, blues y rock.',
+  };
+
+  const LEVEL_CHORD_AMINOR = {
+    id: 'chord-a-minor', num: '06', category: 'Acordes',
+    name: 'La menor', cifrado: 'Am', cifradoLong: 'Am', roman: 'vi',
+    notes: 'la – do – mi', notesSpread: 'la · do · mi', notesSep: 'la do mi',
+    detail: '3 notas', brutalMain: 'LA', brutalSub: 'menor',
+    brutalHeaderRight: 'Am / LA DO MI', brutalKind: 'CHORD',
+    staffMode: 'triad', pianoMode: 'triad',
+    staffNotes: ['A4','C5','E5'], pianoHighlight: [0,2,5],
+    description: 'La menor (Am) es el relativo menor de Do mayor: comparte las mismas notas pero empieza en La. Es uno de los acordes más expresivos y reconocibles en música popular y clásica.',
+  };
+
+  const LEVEL_MEL_MARY = {
+    id: 'mel-mary', num: '09', category: 'Melodías',
+    name: 'María y el Corderito', cifrado: 'Mary', cifradoLong: 'Mary',
+    roman: 'trad.', notes: 'mi re do re mi mi mi', notesSep: 'mi re do re …',
+    brutalMain: 'MARY', brutalSub: 'corderito',
+    brutalHeaderRight: 'TRAD. · 7 NOTAS', brutalKind: 'MEL',
+    staffNotes: ['E4','D4','C4','D4','E4','E4','E4'],
+    description: 'Mary Had a Little Lamb usa solo tres alturas (Do, Re, Mi) en movimiento conjunto. Perfecta para consolidar la lectura de la zona central del pentagrama y entrenar el ojo en pasos de segunda.',
+  };
+
+  const LEVEL_MEL_CUMPLE = {
+    id: 'mel-cumple', num: '10', category: 'Melodías',
+    name: 'Cumpleaños Feliz', cifrado: 'Cumple', cifradoLong: 'Cumple',
+    roman: 'trad.', notes: 'sol sol la sol do si', notesSep: 'sol sol la …',
+    brutalMain: 'CUM\nPLE', brutalSub: 'feliz',
+    brutalHeaderRight: 'TRAD. · 6 NOTAS', brutalKind: 'MEL',
+    staffNotes: ['G4','G4','A4','G4','C5','B4'],
+    description: 'La primera frase de Cumpleaños Feliz combina pasos de segunda con un salto de cuarta (Sol→Do). Practicar este salto interválico es clave para leer melodías con movimiento mixto.',
+  };
+
+  const LEVEL_MEL_CAMPANITA = {
+    id: 'mel-campanita', num: '11', category: 'Melodías',
+    name: 'Campanita', cifrado: 'Jingle', cifradoLong: 'Jingle',
+    roman: 'trad.', notes: 'mi mi mi · mi mi mi · mi sol do re mi', notesSep: 'mi mi mi …',
+    brutalMain: 'JIN\nGLE', brutalSub: 'bells',
+    brutalHeaderRight: 'TRAD. · 8 NOTAS', brutalKind: 'MEL',
+    staffNotes: ['E4','E4','E4','E4','G4','C4','D4','E4'],
+    description: 'El arranque de Jingle Bells en Do mayor: tres Mi repetidos que saltan a Sol, bajan a Do y suben por grado. Un clásico para trabajar la repetición de notas y los saltos de tercera.',
+  };
+
   const LEVELS = {
-    LEVEL_CHORD_CMAJOR, LEVEL_ARP_CMAJOR,
-    LEVEL_NOTES_DRMF, LEVEL_NOTES_SLS, LEVEL_ARP_DESC_CMAJOR,
+    LEVEL_CHORD_CMAJOR, LEVEL_CHORD_GMAJOR, LEVEL_CHORD_FMAJOR, LEVEL_CHORD_AMINOR,
+    LEVEL_ARP_CMAJOR, LEVEL_ARP_DESC_CMAJOR,
+    LEVEL_NOTES_DRMF, LEVEL_NOTES_SLS,
+    LEVEL_MEL_MARY, LEVEL_MEL_CUMPLE, LEVEL_MEL_CAMPANITA,
     LEVEL_ODA_1, LEVEL_ODA_2, LEVEL_ODA_3,
   };
 
