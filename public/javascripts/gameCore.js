@@ -1,4 +1,5 @@
-import { dibujarNota, emptyClef, randomNote, randomNoteFromSet, randomClef, getNote, getOctave, resetCanvas } from './vexManager.js';
+import { emptyClef, randomNote, randomNoteFromSet, randomClef, getNote, getOctave,
+  generateGame, buildAndRender, advanceNote, colorNote, drawCurrentNote, emptyMiniClef, getNoteAt, getClefAt, getDurationAt } from './vexManager.js';
 import { Cronometro } from './cronometro.js';
 import { flashBackground, fadeOut, addPointsAnimation, addProgresively, growAndBack, secuencialShow, popAnimation} from './animations.js'
 import { getConfig } from './levelConfig.js'
@@ -70,7 +71,7 @@ const GameState = {
         this.current.difficulty = window.location.pathname.split("/")[3].toUpperCase();
         if(this.current.difficulty !== "TRIAL") await this.getLocals()
         Object.assign(this.config, getConfig(this.current.difficulty));
-        localStorage.setItem("lastPlayed",this.current.difficulty)
+        localStorage.setItem("lastPlayed", this.current.difficulty)
         // Inicializar mapeos de teclas
         this.keyMapping.keyMap = Object.fromEntries(this.keyMapping.notes.map(({ key, note }) => [key, note]));
         this.keyMapping.visualKeyMap = Object.fromEntries(this.keyMapping.notes.map(({ key, note }) => [key, `.note${note}`]));
@@ -92,7 +93,9 @@ const GameState = {
             $levelSpan: $("#levelSpan"),
             $experienceSpan: $("#experienceSpan"),
             $resultSpan: $("#resultSpan"),
-            $playAgainBtn: $("#playAgainBtn"), 
+            $progressText: $("#progressText"),
+            $continueBtn: $("#continueBtn"),
+            $playAgainBtn: $("#playAgainBtn"),
             $playAgainDiv: $("#playAgainDiv"),
             $pointsSpan: $("#pointsSpan"),
             $scoreAdded: $("#scoreAdded"),
@@ -112,9 +115,12 @@ const GameState = {
         const levelData = await this.fetchLevelNotes();
         this.current.levelNotes = levelData ? levelData.notes : null;
         this.current.levelMode  = levelData ? levelData.mode  : null;
+        generateGame(this.config.ROUNDS, this.config.CLEF_PROB, this.config.DURATION, this.current.levelNotes, this.current.levelMode);
 
         // Mostrar tutorial
+        this.elements.$progressText.text(`0 / ${this.config.ROUNDS}`);
         emptyClef();
+        emptyMiniClef();
         
         if (this.current.difficulty === "TRIAL" || this.userData.locals.preferences.showTutorial) new bootstrap.Modal(this.elements.$tutorialModal).show();
         else this.elements.$scoreDiv.removeClass("d-none")
@@ -185,6 +191,7 @@ const GameState = {
         });
     
         // Agregar el evento para volver a jugar
+        this.elements.$continueBtn.on("click", () => this.endGame());
         this.elements.$playAgainBtn.on("click", () => this.resetGame());
         this.elements.$startAgain.on("click", () => this.resetGame());
     },
@@ -205,9 +212,10 @@ const GameState = {
         if (event.code === "Space") {
             event.preventDefault();
             if (this.elements.$startBtn.is(":visible")) {
-                this.startGame()
-            }
-            else if (this.current.contador === this.config.ROUNDS) {
+                this.startGame();
+            } else if (this.elements.$continueBtn.is(":visible")) {
+                this.endGame();
+            } else if (this.current.contador === this.config.ROUNDS) {
                 this.resetGame();
             }
         }
@@ -221,6 +229,7 @@ const GameState = {
     },
 
     startGame() {
+        buildAndRender();
         growAndBack(this.elements.$divFeedback);
         this.elements.$startBtn.removeClass("d-flex").addClass("d-none");
         this.cronometro.start();
@@ -230,24 +239,17 @@ const GameState = {
 
     updateGame() {
         if (this.current.contador === this.config.ROUNDS) {
-            this.endGame();
+            this.cronometro.pause();
+            this.elements.$continueBtn.removeClass("d-none").addClass("d-flex");
             return;
         }
-        let note;
-        if (this.current.levelNotes) {
-            if (this.current.levelMode === 'sequence') {
-                note = this.current.levelNotes[this.current.sequenceCursor % this.current.levelNotes.length];
-                this.current.sequenceCursor++;
-            } else {
-                note = randomNoteFromSet(this.current.levelNotes);
-            }
-        } else {
-            note = randomNote();
-        }
-        let clef = randomClef(this.config.CLEF_PROB);
-        dibujarNota(note, clef);
+        const idx = this.current.contador;
+        const note = getNoteAt(idx);
+        const clef = getClefAt(idx);
+        advanceNote(idx);
+        drawCurrentNote(note, clef, getDurationAt(idx));
         this.current.expectedNote = getNote(note, clef);
-        this.current.notes.push(getNote(note,clef) + getOctave(note,clef))
+        this.current.notes.push(getNote(note, clef) + getOctave(note, clef));
     },
 
     checkCorrect(keyEvent) {
@@ -262,6 +264,7 @@ const GameState = {
     },
 
     handleCorrectNote() {
+        colorNote(this.current.contador - 1, '#22c55e');
         this.current.results.push(true)
         this.current.aciertos++;
         this.current.streak++;
@@ -295,6 +298,7 @@ const GameState = {
     },
 
     handleWrongNote(pressedNote) {
+        colorNote(this.current.contador - 1, '#ef4444');
         this.current.results.push(false)
         this.current.fallos++;
         this.current.streak = 0;
@@ -303,9 +307,10 @@ const GameState = {
     },
 
     endGame() {
-        this.elements.$divFeedback.removeClass("d-flex").addClass("d-none")
-        this.cronometro.pause();
+        this.elements.$continueBtn.removeClass("d-flex").addClass("d-none");
+        this.elements.$divFeedback.removeClass("d-flex").addClass("d-none");
         emptyClef();
+        emptyMiniClef();
         this.openResultDiv();
         if(this.current.difficulty === "TRIAL") setTimeout(() => this.showFidelization(), 500);
         else setTimeout(() => this.showResults(), 500);
@@ -486,6 +491,7 @@ const GameState = {
 
     updateUI() {
         this.elements.$progressBar.css("width", ((this.current.contador / this.config.ROUNDS) * 100) + "%");
+        this.elements.$progressText.text(`${this.current.contador} / ${this.config.ROUNDS}`);
         
         if (this.current.streak > 2) {
             this.elements.$streakNumber.text(this.current.streak);
@@ -495,7 +501,7 @@ const GameState = {
         }
         
         addProgresively(this.elements.$pointsSpan, parseInt(this.elements.$pointsSpan.text()),this.current.points, 200)
-        growAndBack(this.elements.$divFeedback);
+        // growAndBack(this.elements.$divFeedback);
         
         if(this.current.pointsToAdd > 0) {
             addPointsAnimation(this.elements.$scoreAdded, this.current.pointsToAdd)
@@ -536,14 +542,18 @@ const GameState = {
         this.current.sequenceCursor = 0;
         // Reiniciar interfaz
         this.elements.$progressBar.css("width", "0%");
+        this.elements.$progressText.text(`0 / ${this.config.ROUNDS}`);
         this.elements.$streak.css('opacity', 0);
+        this.elements.$continueBtn.removeClass("d-flex").addClass("d-none");
         this.elements.$startBtn.removeClass("d-none").addClass("d-flex");
         this.elements.$pointsSpan.text(0)
         // Reiniciar cronómetro
         this.cronometro = new Cronometro();
         
-        // Vaciar pentagrama
+        // Pre-generate notes for next round and show empty staff
+        generateGame(this.config.ROUNDS, this.config.CLEF_PROB, this.config.DURATION, this.current.levelNotes, this.current.levelMode);
         emptyClef();
+        emptyMiniClef();
     }
 };
 $(function() {

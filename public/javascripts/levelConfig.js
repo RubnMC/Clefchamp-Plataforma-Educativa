@@ -39,25 +39,29 @@ const BASE_PERFORMANCE = {
 const GAME_CONFIG = {
     TRIAL: {
          ROUNDS: 20,
-         CLEF_PROB: 0, 
+         CLEF_PROB: 0,
+         DURATION: 'w',
          EXPERIENCE: 0,
          PERFORMANCE: BASE_PERFORMANCE
     },
     EASY: {
          ROUNDS: 15,
-         CLEF_PROB: 0, 
+         CLEF_PROB: 0,
+         DURATION: 'w',
          EXPERIENCE: 10,
          PERFORMANCE: BASE_PERFORMANCE
     },
     NORMAL: {
          ROUNDS: 20,
-         CLEF_PROB: 0.25, 
+         CLEF_PROB: 0.25,
+         DURATION: 'w',
          EXPERIENCE: 17,
          PERFORMANCE: BASE_PERFORMANCE
     },
     HARD: {
          ROUNDS: 30,
-         CLEF_PROB: 0.5, 
+         CLEF_PROB: 0.5,
+         DURATION: 'w',
          EXPERIENCE: 35,
          PERFORMANCE: BASE_PERFORMANCE
     }
