@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+  <%- include('../partials/head') %>
+  <body class="colorNuevo5">
+    <%- include('../partials/header') %>
+    <div class="container py-4">
+      <h1 class="mb-4">Mis alumnos</h1>
+
+      <% if (students.length === 0) { %>
+        <div class="alert alert-info">
+          Aún no tienes alumnos asignados. Comparte tu código de profesor
+          (<strong><%= user.friendCode %></strong>) para que los alumnos puedan unirse.
+        </div>
+      <% } else { %>
+        <div class="row row-cols-1 row-cols-md-3 g-3">
+          <% students.forEach(function(student) { %>
+            <div class="col">
+              <a href="/teacher/students/<%= student.id %>" class="text-decoration-none text-dark">
+                <div class="card h-100 shadow-sm">
+                  <div class="card-body d-flex align-items-center gap-3">
+                    <img src="<%= student.path %>"
+                         style="width:48px;height:48px;border-radius:50%;background:<%= student.bgColor %>;object-fit:contain;"
+                         alt="Avatar">
+                    <div>
+                      <div class="fw-bold"><%= student.tagname %></div>
+                      <small class="text-muted"><%= student.friendCode %></small>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+    </div>
+    <%- include('../partials/footer') %>
+  </body>
+</html>

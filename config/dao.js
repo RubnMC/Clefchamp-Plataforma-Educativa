@@ -65,7 +65,7 @@ class DAO {
                             month,
                             year
                         }
-                        let user = { 
+                        let user = {
                             id:resultado[0].id,
                             name:resultado[0].name,
                             tagname:resultado[0].tagname,
@@ -73,6 +73,8 @@ class DAO {
                             friendCode:resultado[0].friendCode,
                             active:resultado[0].active,
                             password:resultado[0].password,
+                            role:resultado[0].role,
+                            teacherId:resultado[0].teacherId,
                             joindate
                         }
                         callback(null, user)
@@ -244,17 +246,18 @@ class DAO {
         })
     }
 
-    saveRecord( id, dificultad, perfecto, excelente, genial, bien, ok, aciertos, fallos, puntuacion, tiemposIndividuales, notas, resultados, callback) {
+    saveRecord( id, dificultad, nivelId, perfecto, excelente, genial, bien, ok, aciertos, fallos, puntuacion, tiemposIndividuales, notas, resultados, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) callback(err, null);
             else {
-                let query = `INSERT INTO userrecord 
-                    (userId, difficulty, perfect, excellent, great, good, ok, success, error, points, notes, results, individualTimes) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-                
+                let query = `INSERT INTO userrecord
+                    (userId, difficulty, levelId, perfect, excellent, great, good, ok, success, error, points, notes, results, individualTimes)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
                 let values = [
                     id,
                     dificultad,
+                    nivelId || null,
                     perfecto,
                     excelente,
                     genial,
@@ -263,7 +266,7 @@ class DAO {
                     aciertos,
                     fallos,
                     puntuacion,
-                    JSON.stringify(notas), 
+                    JSON.stringify(notas),
                     JSON.stringify(resultados),
                     JSON.stringify(tiemposIndividuales)
                 ];
@@ -672,7 +675,7 @@ class DAO {
             else {
                 let query = `
                WITH ranked_users AS (
-                    SELECT 
+                    SELECT
                         userId,
                         difficulty,
                         MAX(points) AS maxPoints
@@ -680,19 +683,19 @@ class DAO {
                     GROUP BY userId, difficulty
                 ),
                 ranking AS (
-                    SELECT 
+                    SELECT
                         userId,
                         difficulty,
                         maxPoints,
                         RANK() OVER (PARTITION BY difficulty ORDER BY maxPoints DESC) AS rank_position
                     FROM ranked_users
                 )
-                SELECT 
+                SELECT
                     difficulty,
                     rank_position
-                FROM 
+                FROM
                     ranking
-                WHERE 
+                WHERE
                     userId = ?;
 
 
@@ -705,8 +708,121 @@ class DAO {
             }
         });
     }
-    
-    
+
+    // --- Teacher/Student role methods ---
+
+    getUserById(userId, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) callback(err, null);
+            else {
+                let query = `SELECT id, tagname, name, friendCode, role FROM usuarios WHERE id = ?`;
+                connection.query(query, [userId], (err, resultado) => {
+                    connection.release();
+                    if (err) callback(err, null);
+                    else if (resultado.length === 0) callback(null, null);
+                    else callback(null, resultado[0]);
+                });
+            }
+        });
+    }
+
+    getStudentsByTeacherId(teacherId, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) callback(err, null);
+            else {
+                let query = `
+                    SELECT u.id, u.tagname, u.friendCode, i.path, ui.bgColor
+                    FROM usuarios AS u
+                    JOIN usericons AS ui ON u.id = ui.userId AND ui.isSelected = 1
+                    JOIN icons AS i ON i.id = ui.iconId
+                    WHERE u.teacherId = ?
+                `;
+                connection.query(query, [teacherId], (err, resultado) => {
+                    connection.release();
+                    if (err) callback(err, null);
+                    else callback(null, resultado);
+                });
+            }
+        });
+    }
+
+    getStudentLevels(studentId, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) callback(err, null);
+            else {
+                let query = `SELECT levelId FROM student_levels WHERE studentId = ?`;
+                connection.query(query, [studentId], (err, resultado) => {
+                    connection.release();
+                    if (err) callback(err, null);
+                    else callback(null, resultado.map(r => r.levelId));
+                });
+            }
+        });
+    }
+
+    unlockStudentLevel(studentId, levelId, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) callback(err, null);
+            else {
+                let query = `INSERT IGNORE INTO student_levels (studentId, levelId) VALUES (?, ?)`;
+                connection.query(query, [studentId, levelId], (err, resultado) => {
+                    connection.release();
+                    if (err) callback(err, null);
+                    else callback(null, true);
+                });
+            }
+        });
+    }
+
+    getTeacherByFriendCode(friendCode, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) callback(err, null);
+            else {
+                let query = `SELECT id, role FROM usuarios WHERE friendCode = ?`;
+                connection.query(query, [friendCode], (err, resultado) => {
+                    connection.release();
+                    if (err) callback(err, null);
+                    else if (resultado.length === 0) callback(null, null);
+                    else callback(null, resultado[0]);
+                });
+            }
+        });
+    }
+
+    assignTeacher(studentId, teacherId, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) callback(err, null);
+            else {
+                let query = `UPDATE usuarios SET teacherId = ? WHERE id = ?`;
+                connection.query(query, [teacherId, studentId], (err, resultado) => {
+                    connection.release();
+                    if (err) callback(err, null);
+                    else callback(null, true);
+                });
+            }
+        });
+    }
+
+    getStudentLevelProgress(studentId, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) callback(err, null);
+            else {
+                let query = `
+                    SELECT levelId, COUNT(*) AS games, MAX(points) AS bestScore
+                    FROM userrecord
+                    WHERE userId = ? AND levelId IS NOT NULL
+                    GROUP BY levelId
+                `;
+                connection.query(query, [studentId], (err, resultado) => {
+                    connection.release();
+                    if (err) callback(err, null);
+                    else callback(null, resultado);
+                });
+            }
+        });
+    }
+
+
 }
 
 module.exports = DAO;

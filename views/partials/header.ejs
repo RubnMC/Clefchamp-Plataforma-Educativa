@@ -15,11 +15,17 @@
       <ul class="dropdown-menu text-center">
         <li><a class="dropdown-item" href="/users/settings">Ajustes</a></li>
         <hr>
-        <li><a class="dropdown-item" href="/users/profile">Perfil</a></li>
-        <li><a class="dropdown-item" href="/users/globalRanking">Ranking globlal</a></li>
-        <li><a class="dropdown-item" href="/users/stats">Estadísticas</a></li>
-        <li><a class="dropdown-item" href="/users/friends">Amigos</a></li>
-        <hr>
+        <% if(locals.user && locals.user.role === 'teacher') { %>
+          <li><a class="dropdown-item" href="/teacher/students">Mis alumnos</a></li>
+          <hr>
+        <% } else { %>
+          <li><a class="dropdown-item" href="/play/selectGame">Jugar</a></li>
+          <li><a class="dropdown-item" href="/users/profile">Perfil</a></li>
+          <li><a class="dropdown-item" href="/users/globalRanking">Ranking globlal</a></li>
+          <li><a class="dropdown-item" href="/users/stats">Estadísticas</a></li>
+          <li><a class="dropdown-item" href="/users/friends">Amigos</a></li>
+          <hr>
+        <% } %>
         <li><a class="dropdown-item" style="color:red" href="/users/logout"><strong>Cerrar sesión</strong></a></li>
       </ul>
     </div>

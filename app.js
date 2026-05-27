@@ -8,6 +8,7 @@ const mysqlConfig = require('./config/db');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var playRouter = require('./routes/play');
+var teacherRouter = require('./routes/teacher');
 
 const session = require('express-session')
 var mysqlStore = require('express-mysql-session')(session);
@@ -54,6 +55,7 @@ app.use((req,res,next) => {
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/play', playRouter);
+app.use('/teacher', teacherRouter);
 
 
 app.use(function(req, res, next) {

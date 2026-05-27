@@ -4,6 +4,7 @@ const mysql = require("mysql");
 
 const mysqlConfig = require("../config/db");
 const DAO = require("../config/dao");
+const { isStudent } = require("../middleware/roles");
 
 const pool = mysql.createPool(mysqlConfig);
 const dao = new DAO(pool);
@@ -411,6 +412,27 @@ router.post('/dropRequest', (req,res) => {
 
 router.get("/getSelfId", (req, res) => {
   res.json({ id: res.locals.user.id });
+});
+
+router.post('/joinClass', isLoggedIn, isStudent, (req, res) => {
+  const { friendCode } = req.body;
+  if (!friendCode) return res.status(400).json({ error: 'Código requerido' });
+
+  const fullCode = friendCode.startsWith('#') ? friendCode : '#' + friendCode;
+
+  dao.getTeacherByFriendCode(fullCode, (err, teacher) => {
+    if (err) return res.status(500).json({ error: 'Error al buscar el profesor' });
+    if (!teacher) return res.status(404).json({ error: 'Código no encontrado' });
+    if (teacher.role !== 'teacher') return res.status(400).json({ error: 'El código no corresponde a un profesor' });
+
+    dao.assignTeacher(res.locals.user.id, teacher.id, (err) => {
+      if (err) return res.status(500).json({ error: 'Error al unirse a la clase' });
+
+      req.session.user.teacherId = teacher.id;
+      res.locals.user.teacherId = teacher.id;
+      res.json({ ok: true });
+    });
+  });
 });
 
 

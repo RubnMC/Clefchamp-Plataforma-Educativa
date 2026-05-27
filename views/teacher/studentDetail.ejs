@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+  <%- include('../partials/head') %>
+  <body class="colorNuevo5">
+    <%- include('../partials/header') %>
+
+    <%
+      // All available levels — mirrors levelButtons.js order
+      const ALL_LEVELS = [
+        { id: 'notes-do-re-mi-fa', num: '01', name: 'Do · Re · Mi · Fa',      category: 'Notas'     },
+        { id: 'notes-sol-la-si',   num: '02', name: 'Sol · La · Si',           category: 'Notas'     },
+        { id: 'chord-c-major',     num: '03', name: 'Do mayor',                category: 'Acordes'   },
+        { id: 'chord-g-major',     num: '04', name: 'Sol mayor',               category: 'Acordes'   },
+        { id: 'chord-f-major',     num: '05', name: 'Fa mayor',                category: 'Acordes'   },
+        { id: 'chord-a-minor',     num: '06', name: 'La menor',                category: 'Acordes'   },
+        { id: 'arp-c-major',       num: '07', name: 'Arpegio de Do',           category: 'Arpegios'  },
+        { id: 'arp-desc-c-major',  num: '08', name: 'Arpegio de Do ↘',         category: 'Arpegios'  },
+        { id: 'mel-mary',          num: '09', name: 'María y el Corderito',    category: 'Melodías'  },
+        { id: 'mel-cumple',        num: '10', name: 'Cumpleaños Feliz',         category: 'Melodías'  },
+        { id: 'mel-campanita',     num: '11', name: 'Campanita',               category: 'Melodías'  },
+        { id: 'oda-1',             num: '12', name: 'Oda a la Alegría · I',    category: 'Melodías'  },
+        { id: 'oda-2',             num: '13', name: 'Oda a la Alegría · II',   category: 'Melodías'  },
+        { id: 'oda-3',             num: '14', name: 'Oda a la Alegría · III',  category: 'Melodías'  },
+      ];
+    %>
+
+    <div class="container py-4">
+      <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/teacher/students">Mis alumnos</a></li>
+          <li class="breadcrumb-item active"><%= student.tagname %></li>
+        </ol>
+      </nav>
+
+      <h1 class="mb-1"><%= student.tagname %></h1>
+      <p class="text-muted mb-4"><%= student.friendCode %></p>
+
+      <!-- Levels grid -->
+      <h4 class="mb-3">Niveles</h4>
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-5">
+        <% ALL_LEVELS.forEach(function(lvl) { %>
+          <%
+            const isUnlocked = unlockedLevelIds.includes(lvl.id);
+            const prog = progress.find(p => p.levelId === lvl.id);
+          %>
+          <div class="col">
+            <div class="card h-100 shadow-sm <%= isUnlocked ? 'border-success' : '' %>">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <span class="badge bg-secondary me-1">LV.<%= lvl.num %></span>
+                    <span class="badge bg-light text-dark"><%= lvl.category %></span>
+                  </div>
+                  <% if (isUnlocked) { %>
+                    <span class="badge bg-success">Desbloqueado</span>
+                  <% } else { %>
+                    <span class="badge bg-light text-muted">Bloqueado</span>
+                  <% } %>
+                </div>
+                <h6 class="card-title mt-2 mb-1"><%= lvl.name %></h6>
+                <% if (prog) { %>
+                  <p class="card-text small text-muted mb-2">
+                    Partidas: <strong><%= prog.games %></strong> &nbsp;·&nbsp;
+                    Mejor puntuación: <strong><%= prog.bestScore %></strong>
+                  </p>
+                <% } else if (isUnlocked) { %>
+                  <p class="card-text small text-muted mb-2">Sin partidas aún.</p>
+                <% } else { %>
+                  <p class="card-text small text-muted mb-2">&nbsp;</p>
+                <% } %>
+                <% if (!isUnlocked) { %>
+                  <form method="POST" action="/teacher/students/<%= student.id %>/unlock">
+                    <input type="hidden" name="levelId" value="<%= lvl.id %>">
+                    <button type="submit" class="btn btn-sm btn-outline-success w-100">
+                      Desbloquear
+                    </button>
+                  </form>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+  </body>
+</html>

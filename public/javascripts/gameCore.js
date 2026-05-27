@@ -455,6 +455,7 @@ const GameState = {
             body: JSON.stringify({
                 id: userId,
                 dificultad: this.current.difficulty,
+                nivelId: localStorage.getItem('selectedLevelId'),
                 perfecto: this.current.perfectCounter,
                 excelente: this.current.excellentCounter,
                 genial: this.current.greatCounter,

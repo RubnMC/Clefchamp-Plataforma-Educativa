@@ -7,8 +7,22 @@
         <div class=" d-flex flex-column align-items-center bg-10 rounded-4 mx-4 p-5 ">
           
           <h1>Ajustes</h1>
+
+          <% if(user && user.role === 'student' && !user.teacherId) { %>
+          <section class="mb-4">
+            <h3>Unirse a una clase</h3>
+            <p>Introduce el código de tu profesor para unirte a su clase y acceder a los niveles que te haya asignado.</p>
+            <div class="d-flex gap-2 align-items-center">
+              <input type="text" id="teacherCodeInput" class="form-control w-auto" placeholder="#XXXXXXXX" maxlength="10">
+              <button id="joinClassBtn" class="btn btn-primary">Unirse</button>
+            </div>
+            <p id="joinClassMsg" class="mt-2 small"></p>
+          </section>
+          <hr>
+          <% } %>
+
           <section>
-            
+
             <h3>Borrar cuenta</h3>
             <p>Esta acción hará que su cuenta entre en modo inactivo. Si permanece 30 días inactivo la cuenta y todos los datos serán eliminados de la aplicación. Si durante este periodo desea reactivar la cuenta solo tiene que iniciar sesión.</p>
             <button id="deleteBtn" class="btn btn-danger">Borrar cuenta</button>
@@ -19,5 +33,32 @@
       <%-include('partials/modal/deleteAccount') %> 
 
       <script src="/javascripts/settings.js"></script>
+      <% if(user && user.role === 'student' && !user.teacherId) { %>
+      <script>
+        document.getElementById('joinClassBtn')?.addEventListener('click', async () => {
+          const code = document.getElementById('teacherCodeInput').value.trim();
+          const msg = document.getElementById('joinClassMsg');
+          if (!code) { msg.textContent = 'Introduce un código.'; msg.style.color = 'red'; return; }
+          try {
+            const res = await fetch('/users/joinClass', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ friendCode: code })
+            });
+            const data = await res.json();
+            if (data.ok) {
+              msg.textContent = '¡Te has unido a la clase correctamente! Recarga la página.';
+              msg.style.color = 'green';
+            } else {
+              msg.textContent = data.error || 'Error al unirse.';
+              msg.style.color = 'red';
+            }
+          } catch (e) {
+            msg.textContent = 'Error de conexión.';
+            msg.style.color = 'red';
+          }
+        });
+      </script>
+      <% } %>
   </body>
 </html>

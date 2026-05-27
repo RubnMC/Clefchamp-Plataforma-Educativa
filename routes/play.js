@@ -6,6 +6,7 @@ const path = require("path");
 
 const mysqlConfig = require("../config/db");
 const DAO = require("../config/dao");
+const { isStudent } = require("../middleware/roles");
 
 const pool = mysql.createPool(mysqlConfig);
 const dao = new DAO(pool);
@@ -17,6 +18,24 @@ router.use((req, res, next) => {
 
 const isLoggedIn = (req, res, next) => res.locals.user ? next() : res.redirect('/users/login');
 const isNotLoggedIn = (req, res, next) => !res.locals.user ? next() : res.redirect('/users/login');
+
+// All 14 level IDs mirroring levelButtons.js — returned to teachers so they can play any level
+const ALL_LEVEL_IDS = [
+  'notes-do-re-mi-fa',
+  'notes-sol-la-si',
+  'chord-c-major',
+  'chord-g-major',
+  'chord-f-major',
+  'chord-a-minor',
+  'arp-c-major',
+  'arp-desc-c-major',
+  'mel-mary',
+  'mel-cumple',
+  'mel-campanita',
+  'oda-1',
+  'oda-2',
+  'oda-3',
+];
 
 router.get("/", isLoggedIn, (req, res) => res.render('home'));
 
@@ -37,15 +56,15 @@ router.get("/atrapado/trial", isNotLoggedIn, (request,response) => {
     response.render("gameScreen", {mode: "TRIAL"})
 })
 
-router.get("/atrapado/easy", isLoggedIn, (request,response) => {
+router.get("/atrapado/easy", isLoggedIn, isStudent, (request,response) => {
   response.render("gameScreen", {mode: "EASY"})
 })
 
-router.get("/atrapado/normal", isLoggedIn, (request,response) => {
+router.get("/atrapado/normal", isLoggedIn, isStudent, (request,response) => {
   response.render("gameScreen", {mode: "NORMAL"})
 })
 
-router.get("/atrapado/hard", isLoggedIn, (request,response) => {
+router.get("/atrapado/hard", isLoggedIn, isStudent, (request,response) => {
   response.render("gameScreen", {mode: "HARD"})
 })
 
@@ -73,7 +92,18 @@ router.get('/getUserLevel/:userId', isLoggedIn, (request, response) => {
   });
 });
 
-router.put('/addExperience', isLoggedIn, (request,response) => {
+router.get('/getStudentLevels', isLoggedIn, (req, res) => {
+  const user = res.locals.user;
+  if (user.role === 'teacher') {
+    return res.json({ levelIds: ALL_LEVEL_IDS });
+  }
+  dao.getStudentLevels(user.id, (err, levelIds) => {
+    if (err) return res.status(500).json({ message: 'Error obteniendo niveles' });
+    res.json({ levelIds });
+  });
+});
+
+router.put('/addExperience', isLoggedIn, isStudent, (request,response) => {
   const { userId, level, experience, experienceToNext } = request.body;
   dao.updateUserLevel(userId, level, experience, experienceToNext, (err, result) => {
     response.locals.user.level = level
@@ -87,6 +117,7 @@ router.post('/saveRecords', (req, res) => {
   const {
       id,
       dificultad,
+      nivelId,
       perfecto,
       excelente,
       genial,
@@ -100,10 +131,10 @@ router.post('/saveRecords', (req, res) => {
       resultados
   } = req.body;
 
-  dao.saveRecord(id,dificultad,perfecto,excelente,genial,bien,ok,aciertos,fallos,puntuacion,tiemposIndividuales,notas,resultados, (err,result) => {
+  dao.saveRecord(id,dificultad,nivelId,perfecto,excelente,genial,bien,ok,aciertos,fallos,puntuacion,tiemposIndividuales,notas,resultados, (err,result) => {
     if(err) {
       console.log("ERROR: " + err)
-      res.status(500).json({ message: "Error en saveRecords" }); 
+      res.status(500).json({ message: "Error en saveRecords" });
     }
     else res.json(true);
   })

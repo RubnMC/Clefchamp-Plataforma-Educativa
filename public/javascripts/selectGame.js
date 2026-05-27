@@ -27,12 +27,27 @@ const levelGrid = $('<div>').css({
   gap: '18px',
   padding: '4px 8px 8px 2px',
 });
-LEVELS_LIST.forEach(lvl => {
-  const btn = LevelButtons.VARIANTS.V5Brutal('available', { ...lvl, brutalSize: 46 });
-  btn.data('level', lvl).css('width', '100%');
-  levelGrid.append(btn);
-});
-$('#levelList').empty().append(levelGrid);
+
+// Fetch which levels are unlocked for this student, then render the grid
+fetch('/play/getStudentLevels')
+  .then(r => r.json())
+  .then(data => renderLevelGrid(data.levelIds || []))
+  .catch(() => renderLevelGrid(LEVELS_LIST.map(l => l.id)));
+
+function renderLevelGrid(unlockedIds) {
+  levelGrid.empty();
+  LEVELS_LIST.forEach(lvl => {
+    const unlocked = unlockedIds.includes(lvl.id);
+    const state = unlocked ? 'available' : 'locked';
+    const btn = LevelButtons.VARIANTS.V5Brutal(state, { ...lvl, brutalSize: 46 });
+    btn.data('level', lvl).css('width', '100%');
+    if (!unlocked) {
+      btn.prop('disabled', true).css({ pointerEvents: 'none', cursor: 'not-allowed' });
+    }
+    levelGrid.append(btn);
+  });
+  $('#levelList').empty().append(levelGrid);
+}
 
 $('#levelList').on('click', 'button', function () {
   const level = $(this).data('level');

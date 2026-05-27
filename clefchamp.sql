@@ -263,6 +263,41 @@ LOCK TABLES `usuarios` WRITE;
 INSERT INTO `usuarios` VALUES (1,'jesuggc','jesuggcc@gmail.com','$2b$10$HdTbNld38Exz/XSikeemO.eLovv/0onqD6TmkHPpL1kaqOEP6fyl.','Jesús','2024-10-28 19:50:26','#J35U5J4J4',1),(3,'dayusky','oli.mmm.pia@gmail.com','$2b$10$8Yv79HrZ8BwTXKFru5IzuehXz4yeZumla9gRNynETNCETB2lj3g3q','','2024-10-28 19:50:26','#OP9V6INHS',1),(4,'','','$2b$10$o3wJ5ChJ2SlYjO.X9tt5MOQ.BprEeYxOtdAeH.mkTCjcIDul7Em/q','Marcos','2024-10-29 00:00:11','#MZ3OA4BSC',1),(21,'lucia','luvazro02@gmail.com','$2b$10$utdZnKDPN/yXNcCoDONnVuFdIQO7qs5ARIU6sjLLbqSZpYWzwy6wW','lucia','2025-02-23 21:19:39','#V8DFHKS5E',1),(22,'dayuyi','ineprimo@ucm.es','$2b$10$aXy2lmh0tcpOxoUsMedELuR6oz648/Sd7duN8MFcU3vQjS/FMQXNS','ines','2025-02-23 22:36:41','#441N3544',1),(33,'Maria','maria.gala.al@gmail.com','$2b$10$pz1GXXwzF7BJRPEWrAEUMu7O54.7s9VpHGX3CZhoyix9C76FVGIAG','María','2025-03-11 15:47:23','#8QY2KAQUB',1),(34,'ananana','ananwang4@gmail.com','$2b$10$L.1PKM2B9iG2cmbtKY7Akeu6/ZDbpuRx4eTStB9ZshgNQPvPNS6UK','Anan','2025-03-12 18:28:24','#N3DT7CP48',1),(36,'Mariars','mariarguezsnchez@gmail.com','$2b$10$6Bgm2ve0tXMnsGX04Av4Ru4PX1wYaz3VlcDrKZNv.gBz9SC/pkdvm','María','2025-03-18 14:26:09','#JC8QFG8ZG',1),(37,'ruben','ayuso@pp.com','$2b$10$gj.A.y1Gp3lbTG5GW.Cp2OW2MrPIOhNj390afBDaghy8ke7H0Aa9u','Isabel Diaz Ayuso','2025-03-19 11:36:45','#C4HQSOGSK',1),(38,'Mesias','alicia.primo@educa.madrid.org','$2b$10$aO/bTJT5xstiXaGlpCJYxeUqTBOeeQb5zgVvtc1kpza97ut/srBTy','Alicia','2025-03-19 19:34:59','#87SG3YENB',1),(39,'ariadnaki','ariadnaruizcastillo@gmail.com','$2b$10$ScO.13D6i6So9P.doglv8uuTllYXv3glu59VwrpA0ik45iwdnOBzm','Ariadna','2025-03-21 23:41:48','#QOX4MW65S',1),(40,'Nunu','notaboyband28@gmail.com','$2b$10$XCBSkGPQILLYOKqxjmA5Qu2BI5m7MK5YrZatw9QgdX8iaMi0HTXpG','Nuria','2025-03-23 21:09:37','#GUG81L5CD',1),(41,'Val','mvsivag01@gmal.com','$2b$10$fWQ6J1E0PtsnRqGqPugUKOhdMLcWSeDL74Qgrzy9xsPLSad71vCSG','VALERIA','2025-03-25 08:33:59','#HGFVEH16E',1),(42,'Merins','marins51@ucm.es','$2b$10$1Uba/rQrfQENhcQ229/VJugvUj4UnAiupeoB2pcgxPj0EfDuJOjSm','Marina','2025-03-27 17:10:46','#T4EP25BLN',1),(43,'Vivu24','javivu2.12004@gmail.com','$2b$10$igc9lfJcTk8LQF5syRq5Iu6Opzvyx4HpbUHeTl2kF2Z2XRZ8l8SSO','Javier','2025-03-31 22:24:39','#3OAOS9FO5',1),(44,'RastaFary','lbrtdisalvo@gmail.com','$2b$10$AqtCmF3JkqJD2sl.rT6HAeRYe2KEJ3rxeo1Fu4RV0r/o7kNNyPuBe','Alberto','2025-05-05 16:34:43','#N64MJTP6F',1),(45,'a','test@email.com','$2b$10$hRs7Mhr7KLfVKyZdG38yyejK6tRt8q6k9OaM035rMlcZ9H3ZsJ2Qa','ddd','2025-05-05 16:36:07','#TRDYH49FF',1),(46,'TheSmasher','heliofernandezvega@gmail.com','$2b$10$gxRLXW7sR0zlZlcL1Ov7CuKKfUvfvHigTfePN9Tu/8aARcjPFPTW2','Helio','2025-05-05 20:33:16','#SWSLNK4G7',1),(47,'Arina','ashigsubb72@gmail.com','$2b$10$QY/8vsXUTh03yuEWhI5gV.5gTEBXuweGiN3DyAVtzuxE5J/F7Ss/.','Arina','2025-05-05 21:08:38','#F0Y8I1DQO',1),(48,'yeepy','yeepywyeepy@gmail.com','$2b$10$idjNqFOns3GNODZmmHtlz.pZldNtz9rBm7xdxiOYqnG.IsmfRNAP.','guille','2025-05-05 23:26:04','#H7DHMRLS8',1),(49,'yeepy','yeepywyeepy@gmail.com','$2b$10$fKw3NoYyYm1fRLIhrnTmA.oOZbxtUc2CTr82BwXpZqbc2XtGVwIdm','guille','2025-05-05 23:26:04','#MEFQD74HW',1),(50,'Bucerillo','abcoronel2004@gmail.com','$2b$10$sI2AN7qwNV0B/dKLUvgfNuvZO5nZiG4N3HH4Q.eW7Z/H6zqcYXraW','Antonio','2025-05-07 11:30:27','#FA0ZI7Q9U',1),(51,'Raulcito','eee@ucm.es','$2b$10$ajD4W4AR9fZBZFjwNTWNeO4RVKHmIw/sjXTZbgjnIALvQ7jPibMIy','Raúl','2025-05-07 12:00:09','#HRG0TTGEV',1),(52,'Vamana','albertoraez1998@gmail.com','$2b$10$D20EoeS2svTmfbD334exc.Qe9ZLmXd13WY1WMTVfZ.GApuzjilvoe','Alberto','2025-05-09 09:11:59','#HM0OHXY1J',1),(53,'krisneiras','kristy.neira@afronta.com','$2b$10$gYi2KXgQu8LaezPXp0ZWq.QjKsdE4r4PpPFcz5ThykTCpzn2jU0wO','Kristy','2025-05-14 08:14:11','#MG2QDQENA',1),(54,'Pepe','pep@e.ee','$2b$10$2K6HpcBPtQnmbfEkVe/m0OaTMwQ.vHX8LCv1cWpz2RAjBasWAnkOy','Pepe','2025-05-17 15:11:09','#BT2YJ1SX8',1),(55,'MVP','samualvarezmedina@gmail.com','$2b$10$1LuRnqYXre5SmYETEKSfse2qRl/77whdnecnWwstZPn32NhuO8r3C','Samuel','2025-05-18 11:34:39','#MTXM63ERJ',1),(56,'Alba sks','a.a@a.aa','$2b$10$BlTxVToFlU9tn1jTFel0wuKGyWzU2yqbWAydh2FnK6thLThtX1S8S','Les sb','2025-05-29 20:56:20','#93YFRX0GR',1),(57,'prueba233','a.a@a.aaa','$2b$10$LDjKRxb3jHYNe1F3D4Jvm.33vgvimvpHnSVlp4wNSW07Rx1U4lvKG','Prueba','2025-06-07 11:42:10','#26LTRTTZ4',1),(58,'Albert','albert@ucm.es','$2b$10$9tUnEHNu19ateVF7xwq7n.1V7k/Vi1QDxAUV6nQm.COWoY7dwF7PK','Albert','2025-06-12 17:40:16','#TJGGB1EQW',1),(59,'pacopruebas','pacopruebas@gmail.com','$2b$10$01/vvsR9ToMz6EN25vO2.OUQ.m/h0ZGfFX9mdgAh3ikLB95gr6/hy','Paco','2025-06-14 18:49:28','#HS8138N77',1),(60,'Rocoso','tiel2812@hotmail.com','$2b$10$gFRbS57VRrZHtrnuDF3pmOjkNdS7QmymoHFRcG4atOuKB3z8vqtW.','Isidoro ','2025-08-15 16:57:10','#4PTMPSAGN',1),(63,'marco123','marcos@gmail.com','$2b$10$exQr7EwQCji/UBEQmsNktu8vNf/PX5uDcICEQ0Jj6lBIYQodPkyKG','Marcos','2025-09-01 14:04:55','#I5XC7L7HA',1);
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Role-based user system: schema additions
+--
+
+-- Add role and teacherId to usuarios
+ALTER TABLE `usuarios`
+  ADD COLUMN `role` ENUM('student','teacher') NOT NULL DEFAULT 'student' AFTER `active`,
+  ADD COLUMN `teacherId` INT(11) DEFAULT NULL AFTER `role`;
+
+ALTER TABLE `usuarios`
+  ADD CONSTRAINT `fk_usuario_teacher`
+    FOREIGN KEY (`teacherId`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL;
+
+CREATE INDEX `idx_usuarios_teacher` ON `usuarios` (`teacherId`);
+
+-- Add levelId to userrecord
+ALTER TABLE `userrecord`
+  ADD COLUMN `levelId` VARCHAR(50) NULL AFTER `difficulty`;
+
+CREATE INDEX `idx_userrecord_level` ON `userrecord` (`userId`, `levelId`);
+
+-- New table: level access per student
+CREATE TABLE IF NOT EXISTS `student_levels` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `studentId` int(11) NOT NULL,
+  `levelId` varchar(50) NOT NULL,
+  `unlockedAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_student_level` (`studentId`,`levelId`),
+  CONSTRAINT `fk_sl_student` FOREIGN KEY (`studentId`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE INDEX `idx_student_levels_student` ON `student_levels` (`studentId`);
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
