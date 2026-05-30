@@ -7,4 +7,10 @@ const isStudent = (req, res, next) =>
 const isTeacher = (req, res, next) =>
     res.locals.user?.role === 'teacher' ? next() : res.redirect('/');
 
-module.exports = { isStudent, isTeacher };
+const requireAuth = (req, res, next) => {
+    if (res.locals.user) return next();
+    req.session.returnTo = req.originalUrl;
+    res.redirect('/users/login');
+};
+
+module.exports = { isStudent, isTeacher, requireAuth };

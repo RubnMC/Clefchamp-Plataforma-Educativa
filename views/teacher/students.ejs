@@ -6,6 +6,19 @@
     <div class="container py-4">
       <h1 class="mb-4">Mis alumnos</h1>
 
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Enlace de invitación</h5>
+          <p class="card-text text-muted">Comparte este enlace con tus alumnos para que se unan a tu clase.</p>
+          <div class="input-group">
+            <input type="text" class="form-control bg-light" id="inviteUrl" readonly value="<%= joinLink %>">
+            <button class="btn btn-outline-secondary" id="copyInviteBtn" type="button">
+              <img src="/images/icons/copy.svg" id="copyInviteImg" style="width:20px;" alt="Copiar">
+            </button>
+          </div>
+        </div>
+      </div>
+
       <% if (students.length === 0) { %>
         <div class="alert alert-info">
           Aún no tienes alumnos asignados. Comparte tu código de profesor
@@ -34,5 +47,24 @@
       <% } %>
     </div>
     <%- include('../partials/footer') %>
+    <script>
+      document.getElementById('copyInviteBtn').addEventListener('click', function() {
+        const url = document.getElementById('inviteUrl').value;
+        const img = document.getElementById('copyInviteImg');
+        (navigator.clipboard?.writeText(url) ?? Promise.reject())
+          .catch(function() {
+            var t = document.createElement('textarea');
+            t.value = url;
+            document.body.appendChild(t);
+            t.select();
+            document.execCommand('copy');
+            document.body.removeChild(t);
+          })
+          .finally(function() {
+            img.src = '/images/icons/copyready.svg';
+            setTimeout(function() { img.src = '/images/icons/copy.svg'; }, 2000);
+          });
+      });
+    </script>
   </body>
 </html>

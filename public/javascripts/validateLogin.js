@@ -22,7 +22,7 @@ $("#login").on("click", function(e) {
                             $("#invalidMessage").attr("hidden",false)
                             $("#password").addClass("is-invalid")
                         }
-                        else window.location.href = "/"
+                        else window.location.href = response.returnTo || "/"
                     }
                 })
             }

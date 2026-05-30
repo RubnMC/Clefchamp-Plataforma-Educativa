@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+  <%- include('partials/head') %>
+  <body class="colorNuevo5">
+    <%- include('partials/header') %>
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <% if (state === 'success') { %>
+            <div class="alert alert-success" role="alert">
+              <h4 class="alert-heading">¡Te has unido a la clase!</h4>
+              <p class="mb-0">Has sido asignado correctamente. Tu profesor podrá ver tu progreso y desbloquearte niveles.</p>
+            </div>
+            <a href="/" class="btn btn-primary">Ir al inicio</a>
+          <% } else if (state === 'already_enrolled') { %>
+            <div class="alert alert-warning" role="alert">
+              <h4 class="alert-heading">Ya estás en una clase</h4>
+              <p class="mb-0">Ya tienes un profesor asignado. Si necesitas cambiar de clase, contacta con tu profesor actual.</p>
+            </div>
+            <a href="/" class="btn btn-secondary">Ir al inicio</a>
+          <% } else if (state === 'teacher_blocked') { %>
+            <div class="alert alert-danger" role="alert">
+              <h4 class="alert-heading">Acceso no permitido</h4>
+              <p class="mb-0">Los profesores no pueden unirse a clases de otros profesores.</p>
+            </div>
+            <a href="/teacher/students" class="btn btn-secondary">Mis alumnos</a>
+          <% } else { %>
+            <div class="alert alert-danger" role="alert">
+              <h4 class="alert-heading">Enlace no válido</h4>
+              <p class="mb-0">El código de invitación no existe o ha caducado. Pide a tu profesor que te comparta el enlace actualizado.</p>
+            </div>
+            <a href="/" class="btn btn-secondary">Ir al inicio</a>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    <%- include('partials/footer') %>
+  </body>
+</html>

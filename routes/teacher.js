@@ -24,7 +24,8 @@ router.get("/", isLoggedIn, isTeacher, (req, res) => {
 router.get("/students", isLoggedIn, isTeacher, (req, res) => {
   dao.getStudentsByTeacherId(res.locals.user.id, (err, students) => {
     if (err) return res.status(500).render('error');
-    res.render('teacher/students', { students });
+    const joinLink = `${req.protocol}://${req.get('host')}/join/${res.locals.user.friendCode.slice(1)}`;
+    res.render('teacher/students', { students, joinLink });
   });
 });
 
