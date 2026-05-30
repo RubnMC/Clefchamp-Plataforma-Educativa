@@ -115,7 +115,11 @@ const GameState = {
         const levelData = await this.fetchLevelNotes();
         this.current.levelNotes = levelData ? levelData.notes : null;
         this.current.levelMode  = levelData ? levelData.mode  : null;
-        generateGame(this.config.ROUNDS, this.config.CLEF_PROB, this.config.DURATION, this.current.levelNotes, this.current.levelMode);
+        if (this.current.levelMode === 'sequence' && this.current.levelNotes) {
+            this.config.ROUNDS = this.current.levelNotes.length;
+        }
+        const clefProb = this.current.levelNotes ? 0 : this.config.CLEF_PROB;
+        generateGame(this.config.ROUNDS, clefProb, this.config.DURATION, this.current.levelNotes, this.current.levelMode);
 
         // Mostrar tutorial
         this.elements.$progressText.text(`0 / ${this.config.ROUNDS}`);
@@ -551,7 +555,8 @@ const GameState = {
         this.cronometro = new Cronometro();
         
         // Pre-generate notes for next round and show empty staff
-        generateGame(this.config.ROUNDS, this.config.CLEF_PROB, this.config.DURATION, this.current.levelNotes, this.current.levelMode);
+        const clefProb = this.current.levelNotes ? 0 : this.config.CLEF_PROB;
+        generateGame(this.config.ROUNDS, clefProb, this.config.DURATION, this.current.levelNotes, this.current.levelMode);
         emptyClef();
         emptyMiniClef();
     }
