@@ -37,6 +37,13 @@ const BASE_PERFORMANCE = {
 };
 
 const GAME_CONFIG = {
+    TUTORIAL: {
+         ROUNDS: 8,
+         CLEF_PROB: 0,
+         DURATION: 'w',
+         EXPERIENCE: 5,
+         PERFORMANCE: BASE_PERFORMANCE
+    },
     TRIAL: {
          ROUNDS: 20,
          CLEF_PROB: 0,

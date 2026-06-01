@@ -33,6 +33,10 @@ router.get("/selectGame", isLoggedIn, (request,response) => {
   response.render("selectGame")
 })
 
+router.get("/atrapado/tutorial", isLoggedIn, (request, response) => {
+    response.render("gameScreen", { mode: "TUTORIAL" })
+})
+
 router.get("/atrapado/trial", isNotLoggedIn, (request,response) => {
     response.render("gameScreen", {mode: "TRIAL"})
 })

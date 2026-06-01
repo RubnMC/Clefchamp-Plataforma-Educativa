@@ -3,6 +3,7 @@ import { emptyClef, randomNote, randomNoteFromSet, randomClef, getNote, getOctav
 import { Cronometro } from './cronometro.js';
 import { flashBackground, fadeOut, addPointsAnimation, addProgresively, growAndBack, secuencialShow, popAnimation} from './animations.js'
 import { getConfig } from './levelConfig.js'
+import { startPreGameTour, onFirstNoteShown, onFirstCorrect, onFirstStreak } from './gameTutorial.js'
 
 const GameState = {
     config: {
@@ -126,8 +127,13 @@ const GameState = {
         emptyClef();
         emptyMiniClef();
         
-        if (this.current.difficulty === "TRIAL" || this.userData.locals.preferences.showTutorial) new bootstrap.Modal(this.elements.$tutorialModal).show();
-        else this.elements.$scoreDiv.removeClass("d-none")
+        if (this.current.difficulty === "TUTORIAL") {
+            startPreGameTour();
+        } else if (this.current.difficulty === "TRIAL" || this.userData.locals.preferences.showTutorial) {
+            new bootstrap.Modal(this.elements.$tutorialModal).show();
+        } else {
+            this.elements.$scoreDiv.removeClass("d-none");
+        }
         
         // Configurar eventos
         this.setupEventListeners();
@@ -239,6 +245,7 @@ const GameState = {
         this.cronometro.start();
         this.updateGame();
         this.current.gameStarted = true;
+        if (this.current.difficulty === "TUTORIAL") onFirstNoteShown();
     },
 
     updateGame() {
@@ -278,6 +285,7 @@ const GameState = {
         this.current.points += this.current.pointsToAdd
         this.elements.$successMessage.text(feedback.TITLE).css("color", feedback.COLOR);
         fadeOut(this.elements.$successMessage);
+        if (this.current.difficulty === "TUTORIAL") onFirstCorrect();
     },
 
     getFeedback(time) {
@@ -500,6 +508,7 @@ const GameState = {
         if (this.current.streak > 2) {
             this.elements.$streakNumber.text(this.current.streak);
             this.elements.$streak.css('opacity', 1);
+            if (this.current.difficulty === "TUTORIAL") onFirstStreak();
         } else {
             this.elements.$streak.css('opacity', 0);
         }

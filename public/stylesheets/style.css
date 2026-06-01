@@ -1289,3 +1289,114 @@ input[type="color"]::-webkit-color-swatch {
     max-height: 18em;
   }
 }
+
+/* ─── driver.js — popover estético Clefchamp ─── */
+
+.driver-popover {
+  background-color: #F2E7DC !important;
+  border: 2px solid #350D40 !important;
+  border-radius: 1em !important;
+  padding: 1.2em 1.4em 1em !important;
+  box-shadow: 0 8px 32px rgba(30, 1, 38, 0.22) !important;
+  font-family: inherit !important;
+  max-width: 340px !important;
+  min-width: 260px !important;
+}
+
+.driver-popover-title {
+  color: #1E0126 !important;
+  font-size: 1.05em !important;
+  font-weight: 700 !important;
+  margin-bottom: 0.55em !important;
+  padding-bottom: 0.45em !important;
+  border-bottom: 1px solid rgba(53, 13, 64, 0.18) !important;
+}
+
+.driver-popover-description {
+  color: #3C2040 !important;
+  font-size: 0.9em !important;
+  line-height: 1.65 !important;
+  margin-bottom: 0 !important;
+}
+
+.driver-popover-footer {
+  margin-top: 0.9em !important;
+  padding-top: 0.65em !important;
+  border-top: 1px solid rgba(53, 13, 64, 0.12) !important;
+  gap: 0.5em !important;
+  background-color: transparent !important;
+  background: none !important;
+}
+
+.driver-popover-progress-text {
+  color: #8C7785 !important;
+  font-size: 0.78em !important;
+  letter-spacing: 0.02em !important;
+}
+
+.driver-popover-next-btn,
+.driver-popover-next-btn:focus {
+  color: #F2E7DC !important;
+  background-color: #350D40 !important;
+  border: 1.5px solid #350D40 !important;
+  border-radius: 0.75em !important;
+  padding: 0.38em 1em !important;
+  font-size: 0.85em !important;
+  font-weight: 500 !important;
+  text-shadow: none !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.driver-popover-next-btn:hover {
+  background-color: #5a1a70 !important;
+  border-color: #5a1a70 !important;
+}
+
+.driver-popover-prev-btn,
+.driver-popover-prev-btn:focus {
+  color: #350D40 !important;
+  background-color: transparent !important;
+  border: 1.5px solid #350D40 !important;
+  border-radius: 0.75em !important;
+  padding: 0.38em 1em !important;
+  font-size: 0.85em !important;
+  font-weight: 500 !important;
+  text-shadow: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.driver-popover-prev-btn:hover {
+  background-color: rgba(53, 13, 64, 0.08) !important;
+}
+
+.driver-popover-close-btn,
+.driver-popover-close-btn:focus {
+  color: #8C7785 !important;
+  background: none !important;
+  border: none !important;
+  opacity: 0.7 !important;
+  transition: opacity 0.15s ease !important;
+}
+
+.driver-popover-close-btn:hover {
+  opacity: 1 !important;
+  color: #350D40 !important;
+}
+
+.driver-popover-arrow {
+  border-color: #350D40 !important;
+}
+
+.driver-popover-arrow::before,
+.driver-popover-arrow::after {
+  border-color: transparent !important;
+}
+
+.driver-popover-arrow-side-top::before    { border-top-color:    #350D40 !important; }
+.driver-popover-arrow-side-bottom::before { border-bottom-color: #350D40 !important; }
+.driver-popover-arrow-side-left::before   { border-left-color:   #350D40 !important; }
+.driver-popover-arrow-side-right::before  { border-right-color:  #350D40 !important; }
+.driver-popover-arrow-side-top::after     { border-top-color:    #F2E7DC !important; }
+.driver-popover-arrow-side-bottom::after  { border-bottom-color: #F2E7DC !important; }
+.driver-popover-arrow-side-left::after    { border-left-color:   #F2E7DC !important; }
+.driver-popover-arrow-side-right::after   { border-right-color:  #F2E7DC !important; }
