@@ -10,6 +10,7 @@ const dao = new DAO(pool);
 
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const { sendWelcomeEmail } = require('../config/mailer');
 router.use((req, res, next) => {
   res.locals.user = req.session.user;
   next();
@@ -182,7 +183,9 @@ router.post("/register", (req, res, next) => {
                     
                     req.session.user = sessionUser;
                     res.locals.user = sessionUser;
-                    
+
+                    sendWelcomeEmail(user.email, user.nombre);
+
                     res.json({ existe: true, nombre: user.nombre, correo: user.correo });
                   });
                 });
