@@ -1,0 +1,36 @@
+<div class="modal fade" id="manageAccessModal" tabindex="-1" aria-labelledby="manageAccessModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="manageAccessModalLabel">Gestionar acceso</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <div id="modalLoadingSpinner" class="text-center py-3">
+          <div class="spinner-border text-secondary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+        <div id="modalFetchError" class="alert alert-danger d-none">Error al cargar los alumnos.</div>
+        <p id="noStudentsMsg" class="text-muted d-none">No tienes alumnos en tu clase.</p>
+        <table class="table table-sm d-none" id="studentsAccessTable">
+          <thead>
+            <tr>
+              <th>Nombre del alumno</th>
+              <th class="text-center">
+                Desbloqueado
+                <input type="checkbox" id="masterCheckbox" class="form-check-input ms-1" title="Seleccionar todos">
+              </th>
+            </tr>
+          </thead>
+          <tbody id="studentsAccessTbody"></tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <span id="saveErrorMsg" class="text-danger me-auto d-none">Error al guardar los cambios.</span>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="saveAccessBtn">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>

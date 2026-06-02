@@ -4,25 +4,6 @@
   <body class="colorNuevo5">
     <%- include('../partials/header') %>
 
-    <%
-      // All available levels — mirrors levelButtons.js order
-      const ALL_LEVELS = [
-        { id: 'notes-do-re-mi-fa', num: '01', name: 'Do · Re · Mi · Fa',      category: 'Notas'     },
-        { id: 'notes-sol-la-si',   num: '02', name: 'Sol · La · Si',           category: 'Notas'     },
-        { id: 'chord-c-major',     num: '03', name: 'Do mayor',                category: 'Acordes'   },
-        { id: 'chord-g-major',     num: '04', name: 'Sol mayor',               category: 'Acordes'   },
-        { id: 'chord-f-major',     num: '05', name: 'Fa mayor',                category: 'Acordes'   },
-        { id: 'chord-a-minor',     num: '06', name: 'La menor',                category: 'Acordes'   },
-        { id: 'arp-c-major',       num: '07', name: 'Arpegio de Do',           category: 'Arpegios'  },
-        { id: 'arp-desc-c-major',  num: '08', name: 'Arpegio de Do ↘',         category: 'Arpegios'  },
-        { id: 'mel-mary',          num: '09', name: 'María y el Corderito',    category: 'Melodías'  },
-        { id: 'mel-cumple',        num: '10', name: 'Cumpleaños Feliz',         category: 'Melodías'  },
-        { id: 'mel-campanita',     num: '11', name: 'Campanita',               category: 'Melodías'  },
-        { id: 'oda-1',             num: '12', name: 'Oda a la Alegría · I',    category: 'Melodías'  },
-        { id: 'oda-2',             num: '13', name: 'Oda a la Alegría · II',   category: 'Melodías'  },
-        { id: 'oda-3',             num: '14', name: 'Oda a la Alegría · III',  category: 'Melodías'  },
-      ];
-    %>
 
     <div class="container py-4">
       <nav aria-label="breadcrumb" class="mb-3">
@@ -38,7 +19,7 @@
       <!-- Levels grid -->
       <h4 class="mb-3">Niveles</h4>
       <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-5">
-        <% ALL_LEVELS.forEach(function(lvl) { %>
+        <% levels.forEach(function(lvl) { %>
           <%
             const isUnlocked = unlockedLevelIds.includes(lvl.id);
             const prog = progress.find(p => p.levelId === lvl.id);
@@ -73,6 +54,13 @@
                     <input type="hidden" name="levelId" value="<%= lvl.id %>">
                     <button type="submit" class="btn btn-sm btn-outline-success w-100">
                       Desbloquear
+                    </button>
+                  </form>
+                <% } else { %>
+                  <form method="POST" action="/teacher/students/<%= student.id %>/lock">
+                    <input type="hidden" name="levelId" value="<%= lvl.id %>">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary w-100">
+                      Bloquear
                     </button>
                   </form>
                 <% } %>

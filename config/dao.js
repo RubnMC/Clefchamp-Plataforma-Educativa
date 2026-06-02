@@ -731,16 +731,60 @@ class DAO {
             if (err) callback(err, null);
             else {
                 let query = `
-                    SELECT u.id, u.tagname, u.friendCode, i.path, ui.bgColor
+                    SELECT u.id, u.tagname, u.friendCode, i.path, ui.bgColor,
+                           ul.level,
+                           (SELECT MAX(r.time) FROM userrecord r WHERE r.userId = u.id) AS lastPlayed
                     FROM usuarios AS u
                     JOIN usericons AS ui ON u.id = ui.userId AND ui.isSelected = 1
                     JOIN icons AS i ON i.id = ui.iconId
+                    LEFT JOIN userlevel AS ul ON ul.idUser = u.id
                     WHERE u.teacherId = ?
                 `;
                 connection.query(query, [teacherId], (err, resultado) => {
                     connection.release();
                     if (err) callback(err, null);
-                    else callback(null, resultado);
+                    else callback(null, resultado.map(r => ({
+                        id: r.id,
+                        tagname: r.tagname,
+                        friendCode: r.friendCode,
+                        path: r.path,
+                        bgColor: r.bgColor,
+                        level: r.level,
+                        lastPlayed: r.lastPlayed
+                    })));
+                });
+            }
+        });
+    }
+
+    getStudentsWithLevelStatus(teacherId, levelId, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) return callback(err, null);
+            const query = `
+                SELECT u.id, u.tagname,
+                       CASE WHEN sl.studentId IS NOT NULL THEN 1 ELSE 0 END AS isUnlocked
+                FROM usuarios AS u
+                LEFT JOIN student_levels AS sl ON sl.studentId = u.id AND sl.levelId = ?
+                WHERE u.teacherId = ?
+                ORDER BY u.tagname
+            `;
+            connection.query(query, [levelId, teacherId], (err, rows) => {
+                connection.release();
+                if (err) return callback(err, null);
+                callback(null, rows.map(r => ({ id: r.id, tagname: r.tagname, isUnlocked: !!r.isUnlocked })));
+            });
+        });
+    }
+
+    getLastPlayedDate(userId, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) callback(err, null);
+            else {
+                let query = `SELECT MAX(time) AS lastPlayed FROM userrecord WHERE userId = ?`;
+                connection.query(query, [userId], (err, resultado) => {
+                    connection.release();
+                    if (err) callback(err, null);
+                    else callback(null, resultado[0].lastPlayed);
                 });
             }
         });
@@ -774,6 +818,20 @@ class DAO {
         });
     }
 
+    lockStudentLevel(studentId, levelId, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) callback(err, null);
+            else {
+                let query = `DELETE FROM student_levels WHERE studentId = ? AND levelId = ?`;
+                connection.query(query, [studentId, levelId], (err, resultado) => {
+                    connection.release();
+                    if (err) callback(err, null);
+                    else callback(null, true);
+                });
+            }
+        });
+    }
+
     getTeacherByFriendCode(friendCode, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) callback(err, null);
@@ -798,6 +856,20 @@ class DAO {
                     connection.release();
                     if (err) callback(err, null);
                     else callback(null, true);
+                });
+            }
+        });
+    }
+
+    removeStudentFromClass(studentId, teacherId, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) callback(err, null);
+            else {
+                let query = `UPDATE usuarios SET teacherId = NULL WHERE id = ? AND teacherId = ?`;
+                connection.query(query, [studentId, teacherId], (err, resultado) => {
+                    connection.release();
+                    if (err) callback(err, null);
+                    else callback(null, resultado.affectedRows > 0);
                 });
             }
         });
