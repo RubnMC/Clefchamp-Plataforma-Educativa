@@ -1,0 +1,20 @@
+created: 2026-06-03T23:21:02.278Z
+updated: 2026-06-03T23:21:06.946Z
+update_count: 2
+last_field: description
+git_commit: 36910a2
+git_branch: supermerge
+children:
+  - friends
+  - game-screen
+  - global-ranking
+  - home
+  - landing
+  - login
+  - more-info
+  - profile
+  - register
+  - select-game
+  - settings
+  - stats
+  - trial

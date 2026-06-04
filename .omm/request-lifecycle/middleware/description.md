@@ -1,0 +1,1 @@
+Middleware stack applied to every request in order: morgan (HTTP logging), body-parser JSON, cookie-parser, express-session (loads session from MySQL), express.urlencoded, express.static (serves public/), custom IP/timestamp logger.

@@ -1,0 +1,19 @@
+created: 2026-06-03T23:18:18.379Z
+updated: 2026-06-03T23:18:24.923Z
+update_count: 2
+last_field: diagram
+kind: nested-class
+title: browser
+children:
+  - animations
+  - cronometro
+  - game-engine
+  - game-tutorial
+  - level-config
+  - level-ui
+  - music-player
+  - select-game
+  - social
+  - stats-page
+  - vex-manager
+parentPath: []

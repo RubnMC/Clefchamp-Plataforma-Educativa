@@ -1,0 +1,1 @@
+The pre-generated note sequence (allNotes array in vexManager.js) is consumed one note at a time per keypress. Each round: advance note index, render next note on staff, set expectedNote in GameState.current.

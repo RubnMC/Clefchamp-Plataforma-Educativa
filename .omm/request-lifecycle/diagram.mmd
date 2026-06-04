@@ -1,0 +1,17 @@
+graph LR
+    classDef entry fill:#89b4fa,stroke:#89b4fa,color:#1e1e2e
+    classDef store fill:#a6e3a1,stroke:#a6e3a1,color:#1e1e2e
+
+    http-in["HTTP Request\nbrowser"]:::entry
+    http-in -->|"express middleware chain"| middleware["Middleware\napp.js"]
+    middleware -->|"session lookup"| session-store["Session Store\nMySQL"]:::store
+    middleware -->|"route match"| router["Router\nroutes/*.js"]
+    router -->|"isLoggedIn guard"| auth-guard["Auth Guard\nroutes/users.js"]
+    auth-guard -->|"authorized"| handler["Route Handler"]
+    handler -->|"DAO call"| dao["DAO\nconfig/dao.js"]
+    dao -->|"SQL query"| db["MySQL DB"]:::store
+    db -->|"result"| dao
+    dao -->|"callback"| handler
+    handler -->|"res.render()"| ejs["EJS Template\nviews/"]
+    ejs -->|"HTML response"| http-in
+    handler -->|"res.json()"| http-in

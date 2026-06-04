@@ -1,0 +1,19 @@
+graph LR
+    classDef entry fill:#89b4fa,stroke:#89b4fa,color:#1e1e2e
+    classDef store fill:#a6e3a1,stroke:#a6e3a1,color:#1e1e2e
+    classDef external fill:#585b70,stroke:#585b70,color:#cdd6f4
+
+    browser["Browser Client\npublic/"]
+    browser -->|"HTTP requests"| express-server["Express Server\napp.js"]
+    express-server -->|"session + queries"| database["MySQL Database\nclefchamp.sql"]
+    express-server -->|"render EJS templates"| view-layer["View Layer\nviews/"]
+    express-server -->|"route handlers"| route-layer["Route Layer\nroutes/"]
+    route-layer -->|"DB operations"| dao["Data Access Object\nconfig/dao.js"]
+    dao -->|"SQL queries"| database
+    express-server -->|"send welcome email"| mailer["Mailer\nconfig/mailer.js"]
+    mailer -->|"SMTP via API key"| resend["Resend SMTP\nsmtp.resend.com"]:::external
+    browser -->|"VexFlow sheet music"| game-engine["Game Engine\npublic/javascripts/"]
+
+    class express-server entry
+    class database store
+    class resend external

@@ -1,0 +1,1 @@
+Manages Highcharts.js line charts on the stats page. Fetches per-difficulty game history from /users/statsForUser and renders time-series charts of best daily scores for EASY, NORMAL, and HARD difficulty.

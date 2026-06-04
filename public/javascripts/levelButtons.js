@@ -177,25 +177,6 @@ const LevelButtons = (() => {
     description: 'El arranque de Jingle Bells en Do mayor: tres Mi repetidos que saltan a Sol, bajan a Do y suben por grado. Un clásico para trabajar la repetición de notas y los saltos de tercera.',
   };
 
-  // ─── Metadatos de juego por nivel ────────────────────────────────────────
-  const LEVEL_META = {
-    'tutorial-level':    { difficulty: 1, clefs: ['treble'], rounds: 8,  experience: 5  },
-    'notes-do-re-mi-fa': { difficulty: 2, clefs: ['treble'], rounds: 20, experience: 17 },
-    'notes-sol-la-si':   { difficulty: 2, clefs: ['treble'], rounds: 20, experience: 17 },
-    'chord-c-major':     { difficulty: 3, clefs: ['treble'], rounds: 20, experience: 17 },
-    'chord-g-major':     { difficulty: 3, clefs: ['treble'], rounds: 20, experience: 17 },
-    'chord-f-major':     { difficulty: 3, clefs: ['treble'], rounds: 20, experience: 17 },
-    'chord-a-minor':     { difficulty: 4, clefs: ['treble'], rounds: 20, experience: 17 },
-    'arp-c-major':       { difficulty: 4, clefs: ['treble'], rounds: 20, experience: 17 },
-    'arp-desc-c-major':  { difficulty: 5, clefs: ['treble'], rounds: 20, experience: 17 },
-    'mel-mary':          { difficulty: 2, clefs: ['treble'], rounds: 7,  experience: 17 },
-    'mel-cumple':        { difficulty: 3, clefs: ['treble'], rounds: 6,  experience: 17 },
-    'mel-campanita':     { difficulty: 3, clefs: ['treble'], rounds: 8,  experience: 17 },
-    'oda-1':             { difficulty: 5, clefs: ['treble'], rounds: 8,  experience: 17 },
-    'oda-2':             { difficulty: 5, clefs: ['treble'], rounds: 8,  experience: 17 },
-    'oda-3':             { difficulty: 6, clefs: ['treble'], rounds: 8,  experience: 17 },
-  };
-
   // ─── SVGs de indicadores ──────────────────────────────────────────────────
 
   function noteIconSVG(filled, extra = false) {
@@ -231,16 +212,25 @@ const LevelButtons = (() => {
     </svg>`;
   }
 
-  const LEVELS = Object.fromEntries(
-    Object.entries({
-      LEVEL_TUTORIAL,
-      LEVEL_CHORD_CMAJOR, LEVEL_CHORD_GMAJOR, LEVEL_CHORD_FMAJOR, LEVEL_CHORD_AMINOR,
-      LEVEL_ARP_CMAJOR, LEVEL_ARP_DESC_CMAJOR,
-      LEVEL_NOTES_DRMF, LEVEL_NOTES_SLS,
-      LEVEL_MEL_MARY, LEVEL_MEL_CUMPLE, LEVEL_MEL_CAMPANITA,
-      LEVEL_ODA_1, LEVEL_ODA_2, LEVEL_ODA_3,
-    }).map(([key, lvl]) => [key, { ...lvl, ...(LEVEL_META[lvl.id] || {}) }])
-  );
+  const LEVEL_SOUND_CDE = {
+    id: 'sound-c-d-e', num: '15', category: 'Oído',
+    name: 'Do · Re · Mi (oído)', cifrado: 'oído', cifradoLong: 'oído',
+    roman: 'ear', notes: 'do re mi', notesSep: 'do re mi',
+    brutalMain: 'OÍ\nDO', brutalSub: 'escucha',
+    brutalHeaderRight: 'DO · RE · MI', brutalKind: 'EAR',
+    isAudio: true,
+    description: 'Escucha la nota y adivina cuál es sin verla en el pentagrama. Solo aparecerán Do, Re y Mi durante 10 rondas.',
+  };
+
+  const LEVELS = {
+    LEVEL_TUTORIAL,
+    LEVEL_CHORD_CMAJOR, LEVEL_CHORD_GMAJOR, LEVEL_CHORD_FMAJOR, LEVEL_CHORD_AMINOR,
+    LEVEL_ARP_CMAJOR, LEVEL_ARP_DESC_CMAJOR,
+    LEVEL_NOTES_DRMF, LEVEL_NOTES_SLS,
+    LEVEL_MEL_MARY, LEVEL_MEL_CUMPLE, LEVEL_MEL_CAMPANITA,
+    LEVEL_ODA_1, LEVEL_ODA_2, LEVEL_ODA_3,
+    LEVEL_SOUND_CDE,
+  };
 
   // ─── Metadata de estado ───────────────────────────────────────────────────
   const STATE_LABEL = {

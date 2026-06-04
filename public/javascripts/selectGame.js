@@ -14,6 +14,7 @@ const LEVELS_LIST = [
   LevelButtons.LEVEL_ODA_1,
   LevelButtons.LEVEL_ODA_2,
   LevelButtons.LEVEL_ODA_3,
+  LevelButtons.LEVEL_SOUND_CDE,
 ];
 
 const KIND_COLOR = {
@@ -22,18 +23,30 @@ const KIND_COLOR = {
   ARP:   '#A5724A',
 };
 
-const levelGrid = $('<div>').css({
-  display: 'grid',
-  gridTemplateColumns: 'repeat(3, 1fr)',
-  gap: '18px',
-  padding: '4px 8px 8px 2px',
+$.getJSON('/play/levels').done(function (levelsData) {
+  const metaById = {};
+  levelsData.forEach(l => { metaById[l.id] = l; });
+  LEVELS_LIST.forEach(lvl => {
+    const m = metaById[lvl.id] || {};
+    lvl.difficulty = m.difficulty;
+    lvl.clefs      = m.clefs;
+    lvl.rounds     = m.rounds;
+    lvl.experience = m.experience;
+  });
+
+  const levelGrid = $('<div>').css({
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '18px',
+    padding: '4px 8px 8px 2px',
+  });
+  LEVELS_LIST.forEach(lvl => {
+    const btn = LevelButtons.VARIANTS.V5Brutal('available', { ...lvl, brutalSize: 46 });
+    btn.data('level', lvl).css('width', '100%');
+    levelGrid.append(btn);
+  });
+  $('#levelList').empty().append(levelGrid);
 });
-LEVELS_LIST.forEach(lvl => {
-  const btn = LevelButtons.VARIANTS.V5Brutal('available', { ...lvl, brutalSize: 46 });
-  btn.data('level', lvl).css('width', '100%');
-  levelGrid.append(btn);
-});
-$('#levelList').empty().append(levelGrid);
 
 $('#levelList').on('click', 'button', function () {
   const level = $(this).data('level');
@@ -51,9 +64,23 @@ $('#levelList').on('click', 'button', function () {
     boxShadow: '5px 5px 0 0 #C8553D',
   });
 
-  localStorage.setItem('selectedLevelId', level.id);
+  localStorage.setItem('lastPlayedName', level.name);
   showLevelDetail(level);
 });
+
+function quaverIcon(filled, extra = false) {
+  return $('<div>').css({
+    width: '18px', height: '44px', display: 'inline-block', flexShrink: 0,
+    verticalAlign: 'bottom',
+    backgroundColor: extra ? '#C8553D' : '#350D40',
+    opacity: filled ? 1 : 0.2,
+    maskImage: 'url(/images/icons/quaver.svg)',
+    WebkitMaskImage: 'url(/images/icons/quaver.svg)',
+    maskSize: 'contain', WebkitMaskSize: 'contain',
+    maskRepeat: 'no-repeat', WebkitMaskRepeat: 'no-repeat',
+    maskPosition: 'center', WebkitMaskPosition: 'center',
+  });
+}
 
 function statLabel(text) {
   return $('<span>').css({
@@ -67,7 +94,10 @@ function showLevelDetail(level) {
   const C         = LevelButtons.C;
   const kindColor = KIND_COLOR[level.brutalKind] || C.terra;
 
-  const detail = $('<div>').css({ display: 'flex', flexDirection: 'column', gap: '16px' });
+  $('#levelDetailPanel').css({ display: 'flex', flexDirection: 'column' });
+  $('#levelDetail').css({ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 });
+
+  const detail = $('<div>').css({ display: 'flex', flexDirection: 'column', gap: '16px', flex: 1 });
 
   // ── Badges ──
   const badges = $('<div>').css({ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' });
@@ -87,16 +117,16 @@ function showLevelDetail(level) {
   // ── Dificultad ──
   const diffSection = $('<div>');
   diffSection.append(statLabel('Dificultad'));
-  const iconsRow = $('<div>').css({ display: 'flex', gap: '4px', alignItems: 'flex-end' });
+  const iconsRow = $('<div>').css({ display: 'flex', gap: '6px', alignItems: 'flex-end', justifyContent: 'center' });
   const d = level.difficulty || 1;
   for (let i = 1; i <= 5; i++) {
-    iconsRow.append($(LevelButtons.noteIconSVG(i <= d && d <= 5)));
+    iconsRow.append(quaverIcon(d > 5 || i <= d));
   }
-  if (d === 6) iconsRow.append($(LevelButtons.noteIconSVG(true, true)));
-  if (d === 7) { iconsRow.append($(LevelButtons.noteIconSVG(true, true))); iconsRow.append($(LevelButtons.noteIconSVG(true, true))); }
+  if (d === 6) iconsRow.append(quaverIcon(true, true));
+  if (d === 7) { iconsRow.append(quaverIcon(true, true)); iconsRow.append(quaverIcon(true, true)); }
   if (d > 5) {
     iconsRow.append(
-      $('<span>').css({ fontFamily: '"Geist Mono",monospace', fontSize: 10, color: '#C8553D', letterSpacing: '0.06em', marginLeft: '4px', alignSelf: 'center' }).text('EXTRA')
+      $('<span>').css({ fontFamily: '"Geist Mono",monospace', fontSize: 10, color: '#C8553D', letterSpacing: '0.06em', marginLeft: '4px', alignSelf: 'center' })
     );
   }
   diffSection.append(iconsRow);
@@ -115,8 +145,10 @@ function showLevelDetail(level) {
   const clefsCell = $('<div>').css(cellStyle);
   clefsCell.append(statLabel('Claves'));
   const clefIcons = $('<div>').css({ display: 'flex', gap: '6px', alignItems: 'center' });
-  clefIcons.append($(LevelButtons.trebleClefSVG((level.clefs || []).includes('treble'))));
-  clefIcons.append($(LevelButtons.bassClefSVG((level.clefs || []).includes('bass'))));
+  const trebleActive = (level.clefs || []).includes('treble');
+  const bassActive   = (level.clefs || []).includes('bass');
+  clefIcons.append($('<img>').attr('src', '/images/icons/treble.svg').css({ height: '52px', width: 'auto', opacity: trebleActive ? 1 : 0.2 }));
+  clefIcons.append($('<img>').attr('src', '/images/icons/bass.svg').css({ height: '36px', width: 'auto', opacity: bassActive   ? 1 : 0.2 }));
   clefsCell.append(clefIcons);
 
   // Rondas
@@ -139,9 +171,9 @@ function showLevelDetail(level) {
   const desc = $('<p>').css({ fontSize: 14, lineHeight: 1.7, color: C.ink2, margin: 0 }).text(level.description || '');
 
   // ── Botón jugar ──
-  const playBtn = $('<a>').attr('href', level.isTutorial ? './atrapado/tutorial' : './atrapado/normal').css({
+  const playBtn = $('<a>').attr('href', `/play/${level.id}`).css({
     display: 'block', textAlign: 'center', textDecoration: 'none',
-    padding: '14px', marginTop: '4px',
+    padding: '14px', marginTop: 'auto',
     background: C.ink, color: C.cream,
     border: `2.5px solid ${C.ink}`,
     boxShadow: `5px 5px 0 0 ${C.terra}`,

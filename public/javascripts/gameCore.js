@@ -1,5 +1,6 @@
 import { emptyClef, randomNote, randomNoteFromSet, randomClef, getNote, getOctave,
-  generateGame, buildAndRender, advanceNote, colorNote, drawCurrentNote, emptyMiniClef, getNoteAt, getClefAt, getDurationAt } from './vexManager.js';
+  generateGame, buildAndRender, advanceNote, colorNote, drawCurrentNote, emptyMiniClef, getNoteAt, getClefAt, getDurationAt, setClefs } from './vexManager.js';
+import { playNote, preloadSampler } from './audioManager.js';
 import { Cronometro } from './cronometro.js';
 import { flashBackground, fadeOut, addPointsAnimation, addProgresively, growAndBack, secuencialShow, popAnimation} from './animations.js'
 import { getConfig } from './levelConfig.js'
@@ -32,6 +33,8 @@ const GameState = {
         sequenceCursor: 0,
         streak: 0,
         difficulty: null,
+        isAudioLevel: false,
+        pendingNote: null,
         points: 0,
         pointsToAdd: 0,
         perfectCounter: 0,
@@ -69,8 +72,8 @@ const GameState = {
 
     // Inicializa el juego
     async initialize() {
-        this.current.difficulty = window.location.pathname.split("/")[3].toUpperCase();
-        if(this.current.difficulty !== "TRIAL") await this.getLocals()
+        this.current.difficulty = window.location.pathname.split("/")[2];
+        if(this.current.difficulty !== "trial") await this.getLocals()
         Object.assign(this.config, getConfig(this.current.difficulty));
         localStorage.setItem("lastPlayed", this.current.difficulty)
         // Inicializar mapeos de teclas
@@ -116,6 +119,13 @@ const GameState = {
         const levelData = await this.fetchLevelNotes();
         this.current.levelNotes = levelData ? levelData.notes : null;
         this.current.levelMode  = levelData ? levelData.mode  : null;
+        this.current.isAudioLevel = levelData ? !!levelData.isAudio : false;
+        if (this.current.isAudioLevel) preloadSampler();
+        setClefs(levelData ? (levelData.clefs || ['treble', 'bass']) : ['treble', 'bass']);
+        if (levelData) {
+            this.config.ROUNDS     = levelData.rounds;
+            this.config.EXPERIENCE = levelData.experience;
+        }
         if (this.current.levelMode === 'sequence' && this.current.levelNotes) {
             this.config.ROUNDS = this.current.levelNotes.length;
         }
@@ -125,11 +135,12 @@ const GameState = {
         // Mostrar tutorial
         this.elements.$progressText.text(`0 / ${this.config.ROUNDS}`);
         emptyClef();
-        emptyMiniClef();
+        if (this.current.isAudioLevel) this.setupAudioUI();
+        else emptyMiniClef();
         
-        if (this.current.difficulty === "TUTORIAL") {
+        if (this.current.difficulty === "tutorial-level") {
             startPreGameTour();
-        } else if (this.current.difficulty === "TRIAL" || this.userData.locals.preferences.showTutorial) {
+        } else if (this.current.difficulty === "trial" || this.userData.locals.preferences.showTutorial) {
             new bootstrap.Modal(this.elements.$tutorialModal).show();
         } else {
             this.elements.$scoreDiv.removeClass("d-none");
@@ -200,6 +211,11 @@ const GameState = {
             document.dispatchEvent(keyUpEvent);
         });
     
+        // Botón repetir sonido (niveles de oído)
+        $('#miniCanvas').on('click', '#replayBtn', async () => {
+            if (this.current.pendingNote) await playNote(this.current.pendingNote);
+        });
+
         // Agregar el evento para volver a jugar
         this.elements.$continueBtn.on("click", () => this.endGame());
         this.elements.$playAgainBtn.on("click", () => this.resetGame());
@@ -245,7 +261,7 @@ const GameState = {
         this.cronometro.start();
         this.updateGame();
         this.current.gameStarted = true;
-        if (this.current.difficulty === "TUTORIAL") onFirstNoteShown();
+        if (this.current.difficulty === "tutorial-level") onFirstNoteShown();
     },
 
     updateGame() {
@@ -258,7 +274,11 @@ const GameState = {
         const note = getNoteAt(idx);
         const clef = getClefAt(idx);
         advanceNote(idx);
-        drawCurrentNote(note, clef, getDurationAt(idx));
+        if (this.current.isAudioLevel) {
+            this.playCurrentNote(note);
+        } else {
+            drawCurrentNote(note, clef, getDurationAt(idx));
+        }
         this.current.expectedNote = getNote(note, clef);
         this.current.notes.push(getNote(note, clef) + getOctave(note, clef));
     },
@@ -285,7 +305,7 @@ const GameState = {
         this.current.points += this.current.pointsToAdd
         this.elements.$successMessage.text(feedback.TITLE).css("color", feedback.COLOR);
         fadeOut(this.elements.$successMessage);
-        if (this.current.difficulty === "TUTORIAL") onFirstCorrect();
+        if (this.current.difficulty === "tutorial-level") onFirstCorrect();
     },
 
     getFeedback(time) {
@@ -322,9 +342,9 @@ const GameState = {
         this.elements.$continueBtn.removeClass("d-flex").addClass("d-none");
         this.elements.$divFeedback.removeClass("d-flex").addClass("d-none");
         emptyClef();
-        emptyMiniClef();
+        if (!this.current.isAudioLevel) emptyMiniClef();
         this.openResultDiv();
-        if(this.current.difficulty === "TRIAL") setTimeout(() => this.showFidelization(), 500);
+        if(this.current.difficulty === "trial") setTimeout(() => this.showFidelization(), 500);
         else setTimeout(() => this.showResults(), 500);
         this.saveRecords()
 
@@ -406,13 +426,12 @@ const GameState = {
     },
 
     async fetchLevelNotes() {
-        const selectedId = localStorage.getItem('selectedLevelId');
-        if (!selectedId) return null;
+        const levelId = this.current.difficulty;
+        if (!levelId || levelId === 'trial') return null;
         try {
             const response = await fetch('/play/levels');
             const levels = await response.json();
-            const level = levels.find(l => l.id === selectedId);
-            return level ? { notes: level.notes, mode: level.mode || 'random' } : null;
+            return levels.find(l => l.id === levelId) || null;
         } catch (e) {
             return null;
         }
@@ -458,7 +477,7 @@ const GameState = {
     },
 
     async saveRecords() {
-        const userId = this.current.difficulty === "TRIAL" ? -1 : this.userData.locals.id
+        const userId = this.current.difficulty === "trial" ? -1 : this.userData.locals.id
         await fetch('/play/saveRecords', {
             method: 'POST',
             headers: {
@@ -488,6 +507,51 @@ const GameState = {
         // Implementación del modal de nivel
     },
 
+    // ── Audio level helpers ───────────────────────────────────────────────────
+
+    setupAudioUI() {
+        const container = document.getElementById('miniCanvas');
+        container.innerHTML = '';
+        Object.assign(container.style, {
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center',
+            width: '130px', height: '110px', gap: '8px',
+        });
+
+        const btn = document.createElement('button');
+        btn.id = 'replayBtn';
+        btn.disabled = true;
+        btn.innerHTML = `<svg width="26" height="26" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="#F4EFE6"/></svg>`;
+        Object.assign(btn.style, {
+            width: '64px', height: '64px', borderRadius: '50%',
+            background: '#1A2420', border: 'none', cursor: 'not-allowed',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            opacity: '0.35', transition: 'opacity 0.15s, transform 0.1s',
+        });
+        btn.addEventListener('mouseenter', () => { if (!btn.disabled) btn.style.transform = 'scale(1.06)'; });
+        btn.addEventListener('mouseleave', () => { btn.style.transform = 'scale(1)'; });
+
+        const label = document.createElement('span');
+        label.textContent = 'repetir';
+        Object.assign(label.style, {
+            fontFamily: '"Geist Mono", monospace', fontSize: '10px',
+            color: '#3D4845', letterSpacing: '0.1em', textTransform: 'uppercase',
+        });
+
+        container.append(btn, label);
+    },
+
+    playCurrentNote(note) {
+        this.current.pendingNote = note;
+        playNote(note);
+        const btn = document.getElementById('replayBtn');
+        if (btn) {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.cursor = 'pointer';
+        }
+    },
+
     // Obtener tiempo de respuesta
     getTime() {  
         let totalTime = this.cronometro.getTime();
@@ -508,7 +572,7 @@ const GameState = {
         if (this.current.streak > 2) {
             this.elements.$streakNumber.text(this.current.streak);
             this.elements.$streak.css('opacity', 1);
-            if (this.current.difficulty === "TUTORIAL") onFirstStreak();
+            if (this.current.difficulty === "tutorial-level") onFirstStreak();
         } else {
             this.elements.$streak.css('opacity', 0);
         }
@@ -565,9 +629,11 @@ const GameState = {
         
         // Pre-generate notes for next round and show empty staff
         const clefProb = this.current.levelNotes ? 0 : this.config.CLEF_PROB;
+        this.current.pendingNote = null;
         generateGame(this.config.ROUNDS, clefProb, this.config.DURATION, this.current.levelNotes, this.current.levelMode);
         emptyClef();
-        emptyMiniClef();
+        if (this.current.isAudioLevel) this.setupAudioUI();
+        else emptyMiniClef();
     }
 };
 $(function() {

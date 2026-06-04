@@ -1,0 +1,10 @@
+graph LR
+    classDef entry fill:#89b4fa,stroke:#89b4fa,color:#1e1e2e
+
+    index-router["Index Router\nroutes/index.js"]:::entry
+    users-router["Users Router\nroutes/users.js"]:::entry
+    play-router["Play Router\nroutes/play.js"]:::entry
+
+    index-router -->|"render pages"| index-views["Landing Views\nviews/index.ejs, moreInformation.ejs"]
+    users-router -->|"auth, profile, social, stats"| user-views["User Views\nviews/login.ejs, profile.ejs ..."]
+    play-router -->|"game screen, level API"| play-views["Game Views\nviews/gameScreen.ejs, selectGame.ejs"]

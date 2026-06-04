@@ -1,0 +1,1 @@
+The session middleware runs on every request and hits MySQL for session data. Authenticated routes use a simple res.locals.user check (set by a middleware at the top of each router). There is no JWT or token-based auth — all state lives in the server-side session.

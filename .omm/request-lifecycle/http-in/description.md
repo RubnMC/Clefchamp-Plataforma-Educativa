@@ -1,0 +1,1 @@
+Entry point: browser HTTP requests (page navigation, AJAX fetch calls, form submissions). Page requests return server-rendered HTML. In-game API calls (getLocals, addExperience, saveRecords, levels) return JSON.

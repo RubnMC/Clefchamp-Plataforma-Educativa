@@ -1,0 +1,1 @@
+Simple stopwatch class (Cronometro) that tracks elapsed milliseconds using performance.now(). Used by gameCore.js to measure per-note response times for scoring feedback (perfect/excellent/great/good/ok).

@@ -1,0 +1,1 @@
+Global leaderboard (views/globalRanking.ejs). Shows top 10 players per difficulty (EASY/NORMAL/HARD) ranked by their personal best score. Includes player tagname, profile icon, and date of best record.

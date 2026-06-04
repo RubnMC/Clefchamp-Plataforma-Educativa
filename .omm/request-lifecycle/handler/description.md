@@ -1,0 +1,1 @@
+Route handler function that implements business logic. May call one or more DAO methods, mutate res.locals.user (experience, icon, preferences), and respond with either res.render() for HTML or res.json() for API responses.

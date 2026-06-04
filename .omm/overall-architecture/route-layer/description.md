@@ -1,0 +1,1 @@
+Three Express routers that handle all HTTP endpoints. routes/index.js serves public landing pages. routes/users.js handles auth (login, register, logout), profile, friends, global ranking, stats, and settings. routes/play.js handles game-related endpoints: level data, experience updates, and game record saving.

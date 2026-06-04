@@ -1,0 +1,1 @@
+Node.js/Express server with server-side EJS templating. Sessions are persisted in MySQL via express-mysql-session. No build step — client JS is served as static modules from public/. VexFlow is loaded from CDN and used directly in the browser. Authentication uses bcrypt-hashed passwords stored in MySQL.

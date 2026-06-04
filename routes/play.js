@@ -33,26 +33,6 @@ router.get("/selectGame", isLoggedIn, (request,response) => {
   response.render("selectGame")
 })
 
-router.get("/atrapado/tutorial", isLoggedIn, (request, response) => {
-    response.render("gameScreen", { mode: "TUTORIAL" })
-})
-
-router.get("/atrapado/trial", isNotLoggedIn, (request,response) => {
-    response.render("gameScreen", {mode: "TRIAL"})
-})
-
-router.get("/atrapado/easy", isLoggedIn, (request,response) => {
-  response.render("gameScreen", {mode: "EASY"})
-})
-
-router.get("/atrapado/normal", isLoggedIn, (request,response) => {
-  response.render("gameScreen", {mode: "NORMAL"})
-})
-
-router.get("/atrapado/hard", isLoggedIn, (request,response) => {
-  response.render("gameScreen", {mode: "HARD"})
-})
-
 router.get('/levels', (req, res) => {
   const filePath = path.join(__dirname, '../data/levels.json');
   fs.readFile(filePath, 'utf-8', (err, data) => {
@@ -115,5 +95,13 @@ router.post('/saveRecords', (req, res) => {
 });
 
 
+
+router.get("/trial", isNotLoggedIn, (req, res) => {
+  res.render("gameScreen", { isTrial: true, levelId: null });
+});
+
+router.get("/:levelId", isLoggedIn, (req, res) => {
+  res.render("gameScreen", { isTrial: false, levelId: req.params.levelId });
+});
 
 module.exports = router;

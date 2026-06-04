@@ -1,0 +1,1 @@
+Personal statistics page (views/stats.ejs). Shows aggregated metrics per difficulty: accuracy percentage, games played, global ranking position, and average timing tier distribution. Visualized with Highcharts.js line charts (fetched via /users/statsForUser).

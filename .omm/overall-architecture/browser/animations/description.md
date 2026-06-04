@@ -1,0 +1,1 @@
+Collection of lightweight jQuery animation helpers: flashBackground (color flash), fadeOut (opacity fade), addPointsAnimation (floating score text), growAndBack (scale pulse), addProgresively (counter animation), secuencialShow, popAnimation. All imported and called by gameCore.js.

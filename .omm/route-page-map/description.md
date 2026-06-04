@@ -1,0 +1,1 @@
+Complete page map of Clefchamp. Unauthenticated users land on the index page and can register, login, or try the demo (trial mode). Authenticated users access the main flow: select a level, play the game (which loops), and view their profile, stats, global ranking, friends, and settings.

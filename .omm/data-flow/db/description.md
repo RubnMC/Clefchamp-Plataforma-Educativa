@@ -1,0 +1,1 @@
+MySQL database that persists all dynamic application state. Key tables for data flow: usuarios (user identity), userlevel (XP/level), userrecord (game results with JSON columns), levelprogression (XP thresholds), icons/usericons (profile icons), amigos (friends), userpreferences.

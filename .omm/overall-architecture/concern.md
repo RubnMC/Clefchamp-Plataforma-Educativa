@@ -1,0 +1,1 @@
+Session secret is hardcoded as "1234" in app.js — this must be moved to an environment variable before production. The DAO layer uses callback-style async throughout; deeply nested callbacks in routes/users.js are hard to follow and error-prone.

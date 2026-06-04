@@ -1,0 +1,1 @@
+Wraps the VexFlow library to generate and render musical staff notation. Manages note pools, clef selection (treble/bass), measure layout, and mini-staff preview. Exports generateGame(), buildAndRender(), advanceNote(), drawCurrentNote(), and helper functions consumed by gameCore.js.

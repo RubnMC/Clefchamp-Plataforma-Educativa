@@ -1,0 +1,1 @@
+MySQL relational database. Tables: usuarios (users), userlevel (level/experience per user), levelprogression (XP thresholds), userrecord (game results), icons + usericons (profile icon system), amigos (friend relationships with state: pendiente/aceptado), userpreferences (tutorial shown flag). Sessions also stored here via express-mysql-session.

@@ -1,0 +1,11 @@
+created: 2026-06-03T23:19:08.009Z
+updated: 2026-06-03T23:19:13.767Z
+update_count: 2
+last_field: diagram
+kind: nested-class
+title: route-layer
+children:
+  - index-router
+  - play-router
+  - users-router
+parentPath: []

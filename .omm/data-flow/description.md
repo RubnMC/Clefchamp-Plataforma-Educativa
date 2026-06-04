@@ -1,0 +1,1 @@
+Game data originates from two sources: levels.json (static level definitions) and MySQL (user state). A game session produces a record (per-note results, timing buckets, score, experience) that is written back to MySQL on completion. Aggregate views (profile, stats, ranking) read and transform this record data for display.

@@ -1,0 +1,1 @@
+Clefchamp is a music education web application built with Express.js and EJS. Users learn to identify musical notes by reading sheet music rendered with VexFlow and pressing corresponding keyboard keys. The app supports user accounts, experience/leveling, global rankings, friends, and a trial mode for unauthenticated guests.

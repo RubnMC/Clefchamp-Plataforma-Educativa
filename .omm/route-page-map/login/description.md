@@ -1,0 +1,1 @@
+Login page (views/login.ejs). Accepts email or tagname + password. On success, the server builds a full sessionUser object (user + level + preferences + icon) and stores it in the session. Redirected to / if already logged in.

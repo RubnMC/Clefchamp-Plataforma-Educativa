@@ -1,0 +1,1 @@
+On page load, gameCore.js fetches /play/levels (level note set) and /users/api/getLocals (current user session with XP), then calls getConfig(levelId) for performance thresholds. The merged config drives the round count and note generation passed to vexManager.js.

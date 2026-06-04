@@ -1,0 +1,1 @@
+Defines per-level game parameters: number of rounds, clef probability, note duration, experience reward, and performance thresholds (PERFECT/EXCELLENT/GREAT/GOOD/OK with time thresholds and point values). Exports getConfig(levelId) used by gameCore.js on initialization.

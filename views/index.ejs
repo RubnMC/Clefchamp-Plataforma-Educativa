@@ -9,7 +9,7 @@
         <h1 class="text-center indexTitle" >Clefchamp</h1>
         <h2 class="text-center"> Plataforma de aprendizaje musical mediante gamificación</h2>
         <div class="d-flex justify-content-center mt-5">
-          <a href="/play/atrapado/trial"><button class="cancelButton me-lg-5 me-2">Prueba de nivel</button></a>
+          <a href="/play/trial"><button class="cancelButton me-lg-5 me-2">Prueba de nivel</button></a>
           <a href="/moreInformation"><button class="acceptButton">Saber más</button></a>
         </div>
       </div>
@@ -212,16 +212,11 @@
     <% if(user) { %> <script src="/javascripts/musicPlayer.js"></script> <% } %>
     <script>
       $(document).ready(function() {
-        let difficulty = localStorage.getItem("lastPlayed") || "EASY"; 
-        
-        $("#lastPlayed").attr("href", "/play/atrapado/" + difficulty.toLowerCase());
+        let levelId   = localStorage.getItem("lastPlayed") || "notes-do-re-mi-fa";
+        let levelName = localStorage.getItem("lastPlayedName") || "Continuar";
 
-        let dificultad = "Fácil";
-        if (difficulty === "NORMAL") dificultad = "Normal";
-        if (difficulty === "HARD") dificultad = "Difícil";
-        
-        // Actualizar el texto del botón
-        $("#lastPlayedBtn").text("Jugar a Atrapa-do " + dificultad);
+        $("#lastPlayed").attr("href", "/play/" + levelId);
+        $("#lastPlayedBtn").text(levelName);
 
       });
     </script>

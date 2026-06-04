@@ -1,0 +1,1 @@
+Implements guided tour using the Shepherd.js library. Exports startPreGameTour(), onFirstNoteShown(), onFirstCorrect(), onFirstStreak() hooks called by gameCore.js during the tutorial-level to display step-by-step tooltips.
