@@ -1,0 +1,24 @@
+User-agent: *
+Allow: /
+Allow: /play/atrapado/trial
+Allow: /informacion
+Allow: /moreInformation
+Allow: /users/globalRanking
+Allow: /blog
+
+Disallow: /users/profile
+Disallow: /users/friends
+Disallow: /users/stats
+Disallow: /users/settings
+Disallow: /users/logout
+Disallow: /users/deleteAccount
+Disallow: /users/api/
+Disallow: /users/checkTagname
+Disallow: /users/checkEmail
+Disallow: /users/checkEmailOrTagname
+Disallow: /play/selectGame
+Disallow: /play/atrapado/easy
+Disallow: /play/atrapado/normal
+Disallow: /play/atrapado/hard
+
+Sitemap: https://clefchamp.es/sitemap.xml

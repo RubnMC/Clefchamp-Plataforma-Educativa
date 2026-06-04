@@ -74,7 +74,13 @@ router.get("/deleteAccount", isLoggedIn, (req, res) => {
 });
 
 router.get("/login", alreadyLoggedIn, (req, res) => {
-  res.render("login");
+  res.render("login", {
+    seo: {
+      title: 'Iniciar sesión | Clefchamp',
+      description: 'Accede a tu cuenta de Clefchamp y continúa aprendiendo solfeo mediante juegos. Consulta tus estadísticas y tu posición en el ranking global.',
+      canonical: 'https://clefchamp.es/users/login'
+    }
+  });
 });
 
 router.post("/login", (req, res) => {
@@ -133,7 +139,13 @@ router.post("/login", (req, res) => {
 });
 
 router.get("/register", alreadyLoggedIn, (req, res) => {
-  res.render("register");
+  res.render("register", {
+    seo: {
+      title: 'Crear cuenta gratis | Clefchamp',
+      description: 'Regístrate gratis en Clefchamp y empieza a aprender solfeo jugando. Guarda tus marcas, sube de nivel y compite en el ranking global.',
+      canonical: 'https://clefchamp.es/users/register'
+    }
+  });
 });
 
 router.post("/register", (req, res, next) => {
@@ -253,7 +265,14 @@ router.get("/globalRanking", (req, res) => {
           console.error("Error en checkEmail:", err);
           return res.status(500).json({ message: "Error en checkEmail" });
         }
-        res.render("globalRanking",{easyRes, normalRes, hardRes});
+        res.render("globalRanking", {
+          easyRes, normalRes, hardRes,
+          seo: {
+            title: 'Ranking global – Mejores puntuaciones de solfeo | Clefchamp',
+            description: 'Consulta el ranking global de Clefchamp. ¿Quién reconoce las notas musicales más rápido? Compite y escala posiciones.',
+            canonical: 'https://clefchamp.es/users/globalRanking'
+          }
+        });
       });
     });
   });

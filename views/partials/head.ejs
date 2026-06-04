@@ -1,15 +1,21 @@
 <head>
-  <title>Clefchamp</title>
-  <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+  <title><%= locals.seo ? seo.title : 'Clefchamp – Aprende solfeo jugando' %></title>
+  <meta name="description" content="<%= locals.seo ? seo.description : 'Plataforma gratuita para aprender solfeo y teoría musical mediante juegos interactivos. Mejora tu lectura de notas con Clefchamp.' %>">
+  <link rel="canonical" href="<%= locals.seo ? seo.canonical : 'https://clefchamp.es' %>">
   <link rel="icon" type="image/jpg" href="/images/favicon.png">
   <link rel='stylesheet' href='/stylesheets/style.css' />
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <meta property="og:title" content="Clefchamp">
-    <meta property="og:description" content="Plataforma de aprendizaje musical mediante gamificación">
-    <meta property="og:image" content="https://i.pinimg.com/736x/53/74/04/537404cce61a4d3c13a3742995a9fa25.jpg">
-    <meta property="og:url" content="http://clefchamp.es">
-    <meta property="og:type" content="website">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="<%= locals.seo ? seo.title : 'Clefchamp – Aprende solfeo jugando' %>">
+  <meta property="og:description" content="<%= locals.seo ? seo.description : 'Plataforma de aprendizaje musical mediante gamificación' %>">
+  <meta property="og:image" content="https://clefchamp.es/images/moreInformation1.png">
+  <meta property="og:url" content="<%= locals.seo ? seo.canonical : 'https://clefchamp.es' %>">
+  <meta property="og:type" content="website">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <% if (locals.seo && seo.jsonld) { %>
+  <script type="application/ld+json"><%- JSON.stringify(seo.jsonld) %></script>
+  <% } %>
+  <script defer data-domain="clefchamp.es" src="https://stats.clefchamp.es/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js"></script>
+  <script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
 </head>

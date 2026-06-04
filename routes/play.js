@@ -32,7 +32,14 @@ router.get("/selectGame", isLoggedIn, (request,response) => {
 })
 
 router.get("/atrapado/trial", isNotLoggedIn, (request,response) => {
-    response.render("gameScreen", {mode: "TRIAL"})
+    response.render("gameScreen", {
+      mode: "TRIAL",
+      seo: {
+        title: 'Prueba gratis de solfeo – Reconoce notas musicales | Clefchamp',
+        description: 'Juega gratis sin registrarte. Practica el reconocimiento de notas musicales en el pentagrama con este ejercicio interactivo de solfeo.',
+        canonical: 'https://clefchamp.es/play/atrapado/trial'
+      }
+    })
 })
 
 router.get("/atrapado/easy", isLoggedIn, (request,response) => {
