@@ -58,6 +58,9 @@ async function sendProfileData(data) {
     });
 
     const result = await response.json();
+    if (result && result.newAchievements && result.newAchievements.length > 0) {
+      result.newAchievements.forEach(a => showAchievementToast(a));
+    }
     return true;
   } catch (error) {
     console.error("Error:", error);

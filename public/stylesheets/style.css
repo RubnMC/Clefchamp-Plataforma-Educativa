@@ -1400,3 +1400,83 @@ input[type="color"]::-webkit-color-swatch {
 .driver-popover-arrow-side-bottom::after  { border-bottom-color: #F2E7DC !important; }
 .driver-popover-arrow-side-left::after    { border-left-color:   #F2E7DC !important; }
 .driver-popover-arrow-side-right::after   { border-right-color:  #F2E7DC !important; }
+
+/* ── Achievement Cards ─────────────────────────────────────────────────── */
+.achievement-card {
+    perspective: 1000px;
+    cursor: pointer;
+    height: 200px;
+}
+
+.achievement-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease;
+}
+
+.achievement-card.flipped .achievement-card-inner {
+    transform: rotateY(180deg);
+}
+
+.achievement-card-front,
+.achievement-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    text-align: center;
+}
+
+.achievement-card-back {
+    transform: rotateY(180deg);
+    background-color: rgba(30, 1, 38, 0.25);
+}
+
+.achievement-locked {
+    filter: grayscale(80%) opacity(0.45);
+}
+
+.achievement-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    object-fit: contain;
+    margin-bottom: 0.6rem;
+}
+
+/* ── Achievement Toast ─────────────────────────────────────────────────── */
+.achievement-toast {
+    background-color: #350D40;
+    color: #F2E7DC;
+    min-width: 280px;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.achievement-toast-img {
+    width: 2.5rem;
+    height: 2.5rem;
+    object-fit: contain;
+    filter: brightness(0) invert(1) sepia(1) saturate(3) hue-rotate(290deg);
+}
+
+.achievement-toast-label {
+    font-size: 0.7rem;
+    opacity: 0.75;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+}
+
+.achievement-toast-name {
+    font-weight: 600;
+    font-size: 1rem;
+}

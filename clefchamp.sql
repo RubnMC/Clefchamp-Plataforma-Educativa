@@ -208,7 +208,7 @@ CREATE TABLE `userrecord` (
   `gameId` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) NOT NULL,
   `time` timestamp NOT NULL DEFAULT current_timestamp(),
-  `difficulty` varchar(6) NOT NULL,
+  `difficulty` varchar(30) NOT NULL,
   `perfect` int(11) NOT NULL,
   `excellent` int(11) NOT NULL,
   `great` int(11) NOT NULL,
@@ -272,5 +272,76 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+--
+-- Table structure for table `logros`
+--
+
+DROP TABLE IF EXISTS `logros`;
+CREATE TABLE `logros` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  `descripcion` varchar(500) DEFAULT NULL,
+  `imagen` varchar(255) NOT NULL,
+  `secreto` tinyint(1) DEFAULT 0,
+  `condicion` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `condicion` (`condicion`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+LOCK TABLES `logros` WRITE;
+INSERT INTO `logros` (`nombre`, `descripcion`, `imagen`, `secreto`, `condicion`) VALUES
+('OG', 'Te creaste una cuenta durante la beta de Clefchamp.', 'crown.svg', 0, 'OG'),
+('Primera sangre', 'Consigue tu primer perfecto en una nota.', 'trophy.svg', 0, 'PRIMERA_SANGRE'),
+('Velocista', 'Completa una partida entera con todas las notas correctas en menos de 1 segundo.', 'quaver.svg', 1, 'VELOCISTA'),
+('Primeros pasos', 'Juega 10 partidas.', 'playgame.svg', 0, 'PRIMEROS_PASOS'),
+('Veterano', 'Juega 100 partidas.', 'playgame.svg', 0, 'VETERANO'),
+('Racha de fuego', 'Juega 7 días seguidos.', 'statistics.svg', 0, 'RACHA_FUEGO'),
+('Imparable', 'Juega 30 días seguidos.', 'statistics.svg', 0, 'IMPARABLE'),
+('Madrugador', 'Juega una partida antes de las 8h.', 'soundwave.svg', 1, 'MADRUGADOR'),
+('Noctámbulo', 'Juega una partida después de las 23h.', 'soundwave.svg', 1, 'NOCTAMBULO'),
+('Maestro de la clave de fa', 'Consigue 3 Perfectos en una partida de niveles con notas de Fa.', 'bass.svg', 0, 'MAESTRO_CLAVE_FA'),
+('Top 10', 'Entra en el ranking global en cualquier dificultad.', 'ranking.svg', 0, 'TOP_10'),
+('Número 1', 'Alcanza el primer puesto del ranking global en cualquier dificultad.', 'crown.svg', 0, 'NUMERO_1'),
+('Bien acompañado', 'Añade tu primer amigo.', 'friends.svg', 0, 'BIEN_ACOMPANADO'),
+('El alma de la fiesta', 'Añade 5 amigos.', 'friends.svg', 0, 'ALMA_FIESTA'),
+('A mi manera', 'Cambia tu icono de perfil por primera vez.', 'edit.svg', 0, 'A_MI_MANERA'),
+('Artista', 'Prueba 5 colores de fondo distintos.', 'profile.svg', 0, 'ARTISTA');
+UNLOCK TABLES;
+
+--
+-- Table structure for table `usuario_logros`
+--
+
+DROP TABLE IF EXISTS `usuario_logros`;
+CREATE TABLE `usuario_logros` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `logroId` int(11) NOT NULL,
+  `unlockedAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_user_logro` (`userId`,`logroId`),
+  KEY `logroId` (`logroId`),
+  CONSTRAINT `usuario_logros_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `usuario_logros_ibfk_2` FOREIGN KEY (`logroId`) REFERENCES `logros` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+LOCK TABLES `usuario_logros` WRITE;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_bgcolor_history`
+--
+
+DROP TABLE IF EXISTS `user_bgcolor_history`;
+CREATE TABLE `user_bgcolor_history` (
+  `userId` int(11) NOT NULL,
+  `bgColor` varchar(20) NOT NULL,
+  UNIQUE KEY `unique_color` (`userId`,`bgColor`),
+  CONSTRAINT `ubgh_user` FOREIGN KEY (`userId`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+LOCK TABLES `user_bgcolor_history` WRITE;
+UNLOCK TABLES;
 
 -- Dump completed on 2025-09-09 17:50:46

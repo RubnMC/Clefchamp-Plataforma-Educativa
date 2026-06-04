@@ -500,6 +500,11 @@ const GameState = {
             })
         })
         .then(response => response.json())
+        .then(data => {
+            if (data && data.newAchievements && data.newAchievements.length > 0) {
+                data.newAchievements.forEach(a => showAchievementToast(a));
+            }
+        })
         .catch(error => console.error('Error al enviar los datos:', error));
     },
     // Mostrar modal de subida de nivel

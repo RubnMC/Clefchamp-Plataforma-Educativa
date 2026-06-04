@@ -87,10 +87,14 @@ router.post('/saveRecords', (req, res) => {
   dao.saveRecord(id,dificultad,perfecto,excelente,genial,bien,ok,aciertos,fallos,puntuacion,tiemposIndividuales,notas,resultados, (err,result) => {
     if(err) {
       console.log("ERROR: " + err)
-      res.status(500).json({ message: "Error en saveRecords" }); 
+      return res.status(500).json({ message: "Error en saveRecords" });
     }
-    else res.json(true);
-  })
+    if (!id || id === -1) return res.json({ success: true, newAchievements: [] });
+    dao.checkAndGrantLogros(id, { perfecto, fallos, tiemposIndividuales }, (err, newAchievements) => {
+      if (err) console.log("Error al comprobar logros:", err);
+      res.json({ success: true, newAchievements: newAchievements || [] });
+    });
+  });
 
 });
 
