@@ -8,7 +8,7 @@
           <div class="bg-15 rounded-4 p-3 mb-sm-4 mb-1">
             <div class="row align-items-center g-3">
               <div class="col-auto">
-                <div class="rounded-circle d-flex align-items-center justify-content-center" style="background-color: <%=user.bgColor%>; width: 80px; height: 80px;">  
+                <div class="rounded-circle d-flex align-items-center justify-content-center" style="background-color: <%=user.bgColor%>; width: 80px; height: 80px;">
                   <a href="/users/profile"><img src="/images/svg/<%=user.path%>" class="userIcon" style="max-width: 60px; max-height: 60px;" alt="Icono de perfil del usuario"></a>
                 </div>
               </div>
@@ -33,14 +33,17 @@
               </div>
             </div>
           </div>
-          <div class="d-flex bg-15 rounded-4 mb-sm-4 mb-1">
-              <h1 id="easyBtn" class="col mx-sm-5 text-center cursorPointer" style="margin-bottom: 0;border-radius: 1em;">Fácil</h1>
-              <h1 id="normalBtn" class="col mx-sm-5 text-center cursorPointer" style="margin-bottom: 0;border-radius: 1em;">Normal</h1>
-              <h1 id="hardBtn" class="col mx-sm-5 text-center cursorPointer" style="margin-bottom: 0;border-radius: 1em;">Difícil</h1>
+          <div class="d-flex flex-wrap bg-15 rounded-4 mb-sm-4 mb-1 p-2 gap-1">
+            <% levels.forEach(function(level, i) { %>
+              <% const domId = level.id.replace(/-/g, '_'); %>
+              <button class="levelBtn btn btn-sm <%= i === 0 ? 'btn-light' : 'btn-outline-secondary' %>" data-level-id="<%=level.id%>" data-dom-id="<%=domId%>">
+                <%=level.name%>
+              </button>
+            <% }); %>
           </div>
-          <%- include('partials/difficulty-stats', { difficulty: 'easy', stats: stats }) %>
-          <%- include('partials/difficulty-stats', { difficulty: 'normal', stats: stats }) %>
-          <%- include('partials/difficulty-stats', { difficulty: 'hard', stats: stats }) %>
+          <% levels.forEach(function(level, i) { %>
+            <%- include('partials/difficulty-stats', { difficulty: level.id, levelName: level.name, stats: stats, hidden: i !== 0 }) %>
+          <% }); %>
         </div>
       </div>
       <%-include('partials/footer') %>

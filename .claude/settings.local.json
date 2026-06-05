@@ -13,7 +13,8 @@
       "Bash(omm config *)",
       "Bash(omm write *)",
       "Bash(omm list *)",
-      "Bash(omm view *)"
+      "Bash(omm view *)",
+      "Bash(Rename-Item *)"
     ]
   }
 }

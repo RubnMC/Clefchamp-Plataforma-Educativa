@@ -19,23 +19,18 @@
                   <!-- Cara delantera -->
                   <div class="achievement-card-front bg-15">
                     <img
-                      src="/images/icons/<%= logro.imagen %>"
+                      src="/images/achievements/<%= logro.imagen %>"
                       alt="<%= logro.nombre %>"
                       class="achievement-icon"
                     >
-                    <span class="fw-semibold" style="font-size:1.05em;"><%= logro.nombre %></span>
-                    <% if (logro.isUnlocked) { %>
-                      <span class="badge bg-success mt-2" style="font-size:0.7em;">Desbloqueado</span>
-                    <% } else { %>
-                      <span class="badge mt-2" style="font-size:0.7em; background-color:rgba(255,255,255,0.12);">Bloqueado</span>
-                    <% } %>
+                    <span class="achievement-card-name"><%= logro.nombre %></span>
                   </div>
 
                   <!-- Cara trasera -->
                   <div class="achievement-card-back">
                     <% if (logro.isUnlocked) { %>
                       <img
-                        src="/images/icons/<%= logro.imagen %>"
+                        src="/images/achievements/<%= logro.imagen %>"
                         alt="<%= logro.nombre %>"
                         class="achievement-icon"
                         style="width:2.2rem;height:2.2rem;margin-bottom:0.4rem;"

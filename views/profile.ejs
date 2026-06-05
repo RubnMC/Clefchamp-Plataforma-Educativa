@@ -88,9 +88,9 @@
           <h1 class="rounded-4">Mejores partidas</h1>
           <% if(topRecords.length > 2)  { %>
           <div class="row m-0 mx-sm-5">
-            <%- include('partials/podium-position', { position: 2, bgColor: '#C0BEBE', record: topRecords[1] }) %>
-            <%- include('partials/podium-position', { position: 1, bgColor: '#EBD244', record: topRecords[0] }) %>
-            <%- include('partials/podium-position', { position: 3, bgColor: '#B75D0E', record: topRecords[2] }) %>
+            <%- include('partials/podium-position', { position: 2, bgColor: '#C0BEBE', record: topRecords[1], levels }) %>
+            <%- include('partials/podium-position', { position: 1, bgColor: '#EBD244', record: topRecords[0], levels }) %>
+            <%- include('partials/podium-position', { position: 3, bgColor: '#B75D0E', record: topRecords[2], levels }) %>
           </div>
           <% } else { %>
             <h4 class="text-center bg-5 p-4 rounded-4 m-4" style="color: #757575"> Aún no has jugado partidas suficientes...</h4>
@@ -100,11 +100,15 @@
             <h4 class="text-center bg-5 p-4 rounded-4 m-4" style="color: #757575"> Aquí podrás consultar tus partidas</h4>
           <% } else { %>
             <% for(let i = 0; i < records.length; i ++) { %>
+            <% const levelData = levels.find(l => l.id === records[i].difficulty); %>
+            <% const diffNum = levelData ? levelData.difficulty : 0; %>
+            <% const levelName = levelData ? levelData.name : records[i].difficulty; %>
+            <% const color = diffNum <= 2 ? "pastelGreen" : diffNum <= 4 ? "pastelBlue" : "pastelRed"; %>
             <div class="row bg-15 rounded-4 mx-1 mt-1 px-2 historyDiv <%= i > 4 ? 'd-none' : '' %>">
               <div class="col">
                 <div class="row">
                   <div class="col pt-4 d-flex align-items-center">
-                    <span class="nameSpan">Atrapa-do</span>
+                    <span class="nameSpan"><%=levelName%></span>
                   </div>
                   <div class="col">
                     <div class="row">
@@ -120,12 +124,16 @@
                     </div>
                   </div>
                 </div>
-                <% let color = "pastelGreen"; if (records[i].difficulty === "NORMAL") color= "pastelBlue"; if(records[i].difficulty === "HARD") color="pastelRed"; %> 
-                <div class="row d-flex <%=color%> my-1 rounded-4">
-                  <div class="col-2 col-sm-4 d-flex justify-content-center"></div>
-                  <% let dificultad = "Fácil"; if (records[i].difficulty === "NORMAL") dificultad= "Normal"; if(records[i].difficulty === "HARD") dificultad="Difícil";  %>
-                  <div class="col-4 d-flex justify-content-center"><span class="fs-5"><%=dificultad%></span></div>
-                  <div class="col-6 col-sm-4 d-flex justify-content-end align-items-center "><span>ID de partida: <%=records[i].gameId%></span></div>
+                <div class="row d-flex <%=color%> my-1 rounded-4 align-items-center">
+                  <div class="col d-flex justify-content-center align-items-flex-end py-1" style="gap:6px;">
+                    <% for(let q = 1; q <= 5; q++) { %>
+                      <div style="width:18px;height:36px;display:inline-block;flex-shrink:0;background-color:#350D40;opacity:<%=(diffNum > 5 || q <= diffNum) ? 1 : 0.2%>;-webkit-mask-image:url(/images/icons/quaver.svg);mask-image:url(/images/icons/quaver.svg);-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;"></div>
+                    <% } %>
+                    <% for(let q = 0; q < Math.max(0, diffNum - 5); q++) { %>
+                      <div style="width:18px;height:36px;display:inline-block;flex-shrink:0;background-color:#C8553D;opacity:1;-webkit-mask-image:url(/images/icons/quaver.svg);mask-image:url(/images/icons/quaver.svg);-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;"></div>
+                    <% } %>
+                  </div>
+                  <div class="col-auto d-flex justify-content-end align-items-center pe-3"><span>ID: <%=records[i].gameId%></span></div>
                 </div>
               </div>
             </div>

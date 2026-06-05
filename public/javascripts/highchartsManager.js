@@ -1,4 +1,4 @@
-let easyChart, normalChart, hardChart;
+const charts = new Map();
 
 function crearGraficoAreaspline(divId, datos) {
   return Highcharts.chart(divId, {
@@ -7,9 +7,7 @@ function crearGraficoAreaspline(divId, datos) {
       backgroundColor: '#dccfca',
       borderRadius: 10,
       zoomType: '',
-      style: {
-        zIndex: 0
-      }
+      style: { zIndex: 0 }
     },
     title: { text: '' },
     xAxis: {
@@ -28,9 +26,7 @@ function crearGraficoAreaspline(divId, datos) {
       lineColor: '#69c4ff',
       lineWidth: 2,
       fillOpacity: 0.3,
-      marker: {
-        enabled: false
-      }
+      marker: { enabled: false }
     }],
     legend: { enabled: false },
     tooltip: {
@@ -55,20 +51,18 @@ function transformarDatos(datos) {
   ]);
 }
 
+function toDomId(levelId) {
+  return levelId.replace(/-/g, '_');
+}
+
 async function fetchStatsForUser() {
   try {
     const response = await fetch("/users/statsForUser", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        credentials: "include"
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include"
     });
-
-    if (!response.ok) {
-      throw new Error(`Error en la petición: ${response.status}`);
-    }
-
+    if (!response.ok) throw new Error(`Error en la petición: ${response.status}`);
     return await response.json();
   } catch (error) {
     console.error("Error al obtener stats del usuario:", error);
@@ -77,129 +71,87 @@ async function fetchStatsForUser() {
 }
 
 function aplicarZoom(chart, dias) {
-    if (!chart || dias === 'all') {
-      chart?.xAxis[0].setExtremes(null, null);
-      return;
-    }
-  
-    const data = chart.series[0].data;
-    if (!data.length) return;
-  
-    const ultimaFecha = data[data.length - 1].x; // Fecha de la última partida
-    const desde = ultimaFecha - (dias * 24 * 60 * 60 * 1000);
-  
-    chart.xAxis[0].setExtremes(desde, ultimaFecha);
+  if (!chart || dias === 'all') {
+    chart?.xAxis[0].setExtremes(null, null);
+    return;
   }
-  
-document.addEventListener("DOMContentLoaded", function () {
-  fetchStatsForUser().then(stats => {
-    if (stats) {
-      
-      const bestScoreDataEasy = obtenerPuntuacionMaxima(stats.easyStats);
-      $("#bestScoreEasy").text(bestScoreDataEasy?.puntos ?? 0);
-      $("#bestDateEasy").text(bestScoreDataEasy?.fecha ?? "No hay datos");
-      const lastPlayedDataEasy = obtenerUltimaFecha(stats.easyStats);
-      $("#lastPlayedEasy").text(lastPlayedDataEasy??"No hay datos");
+  const data = chart.series[0].data;
+  if (!data.length) return;
+  const ultimaFecha = data[data.length - 1].x;
+  const desde = ultimaFecha - (dias * 24 * 60 * 60 * 1000);
+  chart.xAxis[0].setExtremes(desde, ultimaFecha);
+}
 
-      const bestScoreDataNormal = obtenerPuntuacionMaxima(stats.normalStats);
-      $("#bestScoreNormal").text(bestScoreDataNormal?.puntos ?? 0);
-      $("#bestDateNormal").text(bestScoreDataNormal?.fecha ?? "No hay datos");
-      const lastPlayedDataNormal = obtenerUltimaFecha(stats.normalStats);
-      $("#lastPlayedNormal").text(lastPlayedDataNormal??"No hay datos");
-
-      const bestScoreDataHard = obtenerPuntuacionMaxima(stats.hardStats);
-      $("#bestScoreHard").text(bestScoreDataHard?.puntos ?? 0);
-      $("#bestDateHard").text(bestScoreDataHard?.fecha ?? "No hay datos");
-      const lastPlayedDataHard = obtenerUltimaFecha(stats.hardStats);
-      $("#lastPlayedHard").text(lastPlayedDataHard??"No hay datos");
-      if (stats.easyStats.length > 2) {
-        $("#easyStats").removeClass("d-none");
-        $("#easyNoData").addClass("d-none");
-        easyChart = crearGraficoAreaspline('easyStats', transformarDatos(stats.easyStats));
-      } else {
-        $("#easyStats").addClass("d-none");
-        $("#easyNoData").removeClass("d-none");
-      }
-
-      if (stats.normalStats.length > 2) {
-        $("#normalStats").removeClass("d-none");
-        $("#normalNoData").addClass("d-none");
-        normalChart = crearGraficoAreaspline('normalStats', transformarDatos(stats.normalStats));
-      } else {
-        $("#normalStats").addClass("d-none");
-        $("#normalNoData").removeClass("d-none");
-      }
-
-      if (stats.hardStats.length > 2) {
-        $("#hardStats").removeClass("d-none");
-        $("#hardNoData").addClass("d-none");
-        hardChart = crearGraficoAreaspline('hardStats', transformarDatos(stats.hardStats));
-      } else {
-        $("#hardStats").addClass("d-none");
-        $("#hardNoData").removeClass("d-none");
-      }
-    }
-  });
-
-}); 
-
-
-function obtenerUltimaFecha(data) {
-  if(data.length===0) {
-    return null;
-  }
-  const ultima = data.reduce((a, b) => (b.fecha > a.fecha ? b : a));
-  const fecha = new Date(ultima.fecha);
-  const dia = String(fecha.getDate()-1).padStart(2, '0');
+function formatFecha(fechaStr) {
+  const fecha = new Date(fechaStr);
+  const dia = String(fecha.getDate()).padStart(2, '0');
   const mes = String(fecha.getMonth() + 1).padStart(2, '0');
   const año = fecha.getFullYear();
-  
   return `${dia}-${mes}-${año}`;
 }
 
-// Puntuación máxima
-function obtenerPuntuacionMaxima(data) {
-  if(data.length===0) {
-    return null;
-  }
-  const max = data.reduce((a, b) => (b.puntos > a.puntos ? b : a));
-  const fecha = new Date(max.fecha);
-  const dia = String(fecha.getDate()-1).padStart(2, '0');
-  const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-  const año = fecha.getFullYear();
-  
-  return {
-    puntos: max.puntos,
-    fecha: `${dia}-${mes}-${año}`
-  };
+function obtenerUltimaFecha(data) {
+  if (!data || data.length === 0) return null;
+  const ultima = data.reduce((a, b) => (b.fecha > a.fecha ? b : a));
+  return formatFecha(ultima.fecha);
 }
 
+function obtenerPuntuacionMaxima(data) {
+  if (!data || data.length === 0) return null;
+  const max = data.reduce((a, b) => (b.puntos > a.puntos ? b : a));
+  return { puntos: max.puntos, fecha: formatFecha(max.fecha) };
+}
 
-$("#easyBtn").addClass("bg-10");
-$("#easyBtn").on("click", function() {
-  $(".easyDiv").prop('hidden', false);
-  $(".normalDiv").prop('hidden', true);
-  $(".hardDiv").prop('hidden', true);
-  $("#easyBtn").addClass("bg-10");
-  $("#normalBtn").removeClass("bg-10");
-  $("#hardBtn").removeClass("bg-10");
-})
+function initChartForLevel(levelId, statsByLevel) {
+  if (charts.has(levelId)) return;
+  const domId = toDomId(levelId);
+  const data = statsByLevel[levelId] || [];
 
-$("#normalBtn").on("click", function() {
-  $(".easyDiv").prop('hidden', true);
-  $(".normalDiv").prop('hidden', false);
-  $(".hardDiv").prop('hidden', true);
-  $("#easyBtn").removeClass("bg-10");
-  $("#normalBtn").addClass("bg-10");
-  $("#hardBtn").removeClass("bg-10");
-})
+  const bestScoreData = obtenerPuntuacionMaxima(data);
+  $(`#bestScore_${domId}`).text(bestScoreData?.puntos ?? 0);
+  $(`#bestDate_${domId}`).text(bestScoreData?.fecha ?? 'No hay datos');
+  $(`#lastPlayed_${domId}`).text(obtenerUltimaFecha(data) ?? 'No hay datos');
 
-$("#hardBtn").on("click", function() {
-  $(".easyDiv").prop('hidden', true);
-  $(".normalDiv").prop('hidden', true);
-  $(".hardDiv").prop('hidden', false);
-  $("#easyBtn").removeClass("bg-10");
-  $("#normalBtn").removeClass("bg-10");
-  $("#hardBtn").addClass("bg-10");
-})
+  if (data.length > 2) {
+    $(`#chart_${domId}`).removeClass('d-none');
+    $(`#nodata_${domId}`).addClass('d-none');
+    const chart = crearGraficoAreaspline(`chart_${domId}`, transformarDatos(data));
+    charts.set(levelId, chart);
+  } else {
+    $(`#chart_${domId}`).addClass('d-none');
+    $(`#nodata_${domId}`).removeClass('d-none');
+    charts.set(levelId, null);
+  }
+}
 
+let cachedStats = null;
+
+function activateStatsLevel(levelId) {
+  $('.levelStatsDiv').prop('hidden', true);
+  $(`[data-level-id="${levelId}"].levelStatsDiv`).prop('hidden', false);
+  $('.levelBtn').removeClass('btn-light').addClass('btn-outline-secondary');
+  $(`.levelBtn[data-level-id="${levelId}"]`).removeClass('btn-outline-secondary').addClass('btn-light');
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  const savedLevel = localStorage.getItem('statsLastLevel');
+  const firstBtn   = document.querySelector('.levelBtn');
+  const initialBtn = savedLevel
+    ? (document.querySelector(`.levelBtn[data-level-id="${savedLevel}"]`) || firstBtn)
+    : firstBtn;
+
+  if (initialBtn) activateStatsLevel(initialBtn.dataset.levelId);
+
+  fetchStatsForUser().then(stats => {
+    if (!stats) return;
+    cachedStats = stats.statsByLevel;
+    if (initialBtn) initChartForLevel(initialBtn.dataset.levelId, cachedStats);
+  });
+
+  $(document).on('click', '.levelBtn', function () {
+    const levelId = $(this).data('level-id');
+    activateStatsLevel(levelId);
+    localStorage.setItem('statsLastLevel', levelId);
+    if (cachedStats) initChartForLevel(levelId, cachedStats);
+  });
+});

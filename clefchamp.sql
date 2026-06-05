@@ -291,22 +291,22 @@ CREATE TABLE `logros` (
 
 LOCK TABLES `logros` WRITE;
 INSERT INTO `logros` (`nombre`, `descripcion`, `imagen`, `secreto`, `condicion`) VALUES
-('OG', 'Te creaste una cuenta durante la beta de Clefchamp.', 'crown.svg', 0, 'OG'),
-('Primera sangre', 'Consigue tu primer perfecto en una nota.', 'trophy.svg', 0, 'PRIMERA_SANGRE'),
-('Velocista', 'Completa una partida entera con todas las notas correctas en menos de 1 segundo.', 'quaver.svg', 1, 'VELOCISTA'),
-('Primeros pasos', 'Juega 10 partidas.', 'playgame.svg', 0, 'PRIMEROS_PASOS'),
-('Veterano', 'Juega 100 partidas.', 'playgame.svg', 0, 'VETERANO'),
-('Racha de fuego', 'Juega 7 días seguidos.', 'statistics.svg', 0, 'RACHA_FUEGO'),
-('Imparable', 'Juega 30 días seguidos.', 'statistics.svg', 0, 'IMPARABLE'),
-('Madrugador', 'Juega una partida antes de las 8h.', 'soundwave.svg', 1, 'MADRUGADOR'),
-('Noctámbulo', 'Juega una partida después de las 23h.', 'soundwave.svg', 1, 'NOCTAMBULO'),
-('Maestro de la clave de fa', 'Consigue 3 Perfectos en una partida de niveles con notas de Fa.', 'bass.svg', 0, 'MAESTRO_CLAVE_FA'),
-('Top 10', 'Entra en el ranking global en cualquier dificultad.', 'ranking.svg', 0, 'TOP_10'),
-('Número 1', 'Alcanza el primer puesto del ranking global en cualquier dificultad.', 'crown.svg', 0, 'NUMERO_1'),
-('Bien acompañado', 'Añade tu primer amigo.', 'friends.svg', 0, 'BIEN_ACOMPANADO'),
-('El alma de la fiesta', 'Añade 5 amigos.', 'friends.svg', 0, 'ALMA_FIESTA'),
-('A mi manera', 'Cambia tu icono de perfil por primera vez.', 'edit.svg', 0, 'A_MI_MANERA'),
-('Artista', 'Prueba 5 colores de fondo distintos.', 'profile.svg', 0, 'ARTISTA');
+('OG', 'Te creaste una cuenta durante la beta de Clefchamp.', 'og.svg', 0, 'OG'),
+('Primera sangre', 'Consigue tu primer perfecto en una nota.', 'primera_sangre.svg', 0, 'PRIMERA_SANGRE'),
+('Velocista', 'Completa una partida entera con todas las notas correctas en menos de 1 segundo.', 'velocista.svg', 1, 'VELOCISTA'),
+('Primeros pasos', 'Juega 10 partidas.', 'primeros_pasos.svg', 0, 'PRIMEROS_PASOS'),
+('Veterano', 'Juega 100 partidas.', 'veterano.svg', 0, 'VETERANO'),
+('Racha de fuego', 'Juega 7 días seguidos.', 'racha_de_fuego.svg', 0, 'RACHA_FUEGO'),
+('Imparable', 'Juega 30 días seguidos.', 'imparable.svg', 0, 'IMPARABLE'),
+('Madrugador', 'Juega una partida antes de las 8h.', 'madrugador.svg', 1, 'MADRUGADOR'),
+('Noctámbulo', 'Juega una partida después de las 23h.', 'noctambulo.svg', 1, 'NOCTAMBULO'),
+('Maestro de la clave de fa', 'Consigue 3 Perfectos en una partida de niveles con notas de Fa.', 'maestro_de_la_clave_de_fa.svg', 0, 'MAESTRO_CLAVE_FA'),
+('Top 10', 'Entra en el ranking global en cualquier dificultad.', 'top_10.svg', 0, 'TOP_10'),
+('Número 1', 'Alcanza el primer puesto del ranking global en cualquier dificultad.', 'numero_1.svg', 0, 'NUMERO_1'),
+('Bien acompañado', 'Añade tu primer amigo.', 'bien_acompanado.svg', 0, 'BIEN_ACOMPANADO'),
+('El alma de la fiesta', 'Añade 5 amigos.', 'el_alma_de_la_fiesta.svg', 0, 'ALMA_FIESTA'),
+('A mi manera', 'Cambia tu icono de perfil por primera vez.', 'a_mi_manera.svg', 0, 'A_MI_MANERA'),
+('Artista', 'Prueba 5 colores de fondo distintos.', 'artista.svg', 0, 'ARTISTA');
 UNLOCK TABLES;
 
 --

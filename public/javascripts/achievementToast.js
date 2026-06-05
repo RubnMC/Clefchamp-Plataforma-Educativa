@@ -11,7 +11,7 @@ function showAchievementToast(logro) {
     toastEl.innerHTML = `
         <div class="d-flex">
             <div class="toast-body d-flex align-items-center gap-3">
-                <img src="/images/icons/${logro.imagen}" alt="${logro.nombre}" class="achievement-toast-img">
+                <img src="/images/achievements/${logro.imagen}" alt="${logro.nombre}" class="achievement-toast-img">
                 <div>
                     <small class="achievement-toast-label">¡Logro desbloqueado!</small>
                     <div class="achievement-toast-name">${logro.nombre}</div>
