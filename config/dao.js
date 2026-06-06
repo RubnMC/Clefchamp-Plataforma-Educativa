@@ -731,16 +731,34 @@ class DAO {
             if (err) callback(err, null);
             else {
                 let query = `
+                    WITH level_scores AS (
+                        SELECT r.userId, r.levelId, MAX(r.points) AS bestScore
+                        FROM userrecord r
+                        JOIN usuarios u ON u.id = r.userId
+                        WHERE u.teacherId = ? AND r.levelId IS NOT NULL
+                        GROUP BY r.userId, r.levelId
+                    ),
+                    level_rankings AS (
+                        SELECT userId, levelId,
+                               RANK() OVER (PARTITION BY levelId ORDER BY bestScore DESC) AS rnk
+                        FROM level_scores
+                    )
                     SELECT u.id, u.tagname, u.friendCode, i.path, ui.bgColor,
                            ul.level,
-                           (SELECT MAX(r.time) FROM userrecord r WHERE r.userId = u.id) AS lastPlayed
+                           (SELECT r2.time    FROM userrecord r2 WHERE r2.userId = u.id ORDER BY r2.time DESC LIMIT 1) AS lastPlayed,
+                   (SELECT r2.levelId FROM userrecord r2 WHERE r2.userId = u.id ORDER BY r2.time DESC LIMIT 1) AS lastPlayedLevelId,
+                           SUM(CASE WHEN lr.rnk = 1 THEN 1 ELSE 0 END) AS top1Count,
+                           SUM(CASE WHEN lr.rnk = 2 THEN 1 ELSE 0 END) AS top2Count,
+                           SUM(CASE WHEN lr.rnk = 3 THEN 1 ELSE 0 END) AS top3Count
                     FROM usuarios AS u
                     JOIN usericons AS ui ON u.id = ui.userId AND ui.isSelected = 1
                     JOIN icons AS i ON i.id = ui.iconId
                     LEFT JOIN userlevel AS ul ON ul.idUser = u.id
+                    LEFT JOIN level_rankings AS lr ON lr.userId = u.id
                     WHERE u.teacherId = ?
+                    GROUP BY u.id, u.tagname, u.friendCode, i.path, ui.bgColor, ul.level
                 `;
-                connection.query(query, [teacherId], (err, resultado) => {
+                connection.query(query, [teacherId, teacherId], (err, resultado) => {
                     connection.release();
                     if (err) callback(err, null);
                     else callback(null, resultado.map(r => ({
@@ -750,7 +768,11 @@ class DAO {
                         path: r.path,
                         bgColor: r.bgColor,
                         level: r.level,
-                        lastPlayed: r.lastPlayed
+                        lastPlayed: r.lastPlayed,
+                        lastPlayedLevelId: r.lastPlayedLevelId,
+                        top1Count: r.top1Count,
+                        top2Count: r.top2Count,
+                        top3Count: r.top3Count
                     })));
                 });
             }

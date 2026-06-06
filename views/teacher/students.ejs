@@ -51,9 +51,22 @@
                              alt="Avatar">
                         <div>
                           <div class="fw-bold"><%= student.tagname %></div>
-                          <small class="text-muted d-block"><%= student.friendCode %></small>
-                          <small class="text-muted d-block">Nv. <%= student.level ?? '—' %></small>
-                          <small class="text-muted d-block"><%= relativeTime(student.lastPlayed) %></small>
+                          <small class="text-muted d-block">Nivel <%= student.level ?? '—' %></small>
+                          <% const lastLvl = student.lastPlayedLevelId != null ? levels.find(l => l.id === student.lastPlayedLevelId) : null; %>
+                          <small class="text-muted d-block">
+                            Ultima partida:
+                            <% if (student.lastPlayed) { %>
+                              <% if (lastLvl) { %><span class="fw-semibold"><%= lastLvl.name %></span> — <% } %>
+                              <%= formatDateTime(student.lastPlayed) %> (<%= relativeTime(student.lastPlayed) %>)
+                            <% } else { %>
+                              Never played
+                            <% } %>
+                          </small>
+                          <div class="d-flex gap-2 mt-1 flex-wrap">
+                            <%- include('../partials/svg/trophy', { count: student.top1Count, color: '#FFD700', textColor: 'black', label: '1° puesto' }) %>
+                            <%- include('../partials/svg/trophy', { count: student.top2Count, color: '#A8A8A8', textColor: 'black', label: '2° puesto' }) %>
+                            <%- include('../partials/svg/trophy', { count: student.top3Count, color: '#CD7F32', textColor: 'black', label: '3° puesto' }) %>
+                          </div>
                         </div>
                       </div>
                     </div>

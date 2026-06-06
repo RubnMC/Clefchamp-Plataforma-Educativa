@@ -186,7 +186,9 @@ router.post("/register", (req, res, next) => {
                     req.session.user = sessionUser;
                     res.locals.user = sessionUser;
                     
-                    res.json({ existe: true, nombre: user.nombre, correo: user.correo });
+                    const returnTo = req.session.returnTo || null;
+                    delete req.session.returnTo;
+                    res.json({ existe: true, nombre: user.nombre, correo: user.correo, returnTo });
                   });
                 });
               });

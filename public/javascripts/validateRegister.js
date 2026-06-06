@@ -146,6 +146,9 @@ $("#register").on("click", () => {
                     type: "POST",
                     data: user,
                     success: function(response) {
+                        if (response.returnTo) {
+                            $("#registerModal a[href='/']").attr("href", response.returnTo);
+                        }
                         new bootstrap.Modal($("#registerModal")).show()
                     }
                 })

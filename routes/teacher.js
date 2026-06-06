@@ -5,7 +5,7 @@ const mysql = require("mysql");
 const mysqlConfig = require("../config/db");
 const DAO = require("../config/dao");
 const { isTeacher } = require("../middleware/roles");
-const { relativeTime, getLevels } = require("../utils/helpers");
+const { relativeTime, formatDateTime, getLevels } = require("../utils/helpers");
 
 const pool = mysql.createPool(mysqlConfig);
 const dao = new DAO(pool);
@@ -26,7 +26,7 @@ router.get("/students", isLoggedIn, isTeacher, (req, res) => {
   dao.getStudentsByTeacherId(res.locals.user.id, (err, students) => {
     if (err) return res.status(500).render('error');
     const joinLink = `${req.protocol}://${req.get('host')}/join/${res.locals.user.friendCode.slice(1)}`;
-    res.render('teacher/students', { students, joinLink, relativeTime, levels: getLevels() });
+    res.render('teacher/students', { students, joinLink, relativeTime, formatDateTime, levels: getLevels() });
   });
 });
 

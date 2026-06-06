@@ -14,13 +14,20 @@ function relativeTime(date) {
     const days    = Math.floor(diffMs / 86400000);
     const months  = Math.floor(days / 30.44);
 
-    if (minutes < 1)  return 'less than a minute ago';
-    if (minutes < 60) return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
-    if (hours < 24)   return `${hours} hour${hours === 1 ? '' : 's'} ago`;
-    if (days <= 30)   return `${days} day${days === 1 ? '' : 's'} ago`;
-    if (months < 12)  return `${months} month${months === 1 ? '' : 's'} ago`;
-    if (months < 24)  return '1 year ago';
-    return 'more than a year ago';
+    if (minutes < 1)  return 'hace menos de un minuto';
+    if (minutes < 60) return `hace ${minutes} minuto${minutes === 1 ? '' : 's'} `;
+    if (hours < 24)   return `hace ${hours} hora${hours === 1 ? '' : 's'}`;
+    if (days <= 30)   return `hace ${days} día${days === 1 ? '' : 's'}`;
+    if (months < 12)  return `hace ${months} mes${months === 1 ? '' : 'es'}`;
+    if (months < 24)  return 'hace 1 año';
+    return 'hace más de 1 año';
 }
 
-module.exports = { relativeTime, getLevels };
+function formatDateTime(date) {
+    if (!date) return null;
+    const d = new Date(date);
+    const pad = n => String(n).padStart(2, '0');
+    return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+module.exports = { relativeTime, formatDateTime, getLevels };
