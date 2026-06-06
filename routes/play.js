@@ -7,6 +7,7 @@ const path = require("path");
 const mysqlConfig = require("../config/db");
 const DAO = require("../config/dao");
 const { isStudent } = require("../middleware/roles");
+const { getLevels } = require("../utils/helpers");
 
 const pool = mysql.createPool(mysqlConfig);
 const dao = new DAO(pool);
@@ -19,34 +20,16 @@ router.use((req, res, next) => {
 const isLoggedIn = (req, res, next) => res.locals.user ? next() : res.redirect('/users/login');
 const isNotLoggedIn = (req, res, next) => !res.locals.user ? next() : res.redirect('/users/login');
 
-// All 14 level IDs mirroring levelButtons.js — returned to teachers so they can play any level
-const ALL_LEVEL_IDS = [
-  'notes-do-re-mi-fa',
-  'notes-sol-la-si',
-  'chord-c-major',
-  'chord-g-major',
-  'chord-f-major',
-  'chord-a-minor',
-  'arp-c-major',
-  'arp-desc-c-major',
-  'mel-mary',
-  'mel-cumple',
-  'mel-campanita',
-  'oda-1',
-  'oda-2',
-  'oda-3',
-];
-
-router.get("/", isLoggedIn, (req, res) => res.render('home'));
-
 router.use((req, res, next) => {
   res.locals.user = req.session.user;
   next();
 })
 
-router.get("/", isLoggedIn, (request,response) => {
-  response.render('home', {lastPlayed} )
-})
+// router.get("/", isLoggedIn, (request,response) => {
+//   response.render('home', {lastPlayed} )
+  // })
+
+router.get("/", isLoggedIn, (req, res) => res.render('home'));
 
 router.get("/selectGame", isLoggedIn, (request,response) => {
   response.render("selectGame")
@@ -95,7 +78,7 @@ router.get('/getUserLevel/:userId', isLoggedIn, (request, response) => {
 router.get('/getStudentLevels', isLoggedIn, (req, res) => {
   const user = res.locals.user;
   if (user.role === 'teacher') {
-    return res.json({ levelIds: ALL_LEVEL_IDS });
+    return res.json({ levelIds: getLevels().map(l => l.id) });
   }
   dao.getStudentLevels(user.id, (err, levelIds) => {
     if (err) return res.status(500).json({ message: 'Error obteniendo niveles' });
