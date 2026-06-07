@@ -1,0 +1,1 @@
+Friends page (views/friends.ejs). Allows searching users by friend code, sending/accepting/dropping friend requests, and viewing the current friends list. All actions use AJAX calls to update the page without full reloads.

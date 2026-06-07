@@ -21,6 +21,7 @@
     "jquery": "^3.7.1",
     "morgan": "~1.9.1",
     "mysql": "^2.18.1",
+    "nodemailer": "^8.0.10",
     "nodemon": "^3.0.1",
     "vexflow": "^4.2.5"
   }

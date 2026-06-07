@@ -53,6 +53,12 @@ app.use((req,res,next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  res.locals.pendingAchievements = req.session.pendingAchievements || [];
+  req.session.pendingAchievements = [];
+  next();
+});
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/play', playRouter);

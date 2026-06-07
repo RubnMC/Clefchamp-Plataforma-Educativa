@@ -24,11 +24,22 @@
           <li><a class="dropdown-item" href="/users/globalRanking">Ranking globlal</a></li>
           <li><a class="dropdown-item" href="/users/stats">Estadísticas</a></li>
           <li><a class="dropdown-item" href="/users/friends">Amigos</a></li>
+          <li><a class="dropdown-item" href="/users/logros">Logros</a></li>
           <hr>
         <% } %>
         <li><a class="dropdown-item" style="color:red" href="/users/logout"><strong>Cerrar sesión</strong></a></li>
       </ul>
     </div>
+  <% } %>
+
+  <div id="achievementToastContainer" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 9999;"></div>
+
+  <% if (locals.pendingAchievements && pendingAchievements.length > 0) { %>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      <%- JSON.stringify(pendingAchievements) %>.forEach(function(a) { showAchievementToast(a); });
+    });
+  </script>
   <% } %>
 
   <style>

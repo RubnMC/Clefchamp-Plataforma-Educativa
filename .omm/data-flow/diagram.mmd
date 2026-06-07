@@ -1,0 +1,17 @@
+graph LR
+    classDef store fill:#a6e3a1,stroke:#a6e3a1,color:#1e1e2e
+    classDef entry fill:#89b4fa,stroke:#89b4fa,color:#1e1e2e
+
+    levels-json["Level Definitions\ndata/levels.json"]:::store
+    db["MySQL Database\nclefchamp.sql"]:::store
+
+    levels-json -->|"served at /play/levels"| game-init["Game Initialization\ngameCore.js"]:::entry
+    db -->|"user session on login"| game-init
+    game-init -->|"note sequence"| game-loop["Game Loop\ngameCore.js"]
+    game-loop -->|"keystroke events"| scorer["Scorer\ngameCore.js"]
+    scorer -->|"timing + result"| result-aggregator["Result Aggregator\ngameCore.js"]
+    result-aggregator -->|"POST /play/saveRecords"| db
+    result-aggregator -->|"PUT /play/addExperience"| db
+    db -->|"user records"| profile-view["Profile View\nroutes/users.js → profile.ejs"]
+    db -->|"aggregated stats"| stats-view["Stats View\nroutes/users.js → stats.ejs"]
+    db -->|"top records by difficulty"| ranking-view["Ranking View\nroutes/users.js → globalRanking.ejs"]

@@ -1,0 +1,1 @@
+Stats page aggregates four metrics per difficulty (EASY/NORMAL/HARD): average accuracy, games played, ranking position, average timing tier percentages. These are combined into a stats object and rendered in stats.ejs with Highcharts.js charts.

@@ -24,6 +24,16 @@ const LevelButtons = (() => {
 
   // ─── Configs de nivel ─────────────────────────────────────────────────────
 
+  const LEVEL_TUTORIAL = {
+    id: 'tutorial-level', num: '00', category: 'Tutorial',
+    name: 'Tutorial', cifrado: 'INTRO', cifradoLong: 'Intro',
+    roman: 'inicio', notes: 'do · re · mi', notesSep: 'do re mi',
+    brutalMain: 'TUTO', brutalSub: 'aprende',
+    brutalHeaderRight: 'DO · RE · MI', brutalKind: 'MEL',
+    isTutorial: true,
+    description: 'Aprende a identificar notas musicales paso a paso. Solo usarás Do, Re y Mi en 8 rondas guiadas con bocadillos explicativos en cada momento clave.',
+  };
+
   const LEVEL_CHORD_CMAJOR = {
     id: 'chord-c-major', num: '03', category: 'Acordes',
     name: 'Do mayor', cifrado: 'C', cifradoLong: 'CMaj', roman: 'I',
@@ -167,12 +177,59 @@ const LevelButtons = (() => {
     description: 'El arranque de Jingle Bells en Do mayor: tres Mi repetidos que saltan a Sol, bajan a Do y suben por grado. Un clásico para trabajar la repetición de notas y los saltos de tercera.',
   };
 
+  // ─── SVGs de indicadores ──────────────────────────────────────────────────
+
+  function noteIconSVG(filled, extra = false) {
+    const baseColor = extra ? '#C8553D' : '#350D40';
+    const c = filled ? baseColor : `${baseColor}33`;
+    return `<svg viewBox="0 0 12 28" width="11" height="28" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:bottom">
+      <ellipse cx="5" cy="23.5" rx="4.2" ry="2.8" transform="rotate(-20 5 23.5)" fill="${c}"/>
+      <line x1="8.8" y1="22.5" x2="8.8" y2="3" stroke="${c}" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M8.8 3 Q15 6 8.8 12" stroke="${c}" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+      <path d="M8.8 8 Q15 11 8.8 17" stroke="${c}" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+    </svg>`;
+  }
+
+  function trebleClefSVG(active) {
+    const c = active ? '#350D40' : 'rgba(53,13,64,0.2)';
+    return `<svg viewBox="0 0 14 40" width="14" height="40" xmlns="http://www.w3.org/2000/svg">
+      <path d="M7 2 C7 2 7 35 7 37 C7 39 4.5 39 3.5 37 C2.5 35 4.5 33.5 6.5 34.5"
+            stroke="${c}" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M7 15.5 C11 14.5 13.5 17.5 13.5 21.5 C13.5 25.5 10.5 27.5 7 26.5
+               C3.5 25.5 1.5 22.5 2 18.5 C2.5 14.5 5 12 7 11
+               C10.5 9.5 13.5 11 13.5 7 C13.5 3 9 2 7 4"
+            stroke="${c}" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+    </svg>`;
+  }
+
+  function bassClefSVG(active) {
+    const c = active ? '#350D40' : 'rgba(53,13,64,0.2)';
+    return `<svg viewBox="0 0 18 26" width="18" height="26" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 3 C8 2 2 6 2 13 C2 20 8 24 12 23"
+            stroke="${c}" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <circle cx="15.5" cy="8"  r="2" fill="${c}"/>
+      <circle cx="15.5" cy="14" r="2" fill="${c}"/>
+    </svg>`;
+  }
+
+  const LEVEL_SOUND_CDE = {
+    id: 'sound-c-d-e', num: '15', category: 'Oído',
+    name: 'Do · Re · Mi (oído)', cifrado: 'oído', cifradoLong: 'oído',
+    roman: 'ear', notes: 'do re mi', notesSep: 'do re mi',
+    brutalMain: 'OÍ\nDO', brutalSub: 'escucha',
+    brutalHeaderRight: 'DO · RE · MI', brutalKind: 'EAR',
+    isAudio: true,
+    description: 'Escucha la nota y adivina cuál es sin verla en el pentagrama. Solo aparecerán Do, Re y Mi durante 10 rondas.',
+  };
+
   const LEVELS = {
+    LEVEL_TUTORIAL,
     LEVEL_CHORD_CMAJOR, LEVEL_CHORD_GMAJOR, LEVEL_CHORD_FMAJOR, LEVEL_CHORD_AMINOR,
     LEVEL_ARP_CMAJOR, LEVEL_ARP_DESC_CMAJOR,
     LEVEL_NOTES_DRMF, LEVEL_NOTES_SLS,
     LEVEL_MEL_MARY, LEVEL_MEL_CUMPLE, LEVEL_MEL_CAMPANITA,
     LEVEL_ODA_1, LEVEL_ODA_2, LEVEL_ODA_3,
+    LEVEL_SOUND_CDE,
   };
 
   // ─── Metadata de estado ───────────────────────────────────────────────────
@@ -678,6 +735,7 @@ const LevelButtons = (() => {
     C, VARIANTS, LEVELS, STATES,
     render, renderStates, renderList,
     staffSVG, pianoSVG,
+    noteIconSVG, trebleClefSVG, bassClefSVG,
     ...LEVELS,
   };
 })();

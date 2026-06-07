@@ -1,0 +1,1 @@
+Registration page (views/register.ejs). Creates user, hashes password with bcrypt, initializes XP row, unlocks starter icons, sets initial preferences, creates session, and sends welcome email via Resend. Redirected to / if already logged in.

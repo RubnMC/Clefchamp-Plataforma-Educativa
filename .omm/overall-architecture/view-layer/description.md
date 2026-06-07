@@ -1,0 +1,1 @@
+EJS server-rendered templates in views/. Key views: index.ejs (landing), login.ejs/register.ejs (auth), selectGame.ejs (level picker), gameScreen.ejs (main game), profile.ejs (records + icons), stats.ejs (Highcharts dashboard), globalRanking.ejs, friends.ejs, settings.ejs. Partials in views/partials/ for shared nav/head.

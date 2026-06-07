@@ -1,0 +1,1 @@
+Level selection page (views/selectGame.ejs + selectGame.js). Fetches live level metadata from /play/levels, merges with hardcoded LevelButtons metadata, and renders a 3-column grid of styled level cards. Clicking a card navigates to /play/:levelId.

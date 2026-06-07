@@ -1,0 +1,1 @@
+After all rounds complete, aggregates session data into: points total, per-tier counters (perfectCounter, excellentCounter, etc.), individualTimes array, notes array, results (bool array). Sends two API calls: POST /play/saveRecords to persist the record, PUT /play/addExperience to update XP (with level-up logic).

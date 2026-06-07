@@ -1,0 +1,18 @@
+graph TD
+    classDef entry fill:#89b4fa,stroke:#89b4fa,color:#1e1e2e
+
+    landing["Landing Page\n/ (GET)"]:::entry
+    landing -->|"unauthenticated user"| login["Login\n/users/login"]
+    landing -->|"unauthenticated user"| register["Register\n/users/register"]
+    login -->|"success"| home["Home (redirect)\n/users/"]
+    register -->|"success + welcome email"| home
+    home -->|"nav link"| select-game["Select Level\n/play/selectGame"]
+    select-game -->|"pick level"| game-screen["Game Screen\n/play/:levelId"]
+    game-screen -->|"after game"| game-screen
+    landing -->|"try demo"| trial["Trial Game\n/play/trial"]
+    home -->|"nav link"| profile["Profile\n/users/profile"]
+    home -->|"nav link"| stats["Stats\n/users/stats"]
+    home -->|"nav link"| global-ranking["Global Ranking\n/users/globalRanking"]
+    home -->|"nav link"| friends["Friends\n/users/friends"]
+    home -->|"nav link"| settings["Settings\n/users/settings"]
+    landing -->|"info link"| more-info["More Information\n/moreInformation"]

@@ -1,0 +1,9 @@
+created: 2026-06-03T23:18:42.025Z
+updated: 2026-06-03T23:18:42.026Z
+update_count: 1
+last_field: description
+kind: nested-class
+title: level-ui
+children: []
+parentPath:
+  - browser

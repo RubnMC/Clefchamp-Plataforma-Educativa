@@ -1,0 +1,9 @@
+created: 2026-06-03T23:18:37.361Z
+updated: 2026-06-03T23:18:37.362Z
+update_count: 1
+last_field: description
+kind: nested-class
+title: level-config
+children: []
+parentPath:
+  - browser

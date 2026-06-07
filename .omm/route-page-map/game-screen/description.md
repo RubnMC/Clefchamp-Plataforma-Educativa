@@ -1,0 +1,1 @@
+Main game page (views/gameScreen.ejs). Loads gameCore.js which drives the full game loop. Supports both authenticated play (with XP/records) and trial mode (isTrial=true, no persistence). The page loops in-place via resetGame() without a full navigation.

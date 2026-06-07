@@ -1,0 +1,1 @@
+Data Access Object class (config/dao.js) that wraps all MySQL queries using a connection pool. Covers: user CRUD, authentication checks, level/experience management, game record saving and retrieval, icon management, friend system (send/accept/drop requests), rankings, and statistics aggregation.

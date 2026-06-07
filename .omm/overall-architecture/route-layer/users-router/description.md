@@ -1,0 +1,1 @@
+Handles all user-facing features: authentication (login/register/logout with bcrypt), profile (records, icons), friends (send/accept/drop requests via friend codes), global ranking, personal stats (Highcharts data), settings, and profile icon selection. Issues a welcome email via mailer on registration.

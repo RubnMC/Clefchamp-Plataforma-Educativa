@@ -1,0 +1,1 @@
+jQuery UI factory (LevelButtons) that creates styled level-card components in multiple visual variants. Holds hardcoded metadata for all 15 game levels (id, category, name, notes, descriptions). Used by selectGame.js to build the level-selection grid.

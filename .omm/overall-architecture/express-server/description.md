@@ -1,0 +1,1 @@
+Express.js application entry point (app.js). Wires middleware (morgan logging, body-parser, cookie-parser, express-session with MySQL store), mounts the three route modules, and defines global 404/500 error handlers. The session store uses the same MySQL database as the application data.

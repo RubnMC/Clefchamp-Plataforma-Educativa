@@ -1,0 +1,1 @@
+Level-selection page logic (selectGame.js). Fetches live level data from /play/levels, merges it with levelButtons metadata, renders the level grid, and navigates to /play/:levelId on click. Also reads localStorage for last-played level highlighting.

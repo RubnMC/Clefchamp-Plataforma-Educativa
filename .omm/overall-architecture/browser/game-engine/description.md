@@ -1,0 +1,1 @@
+Central game state machine (GameState object in gameCore.js). Manages the full game lifecycle: initialization, keyboard/touch input, note checking, scoring, experience gain, result display, and reset. Fetches level data and user session from the API on load, then drives the round loop.

@@ -35,22 +35,6 @@ router.get("/selectGame", isLoggedIn, (request,response) => {
   response.render("selectGame")
 })
 
-router.get("/atrapado/trial", isNotLoggedIn, (request,response) => {
-    response.render("gameScreen", {mode: "TRIAL"})
-})
-
-router.get("/atrapado/easy", isLoggedIn, isStudent, (request,response) => {
-  response.render("gameScreen", {mode: "EASY"})
-})
-
-router.get("/atrapado/normal", isLoggedIn, isStudent, (request,response) => {
-  response.render("gameScreen", {mode: "NORMAL"})
-})
-
-router.get("/atrapado/hard", isLoggedIn, isStudent, (request,response) => {
-  response.render("gameScreen", {mode: "HARD"})
-})
-
 router.get('/levels', (req, res) => {
   const filePath = path.join(__dirname, '../data/levels.json');
   fs.readFile(filePath, 'utf-8', (err, data) => {
@@ -117,13 +101,25 @@ router.post('/saveRecords', (req, res) => {
   dao.saveRecord(id,dificultad,nivelId,perfecto,excelente,genial,bien,ok,aciertos,fallos,puntuacion,tiemposIndividuales,notas,resultados, (err,result) => {
     if(err) {
       console.log("ERROR: " + err)
-      res.status(500).json({ message: "Error en saveRecords" });
+      return res.status(500).json({ message: "Error en saveRecords" });
     }
-    else res.json(true);
-  })
+    if (!id || id === -1) return res.json({ success: true, newAchievements: [] });
+    dao.checkAndGrantLogros(id, { perfecto, fallos, tiemposIndividuales }, (err, newAchievements) => {
+      if (err) console.log("Error al comprobar logros:", err);
+      res.json({ success: true, newAchievements: newAchievements || [] });
+    });
+  });
 
 });
 
 
+
+router.get("/trial", isNotLoggedIn, (req, res) => {
+  res.render("gameScreen", { isTrial: true, levelId: null });
+});
+
+router.get("/:levelId", isLoggedIn, (req, res) => {
+  res.render("gameScreen", { isTrial: false, levelId: req.params.levelId });
+});
 
 module.exports = router;

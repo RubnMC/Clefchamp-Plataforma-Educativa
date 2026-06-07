@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+  <%-include('partials/head') %>
+  <body class="colorNuevo5">
+    <%-include('partials/header') %>
+    <div class="scrollable vh-90">
+      <div class="container-fluid px-sm-5 px-3 py-4">
+
+        <div class="bg-15 rounded-4 p-3 mb-4">
+          <h1 class="mb-0 text-center">Logros</h1>
+        </div>
+
+        <div class="row g-3">
+          <% logros.forEach(function(logro) { %>
+            <div class="col-6 col-md-4 col-lg-3">
+              <div class="achievement-card <%= logro.isUnlocked ? '' : 'achievement-locked' %>" onclick="this.classList.toggle('flipped')">
+                <div class="achievement-card-inner">
+
+                  <!-- Cara delantera -->
+                  <div class="achievement-card-front bg-15">
+                    <img
+                      src="/images/achievements/<%= logro.imagen %>"
+                      alt="<%= logro.nombre %>"
+                      class="achievement-icon"
+                    >
+                    <span class="achievement-card-name"><%= logro.nombre %></span>
+                  </div>
+
+                  <!-- Cara trasera -->
+                  <div class="achievement-card-back">
+                    <% if (logro.isUnlocked) { %>
+                      <img
+                        src="/images/achievements/<%= logro.imagen %>"
+                        alt="<%= logro.nombre %>"
+                        class="achievement-icon"
+                        style="width:2.2rem;height:2.2rem;margin-bottom:0.4rem;"
+                      >
+                      <p class="mb-1" style="font-size:0.85em;"><%= logro.descripcion %></p>
+                      <small class="text-muted" style="font-size:0.72em;">
+                        <%
+                          var d = new Date(logro.unlockedAt);
+                          var day = String(d.getDate()).padStart(2,'0');
+                          var mon = String(d.getMonth()+1).padStart(2,'0');
+                          var yr  = d.getFullYear();
+                        %>
+                        Desbloqueado el <%= day %>/<%= mon %>/<%= yr %>
+                      </small>
+                    <% } else if (logro.secreto) { %>
+                      <span style="font-size:2em;">???</span>
+                      <small class="mt-2" style="font-size:0.8em;opacity:0.7;">Sigue jugando para descubrirlo</small>
+                    <% } else { %>
+                      <p class="mb-0" style="font-size:0.85em;"><%= logro.descripcion %></p>
+                    <% } %>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+
+      </div>
+    </div>
+    <%-include('partials/footer') %>
+
+    <% if (newLogros && newLogros.length > 0) { %>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        <%- JSON.stringify(newLogros) %>.forEach(function(a) { showAchievementToast(a); });
+      });
+    </script>
+    <% } %>
+  </body>
+</html>

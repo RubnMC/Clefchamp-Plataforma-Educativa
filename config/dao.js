@@ -585,16 +585,15 @@ class DAO {
             if (err) callback(err, null);
             else {
                 let query = `
-                SELECT 
+                SELECT
                     difficulty,
                     ROUND(AVG((success * 1.0 / (success + error)) * 100), 2) AS avg_accuracy_percentage
-                FROM 
+                FROM
                     userrecord
-                WHERE 
+                WHERE
                     userId = ?
                     AND (success + error) > 0
-                    AND difficulty IN ('EASY', 'NORMAL', 'HARD')
-                GROUP BY 
+                GROUP BY
                     difficulty;
 
                 `
@@ -644,31 +643,211 @@ class DAO {
             if (err) callback(err, null);
             else {
                 let query = `
-                SELECT 
+                SELECT
                     difficulty,
                     COUNT(*) AS games_played
-                FROM 
+                FROM
                     userrecord
-                WHERE 
+                WHERE
                     userId = ?
-                GROUP BY 
+                GROUP BY
                     difficulty;
                 `
                 connection.query(query,[userId], (err, resultado) => {
                     connection.release();
                     if (err) callback(err, null);
-                    else {
-                        const difficulties = ['EASY', 'NORMAL', 'HARD'];
-                        const result = difficulties.map(difficulty => {
-                            const found = resultado.find(r => r.difficulty === difficulty);
-                            return found || { difficulty, games_played: 0, RowDataPacket: true };
-                        });
-                        callback(null, result);
-                    }
+                    else callback(null, resultado);
                 });
             }
         });
     } 
+    getAllStatsForUser(userId, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) callback(err, null);
+            else {
+                let query = `
+                SELECT difficulty, DATE(time) AS fecha, MAX(points) AS puntos
+                FROM userrecord
+                WHERE userId = ?
+                GROUP BY difficulty, DATE(time)
+                ORDER BY difficulty, fecha;
+                `
+                connection.query(query, [userId], (err, resultado) => {
+                    connection.release();
+                    if (err) callback(err, null);
+                    else {
+                        const byLevel = {};
+                        resultado.forEach(row => {
+                            if (!byLevel[row.difficulty]) byLevel[row.difficulty] = [];
+                            byLevel[row.difficulty].push({ fecha: row.fecha, puntos: row.puntos });
+                        });
+                        callback(null, byLevel);
+                    }
+                });
+            }
+        });
+    }
+
+    getUserLogros(userId, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) return callback(err, null);
+            const query = `
+                SELECT l.*, ul.unlockedAt,
+                       IF(ul.userId IS NOT NULL, 1, 0) AS isUnlocked
+                FROM logros l
+                LEFT JOIN usuario_logros ul ON l.id = ul.logroId AND ul.userId = ?
+                ORDER BY l.id;
+            `;
+            connection.query(query, [userId], (err, resultado) => {
+                connection.release();
+                if (err) return callback(err, null);
+                callback(null, resultado);
+            });
+        });
+    }
+
+    unlockLogro(userId, logroId, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) return callback(err, null);
+            const query = `INSERT IGNORE INTO usuario_logros (userId, logroId) VALUES (?, ?)`;
+            connection.query(query, [userId, logroId], (err, resultado) => {
+                connection.release();
+                if (err) return callback(err, null);
+                callback(null, resultado.affectedRows > 0);
+            });
+        });
+    }
+
+    trackBgColor(userId, bgColor, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) return callback(err);
+            connection.query(
+                `INSERT IGNORE INTO user_bgcolor_history (userId, bgColor) VALUES (?, ?)`,
+                [userId, bgColor], (err) => { connection.release(); callback(err || null); }
+            );
+        });
+    }
+
+    checkAndGrantLogros(userId, gameData, callback) {
+        const BETA_CUTOFF = '2026-07-01';
+        const FA_LEVELS = ['notes-do-re-mi-fa', 'chord-f-major', 'arp-c-major', 'oda-1', 'oda-3'];
+
+        this.pool.getConnection((err, connection) => {
+            if (err) return callback(err, null);
+
+            const pendingQuery = `
+                SELECT l.* FROM logros l
+                WHERE l.id NOT IN (SELECT logroId FROM usuario_logros WHERE userId = ?)
+            `;
+            connection.query(pendingQuery, [userId], (err, pending) => {
+                if (err) { connection.release(); return callback(err, null); }
+                if (pending.length === 0) { connection.release(); return callback(null, []); }
+
+                const needsConds = new Set(pending.map(l => l.condicion));
+
+                const q = (sql, params) => new Promise(resolve => {
+                    connection.query(sql, params, (err, r) => resolve(err ? null : r));
+                });
+
+                const queries = {
+                    totalGames: needsConds.has('PRIMEROS_PASOS') || needsConds.has('VETERANO')
+                        ? q(`SELECT COUNT(*) AS v FROM userrecord WHERE userId = ?`, [userId])
+                        : Promise.resolve([{v:0}]),
+
+                    isOG: needsConds.has('OG')
+                        ? q(`SELECT 1 FROM usuarios WHERE id = ? AND joindate < ?`, [userId, BETA_CUTOFF])
+                        : Promise.resolve([]),
+
+                    everPerfect: needsConds.has('PRIMERA_SANGRE')
+                        ? q(`SELECT 1 FROM userrecord WHERE userId = ? AND perfect > 0 LIMIT 1`, [userId])
+                        : Promise.resolve([]),
+
+                    maxStreak: needsConds.has('RACHA_FUEGO') || needsConds.has('IMPARABLE')
+                        ? q(`WITH daily AS (SELECT DISTINCT DATE(time) AS d FROM userrecord WHERE userId = ?),
+                             grp AS (SELECT d, DATE_SUB(d, INTERVAL ROW_NUMBER() OVER (ORDER BY d) DAY) AS g FROM daily),
+                             lens AS (SELECT COUNT(*) AS l FROM grp GROUP BY g)
+                             SELECT COALESCE(MAX(l),0) AS v FROM lens`, [userId])
+                        : Promise.resolve([{v:0}]),
+
+                    madrugador: needsConds.has('MADRUGADOR')
+                        ? q(`SELECT 1 FROM userrecord WHERE userId = ? AND HOUR(time) < 8 LIMIT 1`, [userId])
+                        : Promise.resolve([]),
+
+                    noctambulo: needsConds.has('NOCTAMBULO')
+                        ? q(`SELECT 1 FROM userrecord WHERE userId = ? AND HOUR(time) >= 23 LIMIT 1`, [userId])
+                        : Promise.resolve([]),
+
+                    maestroFa: needsConds.has('MAESTRO_CLAVE_FA')
+                        ? q(`SELECT 1 FROM userrecord WHERE userId = ? AND difficulty IN (?) AND perfect >= 3 LIMIT 1`, [userId, FA_LEVELS])
+                        : Promise.resolve([]),
+
+                    bestRank: needsConds.has('TOP_10') || needsConds.has('NUMERO_1')
+                        ? q(`WITH ranked AS (SELECT userId, difficulty, MAX(points) AS mp FROM userrecord GROUP BY userId, difficulty),
+                             rk AS (SELECT userId, RANK() OVER (PARTITION BY difficulty ORDER BY mp DESC) AS pos FROM ranked)
+                             SELECT COALESCE(MIN(pos), 9999) AS v FROM rk WHERE userId = ?`, [userId])
+                        : Promise.resolve([{v:9999}]),
+
+                    friendCount: needsConds.has('BIEN_ACOMPANADO') || needsConds.has('ALMA_FIESTA')
+                        ? q(`SELECT COUNT(DISTINCT IF(userId=?,friendId,userId)) AS v FROM amigos WHERE (userId=? OR friendId=?) AND state='aceptado'`, [userId,userId,userId])
+                        : Promise.resolve([{v:0}]),
+
+                    changedIcon: needsConds.has('A_MI_MANERA')
+                        ? q(`SELECT 1 FROM usericons ui JOIN icons i ON i.id=ui.iconId WHERE ui.userId=? AND ui.isSelected=1 AND (i.isDefault=0 OR ui.bgColor!='transparent') LIMIT 1`, [userId])
+                        : Promise.resolve([]),
+
+                    colorCount: needsConds.has('ARTISTA')
+                        ? q(`SELECT COUNT(*) AS v FROM user_bgcolor_history WHERE userId=?`, [userId])
+                        : Promise.resolve([{v:0}])
+                };
+
+                Promise.all(Object.values(queries)).then(results => {
+                    connection.release();
+                    const [totalGames, isOG, everPerfect, maxStreak, madrugador,
+                           noctambulo, maestroFa, bestRank, friendCount, changedIcon, colorCount] =
+                        results.map(r => r && r[0] ? r[0].v !== undefined ? r[0].v : r.length > 0 : 0);
+
+                    const gameHasPerfect = (gameData.perfecto || 0) > 0;
+                    const fallos = gameData.fallos;
+                    const tiempos = gameData.tiemposIndividuales;
+                    const totalTime = Array.isArray(tiempos) && tiempos.length > 0
+                        ? tiempos.reduce((a, b) => a + b, 0) : Infinity;
+                    const gameInFaLevel = FA_LEVELS.includes(gameData.dificultad || '');
+                    const gameHasFaPerfect = gameInFaLevel && (gameData.perfecto || 0) >= 3;
+
+                    const checks = {
+                        OG: !!isOG,
+                        PRIMERA_SANGRE: gameHasPerfect || !!everPerfect,
+                        VELOCISTA: fallos === 0 && totalTime < 1000 && Array.isArray(tiempos) && tiempos.length > 0,
+                        PRIMEROS_PASOS: totalGames >= 10,
+                        VETERANO: totalGames >= 100,
+                        RACHA_FUEGO: maxStreak >= 7,
+                        IMPARABLE: maxStreak >= 30,
+                        MADRUGADOR: !!madrugador,
+                        NOCTAMBULO: !!noctambulo,
+                        MAESTRO_CLAVE_FA: gameHasFaPerfect || !!maestroFa,
+                        TOP_10: bestRank <= 10,
+                        NUMERO_1: bestRank === 1,
+                        BIEN_ACOMPANADO: friendCount >= 1,
+                        ALMA_FIESTA: friendCount >= 5,
+                        A_MI_MANERA: !!changedIcon,
+                        ARTISTA: colorCount >= 5
+                    };
+
+                    const toUnlock = pending.filter(l => checks[l.condicion]);
+                    if (toUnlock.length === 0) return callback(null, []);
+
+                    const unlockPromises = toUnlock.map(logro => new Promise(resolve => {
+                        this.unlockLogro(userId, logro.id, (err, wasNew) => {
+                            resolve(wasNew ? logro : null);
+                        });
+                    }));
+
+                    Promise.all(unlockPromises).then(res => callback(null, res.filter(Boolean)));
+                });
+            });
+        });
+    }
+
     getPositionsInRanking(userId, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) callback(err, null);

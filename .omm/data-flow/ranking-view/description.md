@@ -1,0 +1,1 @@
+Global ranking page queries top 10 best-score records per difficulty using a window function (MAX per user, then ranked). Joins with user and icon tables for display. Results passed to globalRanking.ejs.

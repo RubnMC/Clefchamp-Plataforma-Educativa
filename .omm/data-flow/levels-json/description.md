@@ -1,0 +1,1 @@
+Static JSON file (data/levels.json) containing all level definitions: id, difficulty, notes (array of note strings), mode (random/sequence), clefs (treble/bass), rounds count, and experience reward. Served by the Express server at GET /play/levels and fetched client-side by gameCore.js and selectGame.js.

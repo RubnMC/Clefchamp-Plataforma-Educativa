@@ -1,0 +1,1 @@
+Express router that pattern-matches the incoming URL to a handler. Three routers are mounted: / (index), /users (users), /play (play). Each router applies a res.locals.user setter middleware before its routes.

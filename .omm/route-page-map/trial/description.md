@@ -1,0 +1,1 @@
+Unauthenticated demo mode at GET /play/trial. Renders gameScreen.ejs with isTrial=true. Game plays normally but results show a fidelization screen encouraging registration instead of XP/stats. Records are saved with userId=-1.

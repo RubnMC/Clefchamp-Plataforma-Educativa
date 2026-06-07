@@ -1,0 +1,9 @@
+created: 2026-06-03T23:19:21.952Z
+updated: 2026-06-03T23:19:21.953Z
+update_count: 1
+last_field: description
+kind: nested-class
+title: play-router
+children: []
+parentPath:
+  - route-layer

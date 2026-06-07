@@ -1,0 +1,1 @@
+On each keypress, compares pressed note against expectedNote, measures elapsed time since last note (via Cronometro), maps time to performance tier (PERFECT/EXCELLENT/GREAT/GOOD/OK), and computes points = BASE_POINTS + EXTRA_POINTS × (THRESHOLD − time). Increments aciertos/fallos and streak counters.

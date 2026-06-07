@@ -1,0 +1,13 @@
+graph LR
+    classDef entry fill:#89b4fa,stroke:#89b4fa,color:#1e1e2e
+
+    game-engine["Game Engine\npublic/javascripts/gameCore.js"]:::entry
+    game-engine -->|"render sheet music"| vex-manager["VexFlow Manager\npublic/javascripts/vexManager.js"]
+    game-engine -->|"get level config"| level-config["Level Config\npublic/javascripts/levelConfig.js"]
+    game-engine -->|"timing"| cronometro["Cronometer\npublic/javascripts/cronometro.js"]
+    game-engine -->|"UI animations"| animations["Animations\npublic/javascripts/animations.js"]
+    game-engine -->|"guided tour"| game-tutorial["Game Tutorial\npublic/javascripts/gameTutorial.js"]
+    level-ui["Level UI\npublic/javascripts/levelButtons.js"] -->|"fetch level data"| select-game["Select Game\npublic/javascripts/selectGame.js"]
+    stats-page["Stats Charts\npublic/javascripts/highchartsManager.js"]
+    social["Social / Friends\npublic/javascripts/friends.js"]
+    music-player["Music Player\npublic/javascripts/musicPlayer.js"]

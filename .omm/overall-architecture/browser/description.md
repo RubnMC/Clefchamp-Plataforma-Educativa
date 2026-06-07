@@ -1,0 +1,1 @@
+The browser client is composed of static JavaScript ES modules served from public/javascripts/. Key modules: gameCore.js (game state machine), vexManager.js (VexFlow sheet-music renderer), levelButtons.js (level-card UI factory), selectGame.js (level-selection page), animations.js, cronometro.js, highchartsManager.js, and musicPlayer.js.

@@ -1,0 +1,1 @@
+Profile page queries all records for the user (ordered by time DESC) and top 3 records (ordered by points DESC). Results are formatted with date objects and passed to profile.ejs along with unlocked icons.

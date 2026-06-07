@@ -5,8 +5,11 @@
       <h1 class="h1Profile text-break"><%=record.points%> ptos.</h1>
       <h2 class="h2Profile text-break"><%=record.time.day%>-<%=record.time.month%>-<%=record.time.year%></h2>
       <h2 class="h2Profile text-break">Atrapa-do</h2>
-      <%let color = "pastelGreen";let dificultad = "Fácil";if (record.difficulty === "NORMAL") { color = "pastelBlue";dificultad = "Normal"; }if (record.difficulty === "HARD") { color = "pastelRed"; dificultad = "Difícil"; } %>
-      <h4 class="<%=color%> rounded-4 h4Profile w-75"><%=dificultad%></h4>
+      <% const podiumLevel = levels.find(l => l.id === record.difficulty); %>
+      <% const podiumDiff = podiumLevel ? podiumLevel.difficulty : 0; %>
+      <% const podiumColor = podiumDiff <= 2 ? "pastelGreen" : podiumDiff <= 4 ? "pastelBlue" : "pastelRed"; %>
+      <% const podiumName = podiumLevel ? podiumLevel.name : record.difficulty; %>
+      <h4 class="<%=podiumColor%> rounded-4 h4Profile w-75"><%=podiumName%></h4>
     </div>
   </div>
   <div class="row my-sm-2 p-sm-1 p-0 <%=position === 3 ? 'style="background-color: #B75D0E;"' : ''%>">

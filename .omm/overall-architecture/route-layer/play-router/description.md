@@ -1,0 +1,1 @@
+Handles game mechanics: GET /play/levels (serves levels.json), GET /play/:levelId (renders game screen), PUT /play/addExperience, GET /play/getExperienceRequired/:level, GET /play/getUserLevel/:userId, POST /play/saveRecords, and GET /play/trial for unauthenticated demo mode.

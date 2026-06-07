@@ -1,0 +1,9 @@
+created: 2026-06-03T23:19:17.488Z
+updated: 2026-06-03T23:19:17.488Z
+update_count: 1
+last_field: description
+kind: nested-class
+title: index-router
+children: []
+parentPath:
+  - route-layer

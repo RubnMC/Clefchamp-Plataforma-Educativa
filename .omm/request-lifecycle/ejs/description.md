@@ -1,0 +1,1 @@
+EJS template engine renders HTML on the server using data passed from the route handler. Templates receive res.locals (user session) and explicit variables passed to res.render(). Partials in views/partials/ provide shared navigation and head markup.

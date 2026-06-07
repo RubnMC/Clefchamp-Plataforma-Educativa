@@ -11,6 +11,8 @@ const dao = new DAO(pool);
 
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const { sendWelcomeEmail } = require('../config/mailer');
+const levels = require('../data/levels.json');
 router.use((req, res, next) => {
   res.locals.user = req.session.user;
   next();
@@ -43,7 +45,7 @@ router.get("/profile", isLoggedIn, (req, res) => {
         else {
           dao.getIconsFromId(res.locals.user.id,(err,icons) => {
             if(err) console.log(err)
-            else res.render("profile", {records, topRecords,icons});
+            else res.render("profile", {records, topRecords, icons, levels});
           })
         }
       });
@@ -186,9 +188,19 @@ router.post("/register", (req, res, next) => {
                     req.session.user = sessionUser;
                     res.locals.user = sessionUser;
                     
+                    //TODO: revisar esto
                     const returnTo = req.session.returnTo || null;
                     delete req.session.returnTo;
-                    res.json({ existe: true, nombre: user.nombre, correo: user.correo, returnTo });
+
+                    sendWelcomeEmail(user.email, user.nombre);
+
+                    dao.checkAndGrantLogros(userId, {}, (err, newLogros) => {
+                      if (newLogros && newLogros.length > 0) {
+                        req.session.pendingAchievements = newLogros;
+                      }
+                      res.json({ existe: true, nombre: user.nombre, correo: user.correo, returnTo });
+                    });
+                    //TODO: revisar esto
                   });
                 });
               });
@@ -243,98 +255,77 @@ router.post('/hideTutorial', isLoggedIn, (req, res) => {
 });
 
 router.get("/globalRanking", (req, res) => {
-  dao.getTopRecordsByDifficulty("EASY", (err, easyRes) => {
-    if (err) {
-      console.error("Error en checkEmail:", err);
-      return res.status(500).json({ message: "Error en checkEmail" });
-    }
-    dao.getTopRecordsByDifficulty("NORMAL", (err, normalRes) => {
-      if (err) {
-        console.error("Error en checkEmail:", err);
-        return res.status(500).json({ message: "Error en checkEmail" });
-      }
-      dao.getTopRecordsByDifficulty("HARD", (err, hardRes) => {
-        if (err) {
-          console.error("Error en checkEmail:", err);
-          return res.status(500).json({ message: "Error en checkEmail" });
-        }
-        res.render("globalRanking",{easyRes, normalRes, hardRes});
-      });
+  const levelIds = levels.map(l => l.id);
+  const levelsRes = [];
+  let idx = 0;
+
+  function fetchNext() {
+    if (idx >= levelIds.length) return res.render("globalRanking", { levelsRes });
+    const level = levels[idx++];
+    dao.getTopRecordsByDifficulty(level.id, (err, result) => {
+      if (err) return res.status(500).json({ message: "Error en globalRanking" });
+      if (result.length > 0) levelsRes.push({ id: level.id, name: level.name, res: result });
+      fetchNext();
     });
-  });
+  }
+  fetchNext();
 });
 router.post("/setProfileIcon", (req,res) => {
   const { color, dataId, path } = req.body;
-  dao.setEmptySelectedIcon(res.locals.user.id,(err, result) => {
-    if (err) {
-      console.error("Error en checkEmail:", err);
-      return res.status(500).json({ message: "Error en prueba" });
-    } else {
-      dao.setSelectedIcon(res.locals.user.id,dataId,color,(err, result) => {
-        if (err) {
-          console.error("Error en checkEmail:", err);
-          return res.status(500).json({ message: "Error en prueba" });
-        } else {
-          res.locals.user.bgColor=color
-          res.locals.user.path=path
-          res.json(true)
-        }
-      })
-    }
-  })
-  
-  
+  const userId = res.locals.user.id;
+  dao.setEmptySelectedIcon(userId, (err) => {
+    if (err) return res.status(500).json({ message: "Error en setProfileIcon" });
+    dao.setSelectedIcon(userId, dataId, color, (err) => {
+      if (err) return res.status(500).json({ message: "Error en setProfileIcon" });
+      res.locals.user.bgColor = color;
+      res.locals.user.path = path;
+      dao.trackBgColor(userId, color, () => {
+        dao.checkAndGrantLogros(userId, {}, (err, newAchievements) => {
+          res.json({ success: true, newAchievements: newAchievements || [] });
+        });
+      });
+    });
+  });
 })
 router.get("/stats",isLoggedIn, (req, res) => {
-  
   dao.getAverage(res.locals.user.id, (err, average) => {
-      if (err) return callback(err);
+      if (err) return res.status(500).json({ message: "Error en stats" });
       dao.getTotalPlayed(res.locals.user.id, (err, totalPlayed) => {
-          if (err) return callback(err);
+          if (err) return res.status(500).json({ message: "Error en stats" });
           dao.getPositionsInRanking(res.locals.user.id, (err, ranking) => {
-              if (err) return callback(err);
+              if (err) return res.status(500).json({ message: "Error en stats" });
               dao.getAverageTiming(res.locals.user.id, (err, averageTiming) => {
+                if (err) return res.status(500).json({ message: "Error en stats" });
+
                 const stats = {};
+                levels.forEach(l => {
+                  stats[l.id] = { gamesPlayed: 0, rank: null, accuracy: null, perfect: 0, excellent: 0, great: 0, good: 0, ok: 0 };
+                });
 
                 average.forEach(row => {
-                  stats[row.difficulty.toLowerCase()] = {
-                        accuracy: row.avg_accuracy_percentage
-                    };
+                  if (stats[row.difficulty]) stats[row.difficulty].accuracy = row.avg_accuracy_percentage;
                 });
                 totalPlayed.forEach(row => {
-                    const key = row.difficulty.toLowerCase();
-                    stats[key] = {
-                        ...stats[key],
-                        gamesPlayed: row.games_played
-                    };
+                  if (stats[row.difficulty]) stats[row.difficulty].gamesPlayed = row.games_played;
+                });
+                ranking.forEach(row => {
+                  if (stats[row.difficulty]) stats[row.difficulty].rank = row.rank_position;
+                });
+                averageTiming.forEach(row => {
+                  if (stats[row.difficulty]) {
+                    stats[row.difficulty].perfect   = row.pct_perfect;
+                    stats[row.difficulty].excellent = row.pct_excellent;
+                    stats[row.difficulty].great     = row.pct_great;
+                    stats[row.difficulty].good      = row.pct_good;
+                    stats[row.difficulty].ok        = row.pct_ok;
+                  }
                 });
 
-                ranking.forEach(row => {
-                    const key = row.difficulty.toLowerCase();
-                    stats[key] = {
-                        ...stats[key],
-                        rank: row.rank_position
-                    };
-                });
-                
-                averageTiming.forEach(row => {
-                  const key = row.difficulty.toLowerCase();
-                  stats[key] = {
-                    ...stats[key],
-                    perfect: row.pct_perfect,
-                    excellent: row.pct_excellent,
-                    great: row.pct_great,
-                    good: row.pct_good,
-                    ok: row.pct_ok
-                  };
-                });
-      
-                res.render("stats",{stats})
-              })
+                res.render("stats", { stats, levels });
+              });
           });
       });
   });
-
 });
 
 router.get("/settings",isLoggedIn, (req, res) => {
@@ -343,28 +334,10 @@ router.get("/settings",isLoggedIn, (req, res) => {
 
 
 router.get("/statsForUser",isLoggedIn, (req, res) => {
-  dao.getStatsByIdAndDifficulty(res.locals.user.id,"EASY", (err, easyStats) => {
-    if (err) {
-      console.error("Error en checkEmail:", err);
-      return res.status(500).json({ message: "Error en stats easy" });
-    } else {
-      dao.getStatsByIdAndDifficulty(res.locals.user.id,"NORMAL", (err1, normalStats) => {
-        if (err1) {
-          console.error("Error en checkEmail:", err1);
-          return res.status(500).json({ message: "Error en stats normal" });
-        } else {
-          dao.getStatsByIdAndDifficulty(res.locals.user.id,"HARD", (err2, hardStats) => {
-            if (err2) {
-              console.error("Error en checkEmail:", err2);
-              return res.status(500).json({ message: "Error en stats hard" });
-            } else {
-              res.json({easyStats,normalStats,hardStats,})
-            }
-          })
-        }
-      })
-    }
-  })
+  dao.getAllStatsForUser(res.locals.user.id, (err, statsByLevel) => {
+    if (err) return res.status(500).json({ message: "Error en statsForUser" });
+    res.json({ statsByLevel });
+  });
 });
 
 router.get('/getUserByFriendcode/:friendCode', (req, res) => {
@@ -398,10 +371,14 @@ router.post('/sendRequest', (req, res) => {
 
 router.post('/acceptRequest', (req,res) => {
   const { friendId } = req.body;
-  dao.acceptRequest(res.locals.user.id,friendId, (err, resultado) => {
+  dao.acceptRequest(res.locals.user.id, friendId, (err) => {
     if (err) return res.status(500).json({ error: 'Error al obtener los datos' });
-    
-    res.redirect('/friends')
+    dao.checkAndGrantLogros(res.locals.user.id, {}, (err, newLogros) => {
+      if (newLogros && newLogros.length > 0) {
+        req.session.pendingAchievements = (req.session.pendingAchievements || []).concat(newLogros);
+      }
+      res.redirect('/users/friends');
+    });
   });
 })
 
@@ -439,5 +416,14 @@ router.post('/joinClass', isLoggedIn, isStudent, (req, res) => {
   });
 });
 
+router.get("/logros", isLoggedIn, (req, res) => {
+  dao.checkAndGrantLogros(res.locals.user.id, {}, (err, newLogros) => {
+    if (err) console.log("Error al comprobar logros:", err);
+    dao.getUserLogros(res.locals.user.id, (err, logros) => {
+      if (err) return res.status(500).json({ message: "Error al obtener logros" });
+      res.render("logros", { logros, newLogros: newLogros || [] });
+    });
+  });
+});
 
 module.exports = router;

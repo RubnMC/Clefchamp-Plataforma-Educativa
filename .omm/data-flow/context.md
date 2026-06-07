@@ -1,0 +1,1 @@
+Game records include per-note timing stored as JSON arrays in MySQL TEXT columns (individualTimes, notes, results). Scoring uses a performance tier system: time below thresholds yields PERFECT → EXCELLENT → GREAT → GOOD → OK, each with different base + extra points. Experience is accumulated per session and triggers level-up if experienceToNext reaches 0.
