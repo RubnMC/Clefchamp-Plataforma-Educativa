@@ -3,8 +3,8 @@
   <%- include('../partials/head') %>
   <body class="colorNuevo5">
     <%- include('../partials/header') %>
-    <article class="container py-5" style="max-width: 780px;">
-      <nav class="mb-4" aria-label="Breadcrumb">
+    <article class="blog-article container py-5" style="max-width: 780px;">
+      <nav class="mb-3" aria-label="Breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="/">Clefchamp</a></li>
           <li class="breadcrumb-item"><a href="/blog">Blog</a></li>
@@ -12,8 +12,13 @@
         </ol>
       </nav>
 
-      <h1 class="mb-3">Las notas musicales en el pentagrama explicadas</h1>
-      <p class="lead mb-5">Las notas musicales son los bloques básicos de cualquier composición. Si quieres aprender a leer música, lo primero es entender cómo se representan en el pentagrama y memorizarlas con confianza. Esta guía te explica todo lo que necesitas saber.</p>
+      <h1 class="mb-2">Las notas musicales en el pentagrama explicadas</h1>
+      <div class="blog-meta">
+        <span>6 min de lectura</span>
+        <span>Teoría musical</span>
+      </div>
+
+      <p class="lead mb-4">Las notas musicales son los bloques básicos de cualquier composición. Si quieres aprender a leer música, lo primero es entender cómo se representan en el pentagrama y memorizarlas con confianza. Esta guía te explica todo lo que necesitas saber.</p>
 
       <h2>¿Qué es el pentagrama?</h2>
       <p>El pentagrama (o pauta musical) es el conjunto de cinco líneas paralelas y horizontales sobre las que se escriben las notas musicales. Cada línea y cada espacio entre líneas corresponde a una nota diferente. La posición de una nota en el pentagrama determina su altura: cuanto más arriba, más aguda; cuanto más abajo, más grave.</p>
@@ -33,15 +38,21 @@
 
       <h2>La clave de sol: el punto de partida</h2>
       <p>La clave es el símbolo que aparece al principio del pentagrama y define qué nota corresponde a cada posición. La clave más utilizada —y la que aprenderás primero— es la <strong>clave de sol</strong>, que indica que la segunda línea del pentagrama es la nota Sol (G4).</p>
-      <p>Con la clave de sol, las notas en las líneas (de abajo a arriba) son:<br>
-      <strong>Mi – Sol – Si – Re – Fa</strong></p>
-      <p>Y las notas en los espacios (de abajo a arriba) son:<br>
-      <strong>Fa – La – Do – Mi</strong></p>
+
+      <div class="blog-note-box">
+        <span class="note-label">Clave de sol</span>
+        Líneas (de abajo a arriba): <strong>Mi – Sol – Si – Re – Fa</strong><br>
+        Espacios (de abajo a arriba): <strong>Fa – La – Do – Mi</strong>
+      </div>
 
       <h2>La clave de fa: para instrumentos graves</h2>
       <p>La <strong>clave de fa</strong> se usa para instrumentos de registro grave: bajo, cello, trombón, fagot. En esta clave, la cuarta línea corresponde a la nota Fa.</p>
-      <p>Las notas en las líneas son: <strong>Sol – Si – Re – Fa – La</strong><br>
-      Y en los espacios: <strong>La – Do – Mi – Sol</strong></p>
+
+      <div class="blog-note-box">
+        <span class="note-label">Clave de fa</span>
+        Líneas (de abajo a arriba): <strong>Sol – Si – Re – Fa – La</strong><br>
+        Espacios (de abajo a arriba): <strong>La – Do – Mi – Sol</strong>
+      </div>
 
       <h2>Cómo memorizar las notas en el pentagrama</h2>
 
@@ -54,8 +65,9 @@
 
       <h3>Práctica con juegos interactivos</h3>
       <p>La repetición gamificada es una de las formas más efectivas de memorizar notas musicales. <a href="/"><strong>Clefchamp</strong></a> presenta notas en el pentagrama que debes identificar lo más rápido posible, registrando tu tiempo de reacción y tu precisión por cada nota. Cuantas más partidas juegas, más automático se vuelve el reconocimiento.</p>
-      <div class="my-4 p-4 rounded-4 bg-15 text-center">
-        <p class="mb-3">Entrena el reconocimiento de notas musicales en el pentagrama</p>
+
+      <div class="blog-cta">
+        <p>Entrena el reconocimiento de notas musicales en el pentagrama</p>
         <a href="/play/atrapado/trial"><button class="acceptButton">Jugar gratis sin registrarse →</button></a>
       </div>
 
@@ -76,13 +88,13 @@
       <h2>Conclusión</h2>
       <p>Memorizar las notas en el pentagrama lleva tiempo y práctica constante, pero es completamente posible para cualquier persona. La clave está en practicar un poco cada día con diferentes métodos: frases mnemotécnicas, flashcards y juegos interactivos como Clefchamp. En pocas semanas verás un avance notable.</p>
 
-      <div class="my-4 p-4 rounded-4 bg-15 text-center">
-        <p class="mb-3">Empieza hoy a practicar el reconocimiento de notas</p>
+      <div class="blog-cta">
+        <p>Empieza hoy a practicar el reconocimiento de notas</p>
         <a href="/play/atrapado/trial"><button class="acceptButton">Probar Clefchamp gratis →</button></a>
       </div>
 
-      <div class="mt-5 pt-4 border-top">
-        <p class="text-muted">Artículos relacionados:</p>
+      <div class="blog-related">
+        <h3>Artículos relacionados</h3>
         <ul>
           <li><a href="/blog/como-aprender-solfeo">Cómo aprender solfeo desde cero</a></li>
           <li><a href="/blog/gamificacion-musical">Gamificación musical: aprender música jugando</a></li>

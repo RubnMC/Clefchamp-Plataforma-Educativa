@@ -3,8 +3,8 @@
   <%- include('../partials/head') %>
   <body class="colorNuevo5">
     <%- include('../partials/header') %>
-    <article class="container py-5" style="max-width: 780px;">
-      <nav class="mb-4" aria-label="Breadcrumb">
+    <article class="blog-article container py-5" style="max-width: 780px;">
+      <nav class="mb-3" aria-label="Breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="/">Clefchamp</a></li>
           <li class="breadcrumb-item"><a href="/blog">Blog</a></li>
@@ -12,8 +12,13 @@
         </ol>
       </nav>
 
-      <h1 class="mb-3">Cómo aprender solfeo desde cero</h1>
-      <p class="lead mb-5">El solfeo es la base de cualquier aprendizaje musical. Si alguna vez has intentado leer una partitura y te has sentido perdido ante las notas del pentagrama, esta guía es para ti. Te explicamos paso a paso cómo aprender solfeo desde cero, desde los conceptos más básicos hasta cómo practicar de forma efectiva y divertida.</p>
+      <h1 class="mb-2">Cómo aprender solfeo desde cero</h1>
+      <div class="blog-meta">
+        <span>5 min de lectura</span>
+        <span>Guía para principiantes</span>
+      </div>
+
+      <p class="lead mb-4">El solfeo es la base de cualquier aprendizaje musical. Si alguna vez has intentado leer una partitura y te has sentido perdido ante las notas del pentagrama, esta guía es para ti. Te explicamos paso a paso cómo aprender solfeo desde cero, desde los conceptos más básicos hasta cómo practicar de forma efectiva y divertida.</p>
 
       <h2>¿Qué es el solfeo?</h2>
       <p>El solfeo es el sistema que permite leer y cantar música a partir de una partitura. Es la habilidad de identificar las notas escritas en un pentagrama, entender su duración (ritmo) y reproducirlas vocalmente o mentalmente. Dominar el solfeo te da independencia musical: puedes aprender cualquier pieza sin necesidad de escucharla primero.</p>
@@ -37,8 +42,12 @@
 
       <h3>La clave de sol</h3>
       <p>La clave de sol es la más común y la que aprenderás primero. Se coloca al inicio del pentagrama y define que la segunda línea corresponde a la nota Sol (G4). A partir de ahí puedes deducir el resto de las notas por su posición relativa.</p>
-      <p>Las notas en las <strong>líneas</strong> (de abajo a arriba) son: Mi – Sol – Si – Re – Fa<br>
-      Las notas en los <strong>espacios</strong> (de abajo a arriba) son: Fa – La – Do – Mi</p>
+
+      <div class="blog-note-box">
+        <span class="note-label">Clave de sol — referencia rápida</span>
+        Líneas (de abajo a arriba): <strong>Mi – Sol – Si – Re – Fa</strong><br>
+        Espacios (de abajo a arriba): <strong>Fa – La – Do – Mi</strong>
+      </div>
 
       <h3>Las figuras y el ritmo</h3>
       <p>Cada nota tiene también una duración: la redonda dura 4 tiempos, la blanca 2, la negra 1 y la corchea medio tiempo. El ritmo es tan importante como la altura de las notas. Puedes conocer todas las notas y aun así no poder tocar una pieza si no entiendes su ritmo.</p>
@@ -46,15 +55,16 @@
       <h2>Cómo practicar el solfeo de forma efectiva</h2>
 
       <h3>Empieza memorizando las notas del pentagrama</h3>
-      <p>Dedica los primeros días a memorizar las posiciones de las notas en clave de sol. Un truco clásico para las líneas: <em>"Mi Señora Sirvió Ricas Fresas"</em> (Mi, Sol, Si, Re, Fa). Para los espacios: <em>"FaLaDo Mi"</em>. Una vez tengas esto claro, el resto fluye mucho más rápido.</p>
+      <p>Dedica los primeros días a memorizar las posiciones de las notas en clave de sol. Un truco clásico para las líneas: <em>"Mi Señora Sirvió Ricas Fresas"</em> (Mi, Sol, Si, Re, Fa). Para los espacios: <em>"FaLaDo Mi"</em> (suena casi como una palabra). Una vez tengas esto claro, el resto fluye mucho más rápido.</p>
 
       <h3>Practica el reconocimiento visual de notas</h3>
       <p>El reconocimiento rápido de notas es una habilidad que se desarrolla con la repetición. Empieza despacio, identificando cada nota con calma, y aumenta la velocidad conforme dominas las posiciones. El objetivo es reconocer las notas de forma automática, sin tener que contar desde una nota de referencia.</p>
 
       <h3>Usa herramientas interactivas</h3>
       <p>Una de las formas más efectivas de practicar el reconocimiento de notas es mediante juegos interactivos. <a href="/"><strong>Clefchamp</strong></a> es una plataforma gratuita que convierte el solfeo en un juego: identifica notas en el pentagrama contra el reloj, acumula experiencia y sube de nivel. El registro de tus tiempos de reacción por nota te ayuda a identificar exactamente qué notas necesitas practicar más.</p>
-      <div class="my-4 p-4 rounded-4 bg-15 text-center">
-        <p class="mb-3">Practica el reconocimiento de notas musicales de forma gratuita</p>
+
+      <div class="blog-cta">
+        <p>Practica el reconocimiento de notas musicales de forma gratuita</p>
         <a href="/play/atrapado/trial"><button class="acceptButton">Probar Clefchamp gratis →</button></a>
       </div>
 
@@ -75,13 +85,13 @@
       <h2>Conclusión</h2>
       <p>Aprender solfeo es un proceso gradual que requiere práctica constante, pero es totalmente accesible para cualquier persona sin conocimientos previos. Empieza por los fundamentos, practica a diario y utiliza herramientas como Clefchamp para hacer el proceso más dinámico y motivador.</p>
 
-      <div class="my-4 p-4 rounded-4 bg-15 text-center">
-        <p class="mb-3">¿Listo para empezar? Prueba el reconocimiento de notas sin registrarte</p>
+      <div class="blog-cta">
+        <p>¿Listo para empezar? Prueba el reconocimiento de notas sin registrarte</p>
         <a href="/play/atrapado/trial"><button class="acceptButton">Empezar ahora →</button></a>
       </div>
 
-      <div class="mt-5 pt-4 border-top">
-        <p class="text-muted">Artículos relacionados:</p>
+      <div class="blog-related">
+        <h3>Artículos relacionados</h3>
         <ul>
           <li><a href="/blog/notas-musicales-pentagrama">Las notas musicales en el pentagrama explicadas</a></li>
           <li><a href="/blog/gamificacion-musical">Gamificación musical: aprender música jugando</a></li>
