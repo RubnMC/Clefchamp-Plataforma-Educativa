@@ -16,61 +16,253 @@
       <h1 class="mb-1"><%= student.tagname %></h1>
       <p class="text-muted mb-4"><%= student.friendCode %></p>
 
-      <!-- Levels grid -->
-      <h4 class="mb-3">Niveles</h4>
-      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-5">
-        <% levels.forEach(function(lvl) { %>
+      <ul class="nav nav-tabs mb-3" id="studentDetailTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="tab-niveles" data-bs-toggle="tab"
+                  data-bs-target="#panel-niveles" type="button" role="tab">Acceso</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tab-estadisticas" data-bs-toggle="tab"
+                  data-bs-target="#panel-estadisticas" type="button" role="tab">Estadísticas</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tab-historial" data-bs-toggle="tab"
+                  data-bs-target="" type="button" role="tab">Historial</button>
+        </li>
+
+      </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="panel-niveles" role="tabpanel">
           <%
-            const isUnlocked = unlockedLevelIds.includes(lvl.id);
-            const prog = progress.find(p => p.levelId === lvl.id);
+            const unlockedLevels = levels.filter(l => unlockedLevelIds.includes(l.id));
+            const lockedLevels   = levels.filter(l => !unlockedLevelIds.includes(l.id));
           %>
-          <div class="col">
-            <div class="card h-100 shadow-sm <%= isUnlocked ? 'border-success' : '' %>">
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                  <div>
-                    <span class="badge bg-secondary me-1">LV.<%= lvl.num %></span>
-                    <span class="badge bg-light text-dark"><%= lvl.category %></span>
+          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-5">
+            <% unlockedLevels.forEach(function(lvl) { %>
+              <%
+                const isUnlocked = true;
+                const prog = progress.find(p => p.levelId === lvl.id);
+              %>
+              <div class="col">
+                <div class="card h-100 shadow-sm <%= isUnlocked ? 'border-success' : '' %>">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                      <div>
+                        <span class="badge bg-secondary me-1">LV.<%= lvl.num %></span>
+                        <span class="badge bg-light text-dark"><%= lvl.category %></span>
+                      </div>
+                      <% if (isUnlocked) { %>
+                        <span class="badge bg-success">Desbloqueado</span>
+                      <% } else { %>
+                        <span class="badge bg-light text-muted">Bloqueado</span>
+                      <% } %>
+                    </div>
+                    <h6 class="card-title mt-2 mb-1"><%= lvl.name %></h6>
+                    <% if (prog) { %>
+                      <p class="card-text small text-muted mb-2">
+                        Partidas: <strong><%= prog.games %></strong> &nbsp;·&nbsp;
+                        Mejor puntuación: <strong><%= prog.bestScore %></strong>
+                      </p>
+                    <% } else if (isUnlocked) { %>
+                      <p class="card-text small text-muted mb-2">Sin partidas aún.</p>
+                    <% } else { %>
+                      <p class="card-text small text-muted mb-2">&nbsp;</p>
+                    <% } %>
+                    <% if (!isUnlocked) { %>
+                      <form method="POST" action="/teacher/students/<%= student.id %>/unlock">
+                        <input type="hidden" name="levelId" value="<%= lvl.id %>">
+                        <button type="submit" class="btn btn-sm btn-outline-success w-100">
+                          Desbloquear
+                        </button>
+                      </form>
+                    <% } else { %>
+                      <form method="POST" action="/teacher/students/<%= student.id %>/lock">
+                        <input type="hidden" name="levelId" value="<%= lvl.id %>">
+                        <button type="submit" class="btn btn-sm btn-outline-secondary w-100">
+                          Bloquear
+                        </button>
+                      </form>
+                    <% } %>
                   </div>
-                  <% if (isUnlocked) { %>
-                    <span class="badge bg-success">Desbloqueado</span>
-                  <% } else { %>
-                    <span class="badge bg-light text-muted">Bloqueado</span>
-                  <% } %>
                 </div>
-                <h6 class="card-title mt-2 mb-1"><%= lvl.name %></h6>
-                <% if (prog) { %>
-                  <p class="card-text small text-muted mb-2">
-                    Partidas: <strong><%= prog.games %></strong> &nbsp;·&nbsp;
-                    Mejor puntuación: <strong><%= prog.bestScore %></strong>
-                  </p>
-                <% } else if (isUnlocked) { %>
-                  <p class="card-text small text-muted mb-2">Sin partidas aún.</p>
-                <% } else { %>
-                  <p class="card-text small text-muted mb-2">&nbsp;</p>
-                <% } %>
-                <% if (!isUnlocked) { %>
-                  <form method="POST" action="/teacher/students/<%= student.id %>/unlock">
-                    <input type="hidden" name="levelId" value="<%= lvl.id %>">
-                    <button type="submit" class="btn btn-sm btn-outline-success w-100">
-                      Desbloquear
-                    </button>
-                  </form>
-                <% } else { %>
-                  <form method="POST" action="/teacher/students/<%= student.id %>/lock">
-                    <input type="hidden" name="levelId" value="<%= lvl.id %>">
-                    <button type="submit" class="btn btn-sm btn-outline-secondary w-100">
-                      Bloquear
-                    </button>
-                  </form>
-                <% } %>
               </div>
-            </div>
+            <% }); %>
           </div>
-        <% }); %>
+
+          <% if (lockedLevels.length > 0) { %>
+            <div class="d-flex align-items-center my-3">
+              <hr class="flex-grow-1 m-0">
+              <span class="mx-3 text-muted small">Niveles bloqueados</span>
+              <hr class="flex-grow-1 m-0">
+            </div>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-5">
+              <% lockedLevels.forEach(function(lvl) { %>
+                <%
+                  const isUnlocked = false;
+                  const prog = progress.find(p => p.levelId === lvl.id);
+                %>
+                <div class="col">
+                  <div class="card h-100 shadow-sm <%= isUnlocked ? 'border-success' : '' %>">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                          <span class="badge bg-secondary me-1">LV.<%= lvl.num %></span>
+                          <span class="badge bg-light text-dark"><%= lvl.category %></span>
+                        </div>
+                        <% if (isUnlocked) { %>
+                          <span class="badge bg-success">Desbloqueado</span>
+                        <% } else { %>
+                          <span class="badge bg-light text-muted">Bloqueado</span>
+                        <% } %>
+                      </div>
+                      <h6 class="card-title mt-2 mb-1"><%= lvl.name %></h6>
+                      <% if (prog) { %>
+                        <p class="card-text small text-muted mb-2">
+                          Partidas: <strong><%= prog.games %></strong> &nbsp;·&nbsp;
+                          Mejor puntuación: <strong><%= prog.bestScore %></strong>
+                        </p>
+                      <% } else if (isUnlocked) { %>
+                        <p class="card-text small text-muted mb-2">Sin partidas aún.</p>
+                      <% } else { %>
+                        <p class="card-text small text-muted mb-2">&nbsp;</p>
+                      <% } %>
+                      <% if (!isUnlocked) { %>
+                        <form method="POST" action="/teacher/students/<%= student.id %>/unlock">
+                          <input type="hidden" name="levelId" value="<%= lvl.id %>">
+                          <button type="submit" class="btn btn-sm btn-outline-success w-100">
+                            Desbloquear
+                          </button>
+                        </form>
+                      <% } else { %>
+                        <form method="POST" action="/teacher/students/<%= student.id %>/lock">
+                          <input type="hidden" name="levelId" value="<%= lvl.id %>">
+                          <button type="submit" class="btn btn-sm btn-outline-secondary w-100">
+                            Bloquear
+                          </button>
+                        </form>
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+
+        <div class="tab-pane fade" id="panel-estadisticas" role="tabpanel">
+          <div id="levelBestScoreChart" style="width:100%;height:350px;"></div>
+          <div id="noteStatsChart" style="width:100%;height:400px;"></div>
+          <div id="noteStatsNoData" class="d-none text-center text-muted py-5">
+            <p>Este alumno aún no tiene partidas registradas.</p>
+          </div>
+        </div>
       </div>
     </div>
 
     <%- include('../partials/footer') %>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script>
+      var levelProgress = <%- JSON.stringify(progress) %>;
+      var allLevels     = <%- JSON.stringify(levels) %>;
+      (function () {
+        var stored = localStorage.getItem('studentDetailTab');
+        if (stored) {
+          var btn = document.querySelector('[data-bs-target="' + stored + '"]');
+          if (btn) bootstrap.Tab.getOrCreateInstance(btn).show();
+        }
+        document.querySelectorAll('#studentDetailTabs [data-bs-toggle="tab"]').forEach(function (btn) {
+          btn.addEventListener('shown.bs.tab', function () {
+            localStorage.setItem('studentDetailTab', btn.dataset.bsTarget);
+          });
+        });
+
+        var studentId = <%= student.id %>;
+        var chartLoaded = false;
+
+        function loadChart() {
+          if (chartLoaded) return;
+          chartLoaded = true;
+
+          var played = allLevels
+            .filter(function (l) { return levelProgress.some(function (p) { return p.levelId === l.id; }); })
+            .sort(function (a, b) { return a.num - b.num; });
+
+          if (played.length > 0) {
+            var lvlCategories = played.map(function (l) { return l.name; });
+            var lvlData = played.map(function (l) {
+              return levelProgress.find(function (p) { return p.levelId === l.id; }).bestScore;
+            });
+            Highcharts.chart('levelBestScoreChart', {
+              chart: { type: 'bar' },
+              title: { text: 'Mejor puntuación por nivel' },
+              xAxis: { categories: lvlCategories },
+              yAxis: { min: 0, title: { text: '' } },
+              plotOptions: { series: { colorByPoint: true } },
+              tooltip: { valueSuffix: ' pts' },
+              series: [{ name: 'Mejor puntuación', data: lvlData, showInLegend: false }],
+              credits: { enabled: false }
+            });
+          } else {
+            document.getElementById('levelBestScoreChart').classList.add('d-none');
+          }
+
+          fetch('/teacher/students/' + studentId + '/note-stats')
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+              var stats = data.stats;
+              if (!stats || stats.length === 0) {
+                document.getElementById('noteStatsChart').classList.add('d-none');
+                document.getElementById('noteStatsNoData').classList.remove('d-none');
+                return;
+              }
+
+              var categories = stats.map(function (s) {
+                return '<span>' + s.note + '</span><br>'
+                     + '<small style="font-size:10px;color:#888">'
+                     + s.success + '✓ / ' + s.fail + '✗</small>';
+              });
+
+              Highcharts.chart('noteStatsChart', {
+                chart: { type: 'column' },
+                title: { text: 'Aciertos y fallos por nota' },
+                xAxis: {
+                  categories: categories,
+                  labels: { useHTML: true }
+                },
+                yAxis: {
+                  min: 0,
+                  max: 100,
+                  title: { text: '' },
+                  labels: { format: '{value}%' }
+                },
+                plotOptions: {
+                  series: { stacking: 'percent' }
+                },
+                tooltip: {
+                  formatter: function () {
+                    return '<b>' + this.series.name + '</b>: '
+                         + Highcharts.numberFormat(this.percentage, 1) + '%';
+                  }
+                },
+                series: [
+                  { name: 'Aciertos', data: stats.map(function (s) { return s.success; }), color: '#28a745' },
+                  { name: 'Fallos',   data: stats.map(function (s) { return s.fail; }),    color: '#dc3545' }
+                ],
+                legend: { enabled: true },
+                credits: { enabled: false }
+              });
+            })
+            .catch(function () {
+              document.getElementById('noteStatsChart').classList.add('d-none');
+              document.getElementById('noteStatsNoData').classList.remove('d-none');
+            });
+        }
+
+        document.getElementById('tab-estadisticas').addEventListener('shown.bs.tab', loadChart);
+
+        if (stored === '#panel-estadisticas') loadChart();
+      })();
+    </script>
   </body>
 </html>

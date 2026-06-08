@@ -44,6 +44,14 @@ router.get("/students/:studentId", isLoggedIn, isTeacher, (req, res) => {
   });
 });
 
+router.get("/students/:studentId/note-stats", isLoggedIn, isTeacher, (req, res) => {
+  const studentId = parseInt(req.params.studentId, 10);
+  dao.getNoteStats(studentId, (err, stats) => {
+    if (err) return res.status(500).json({ error: true });
+    res.json({ stats });
+  });
+});
+
 router.post("/students/:studentId/unlock", isLoggedIn, isTeacher, (req, res) => {
   const studentId = parseInt(req.params.studentId, 10);
   const { levelId } = req.body;

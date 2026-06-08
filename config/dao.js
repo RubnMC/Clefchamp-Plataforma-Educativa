@@ -1095,6 +1095,82 @@ class DAO {
         });
     }
 
+    getStudentHistoryByLevel(studentId, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) return callback(err, null);
+            const query = `
+                SELECT levelId,
+                       JSON_ARRAYAGG(
+                           JSON_OBJECT(
+                               'points',    points,
+                               'success',   success,
+                               'error',     error,
+                               'perfect',   perfect,
+                               'excellent', excellent,
+                               'great',     great,
+                               'good',      good,
+                               'ok',        ok,
+                               'time',      time,
+                               'notes',     JSON_QUERY(notes, '$'),
+                               'results',   JSON_QUERY(results, '$')
+                           )
+                       ) AS games
+                FROM userrecord
+                WHERE userId = ? AND levelId IS NOT NULL
+                GROUP BY levelId
+                ORDER BY levelId
+            `;
+            connection.query(query, [studentId], (err, rows) => {
+                connection.release();
+                if (err) return callback(err, null);
+                const result = {};
+                for (const row of rows) {
+                    result[row.levelId] = typeof row.games === 'string' ? JSON.parse(row.games) : row.games;
+                }
+                callback(null, result);
+            });
+        });
+    }
+
+    getNoteStats(userId, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) return callback(err, null);
+            const query = `SELECT notes, results FROM userrecord WHERE userId = ?`;
+            connection.query(query, [userId], (err, rows) => {
+                connection.release();
+                if (err) return callback(err, null);
+
+                const stats = {};
+                for (const row of rows) {
+                    let notes, results;
+                    try {
+                        notes = JSON.parse(row.notes);
+                        results = JSON.parse(row.results);
+                    } catch (_) { continue; }
+                    if (!Array.isArray(notes) || !Array.isArray(results)) continue;
+
+                    const len = Math.min(notes.length, results.length);
+                    for (let i = 0; i < len; i++) {
+                        const note = notes[i];
+                        if (!stats[note]) stats[note] = { success: 0, fail: 0 };
+                        if (results[i]) stats[note].success++;
+                        else stats[note].fail++;
+                    }
+                }
+
+                const output = Object.entries(stats).map(([note, { success, fail }]) => ({
+                    note,
+                    success,
+                    fail,
+                    total: success + fail,
+                    accuracy: success + fail > 0 ? Math.round((success / (success + fail)) * 10000) / 100 : 0
+                }));
+
+                callback(null, output);
+            });
+        });
+    }
+
 
 }
 
