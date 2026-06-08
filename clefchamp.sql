@@ -250,6 +250,7 @@ CREATE TABLE `usuarios` (
   `joindate` timestamp NOT NULL DEFAULT current_timestamp(),
   `friendCode` varchar(10) NOT NULL,
   `active` tinyint(1) DEFAULT 1,
+  `keyboardConfig` text DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

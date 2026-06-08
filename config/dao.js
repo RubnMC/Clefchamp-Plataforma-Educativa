@@ -888,6 +888,23 @@ class DAO {
         });
     }
 
+    getUserBestScores(userId, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) return callback(err, null);
+            const query = `
+                SELECT difficulty, MAX(points) AS points
+                FROM userrecord
+                WHERE userId = ?
+                GROUP BY difficulty
+            `;
+            connection.query(query, [userId], (err, result) => {
+                connection.release();
+                if (err) callback(err, null);
+                else callback(null, result);
+            });
+        });
+    }
+
     // --- Teacher/Student role methods ---
 
     getUserById(userId, callback) {
@@ -1095,6 +1112,17 @@ class DAO {
         });
     }
 
+    getKeyboardConfig(userId, callback) {
+        this.pool.query('SELECT keyboardConfig FROM usuarios WHERE id = ?', [userId], (err, rows) => {
+            if (err || !rows.length || !rows[0].keyboardConfig) return callback(err || null, null);
+            try { callback(null, JSON.parse(rows[0].keyboardConfig)); } catch { callback(null, null); }
+        });
+    }
+
+    saveKeyboardConfig(userId, notes, callback) {
+        this.pool.query('UPDATE usuarios SET keyboardConfig = ? WHERE id = ?',
+            [JSON.stringify(notes), userId], (err) => callback(err || null));
+    }
 
 }
 

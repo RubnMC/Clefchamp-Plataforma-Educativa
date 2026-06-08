@@ -1,0 +1,47 @@
+<div id="keyboardConfigModal" class="modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4" style="border:0; background-color:#F2E7DC;">
+      <div class="modal-body">
+        <h3 class="text-center mb-2">Configuración de teclado</h3>
+        <p class="text-center small text-muted mb-3">
+          Haz clic en un campo y pulsa la tecla que quieras asignar.
+        </p>
+        <div class="d-flex flex-wrap justify-content-center gap-3 mb-3">
+          <div class="text-center" data-note="c">
+            <div class="small fw-semibold mb-1">Do</div>
+            <input class="key-capture tecla-guia" style="width:48px;height:48px;font-size:1rem;cursor:pointer;text-align:center;" readonly>
+          </div>
+          <div class="text-center" data-note="d">
+            <div class="small fw-semibold mb-1">Re</div>
+            <input class="key-capture tecla-guia" style="width:48px;height:48px;font-size:1rem;cursor:pointer;text-align:center;" readonly>
+          </div>
+          <div class="text-center" data-note="e">
+            <div class="small fw-semibold mb-1">Mi</div>
+            <input class="key-capture tecla-guia" style="width:48px;height:48px;font-size:1rem;cursor:pointer;text-align:center;" readonly>
+          </div>
+          <div class="text-center" data-note="f">
+            <div class="small fw-semibold mb-1">Fa</div>
+            <input class="key-capture tecla-guia" style="width:48px;height:48px;font-size:1rem;cursor:pointer;text-align:center;" readonly>
+          </div>
+          <div class="text-center" data-note="g">
+            <div class="small fw-semibold mb-1">Sol</div>
+            <input class="key-capture tecla-guia" style="width:48px;height:48px;font-size:1rem;cursor:pointer;text-align:center;" readonly>
+          </div>
+          <div class="text-center" data-note="a">
+            <div class="small fw-semibold mb-1">La</div>
+            <input class="key-capture tecla-guia" style="width:48px;height:48px;font-size:1rem;cursor:pointer;text-align:center;" readonly>
+          </div>
+          <div class="text-center" data-note="b">
+            <div class="small fw-semibold mb-1">Si</div>
+            <input class="key-capture tecla-guia" style="width:48px;height:48px;font-size:1rem;cursor:pointer;text-align:center;" readonly>
+          </div>
+        </div>
+        <p id="kbConfigError" class="text-danger text-center small d-none">Hay teclas duplicadas. Corrige antes de guardar.</p>
+        <div class="d-flex justify-content-center gap-2 mt-3">
+          <button id="kbConfigResetBtn" class="cancelButton-sm">Restablecer</button>
+          <button id="kbConfigSaveBtn" class="acceptButton-sm">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

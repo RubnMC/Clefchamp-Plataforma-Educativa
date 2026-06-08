@@ -13,6 +13,7 @@ var joinRouter = require('./routes/join');
 
 const session = require('express-session')
 var mysqlStore = require('express-mysql-session')(session);
+const { csrfMiddleware, csrfProtection } = require('./middleware/csrf');
 
 require("dotenv").config({ path: process.env.NODE_ENV === "development" ? '.env' : '.env.production' });
 var app = express();
@@ -58,6 +59,9 @@ app.use((req, res, next) => {
   req.session.pendingAchievements = [];
   next();
 });
+
+app.use(csrfMiddleware);
+app.use(csrfProtection);
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

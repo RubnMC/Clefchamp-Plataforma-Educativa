@@ -70,6 +70,21 @@ const GameState = {
     // Cronómetro del juego
     cronometro: null,
 
+    async _loadKeyboardConfig() {
+        if (!window.isTrial) {
+            try {
+                const res = await fetch('/users/keyboardConfig');
+                const data = await res.json();
+                if (data.config) return data.config;
+            } catch {}
+        }
+        try {
+            const local = localStorage.getItem('keyboardConfig');
+            if (local) return JSON.parse(local);
+        } catch {}
+        return null;
+    },
+
     // Inicializa el juego
     async initialize() {
         this.current.difficulty = window.location.pathname.split("/")[2];
@@ -77,6 +92,8 @@ const GameState = {
         Object.assign(this.config, getConfig(this.current.difficulty));
         localStorage.setItem("lastPlayed", this.current.difficulty)
         // Inicializar mapeos de teclas
+        const savedNotes = await this._loadKeyboardConfig();
+        if (savedNotes) this.keyMapping.notes = savedNotes;
         this.keyMapping.keyMap = Object.fromEntries(this.keyMapping.notes.map(({ key, note }) => [key, note]));
         this.keyMapping.visualKeyMap = Object.fromEntries(this.keyMapping.notes.map(({ key, note }) => [key, `.note${note}`]));
 
@@ -161,53 +178,39 @@ const GameState = {
         
         $('.notec, .noted, .notee, .notef, .noteg, .notea, .noteb')
         .on('mousedown touchstart', (event) => {
-            event.preventDefault(); 
-            const noteClass = event.target.className.split(' ')[1]; 
-            const note = noteClass.replace('note', ''); 
-            
-            const keyMap = {
-                'c': 'a',
-                'd': 's',
-                'e': 'd',
-                'f': 'f',
-                'g': 'j',
-                'a': 'k',
-                'b': 'l'
-            };
-            
+            event.preventDefault();
+            const noteClass = event.target.className.split(' ')[1];
+            const note = noteClass.replace('note', '');
+
+            const reverseMap = Object.fromEntries(this.keyMapping.notes.map(({ key, note }) => [note, key]));
+            const mappedKey = reverseMap[note];
+
             const keyEvent = new KeyboardEvent('keydown', {
-                key: keyMap[note],
-                code: `Key${keyMap[note].toUpperCase()}`,
-                keyCode: keyMap[note].charCodeAt(0),
-                which: keyMap[note].charCodeAt(0),
+                key: mappedKey,
+                code: `Key${mappedKey.toUpperCase()}`,
+                keyCode: mappedKey.charCodeAt(0),
+                which: mappedKey.charCodeAt(0),
                 bubbles: true
             });
-            
+
             document.dispatchEvent(keyEvent);
         })
         .on('mouseup mouseleave touchend touchcancel', (event) => {
-            event.preventDefault(); // Prevent default behavior
+            event.preventDefault();
             const noteClass = event.target.className.split(' ')[1];
             const note = noteClass.replace('note', '');
-            
-            const keyMap = {
-                'c': 'a',
-                'd': 's',
-                'e': 'd',
-                'f': 'f',
-                'g': 'j',
-                'a': 'k',
-                'b': 'l'
-            };
-            
+
+            const reverseMap = Object.fromEntries(this.keyMapping.notes.map(({ key, note }) => [note, key]));
+            const mappedKey = reverseMap[note];
+
             const keyUpEvent = new KeyboardEvent('keyup', {
-                key: keyMap[note],
-                code: `Key${keyMap[note].toUpperCase()}`,
-                keyCode: keyMap[note].charCodeAt(0),
-                which: keyMap[note].charCodeAt(0),
+                key: mappedKey,
+                code: `Key${mappedKey.toUpperCase()}`,
+                keyCode: mappedKey.charCodeAt(0),
+                which: mappedKey.charCodeAt(0),
                 bubbles: true
             });
-            
+
             document.dispatchEvent(keyUpEvent);
         });
     
@@ -642,6 +645,7 @@ const GameState = {
         else emptyMiniClef();
     }
 };
+window.GameState = GameState;
 $(function() {
     GameState.initialize();
 });

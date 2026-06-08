@@ -462,6 +462,11 @@ input[type="password"] {
     border: 0;
 }
 
+input.key-capture {
+    border: 1.5px solid black;
+    box-shadow: 0px 7.2px 0px black;
+}
+
 #successMessage{
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: black;

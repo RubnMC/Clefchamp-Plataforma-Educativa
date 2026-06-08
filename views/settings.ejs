@@ -2,37 +2,44 @@
 <html lang="es">
   <%-include('partials/head') %>
   <body class="colorNuevo5">
-      <%-include('partials/header') %> 
-      <div class="vh-90">
-        <div class=" d-flex flex-column align-items-center bg-10 rounded-4 mx-4 p-5 ">
-          
-          <h1>Ajustes</h1>
+      <%-include('partials/header') %>
+      <div class="vh-90 d-flex flex-column align-items-center py-5 px-4">
+        <h1 class="mb-4">Ajustes</h1>
+        <div class="d-flex flex-column gap-3 w-100" style="max-width:600px;">
 
           <% if(user && user.role === 'student' && !user.teacherId) { %>
-          <section class="mb-4">
-            <h3>Unirse a una clase</h3>
-            <p>Introduce el código de tu profesor para unirte a su clase y acceder a los niveles que te haya asignado.</p>
+          <div class="bg-10 rounded-4 p-4">
+            <h4 class="mb-1">Unirse a una clase</h4>
+            <p class="text-muted small mb-3">Introduce el código de tu profesor para unirte a su clase y acceder a los niveles que te haya asignado.</p>
             <div class="d-flex gap-2 align-items-center">
-              <input type="text" id="teacherCodeInput" class="form-control w-auto" placeholder="#XXXXXXXX" maxlength="10">
-              <button id="joinClassBtn" class="btn btn-primary">Unirse</button>
+              <input type="text" id="teacherCodeInput" class="form-control" style="border:1.5px solid #350D40; border-radius:0.6em; background:#F2E7DC;" placeholder="#XXXXXXXX" maxlength="10">
+              <button id="joinClassBtn" class="acceptButton-sm" style="white-space:nowrap;">Unirse</button>
             </div>
-            <p id="joinClassMsg" class="mt-2 small"></p>
-          </section>
-          <hr>
+            <p id="joinClassMsg" class="mt-2 small mb-0"></p>
+          </div>
           <% } %>
 
-          <section>
+          <div class="bg-10 rounded-4 p-4">
+            <h4 class="mb-1">Configuración de teclado</h4>
+            <p class="text-muted small mb-3">Personaliza qué teclas corresponden a cada nota musical.</p>
+            <button class="acceptButton-sm" onclick="openKeyboardConfigModal()">Configurar teclado</button>
+          </div>
 
-            <h3>Borrar cuenta</h3>
-            <p>Esta acción hará que su cuenta entre en modo inactivo. Si permanece 30 días inactivo la cuenta y todos los datos serán eliminados de la aplicación. Si durante este periodo desea reactivar la cuenta solo tiene que iniciar sesión.</p>
-            <button id="deleteBtn" class="btn btn-danger">Borrar cuenta</button>
-          </section>
+          <div class="bg-10 rounded-4 p-4">
+            <h4 class="mb-1">Borrar cuenta</h4>
+            <p class="text-muted small mb-3">Esta acción pondrá tu cuenta en modo inactivo. Si permaneces 30 días inactivo, la cuenta y todos los datos serán eliminados. Para reactivarla, simplemente inicia sesión antes de ese plazo.</p>
+            <button id="deleteBtn" class="btn btn-danger btn-sm" style="border-radius:0.6em;">Borrar cuenta</button>
+          </div>
+
         </div>
       </div>
-      <%-include('partials/footer') %> 
-      <%-include('partials/modal/deleteAccount') %> 
+      <%-include('partials/footer') %>
+      <%-include('partials/modal/deleteAccount') %>
 
       <script src="/javascripts/settings.js"></script>
+      <%-include('partials/modal/keyboardConfig') %>
+      <script>window.isTrial = false;</script>
+      <script src="/javascripts/keyboardConfig.js"></script>
       <% if(user && user.role === 'student' && !user.teacherId) { %>
       <script>
         document.getElementById('joinClassBtn')?.addEventListener('click', async () => {

@@ -248,19 +248,56 @@ router.get("/checkEmailOrTagname", (req, res) => {
 
 router.post('/hideTutorial', isLoggedIn, (req, res) => {
   dao.hideTutorial(res.locals.user.id, (err, resultado) => {
-    if(err) res.status(500).json({ message: "Error en hideTutorial" }); 
+    if(err) res.status(500).json({ message: "Error en hideTutorial" });
     res.locals.user.preferences.showTutorial = false
     res.json(true)
   })
+});
+
+router.get('/keyboardConfig', isLoggedIn, (req, res) => {
+  dao.getKeyboardConfig(res.locals.user.id, (err, config) => {
+    if (err) return res.status(500).json({ error: 'Error al obtener la configuración' });
+    res.json({ config });
+  });
+});
+
+router.post('/keyboardConfig', isLoggedIn, (req, res) => {
+  const { notes } = req.body;
+  if (!Array.isArray(notes) || notes.length !== 7) return res.status(400).json({ error: 'Configuración inválida' });
+  const keys = notes.map(n => n.key);
+  if (new Set(keys).size !== keys.length) return res.status(400).json({ error: 'Teclas duplicadas' });
+  dao.saveKeyboardConfig(res.locals.user.id, notes, (err) => {
+    if (err) return res.status(500).json({ error: 'Error al guardar la configuración' });
+    req.session.user.keyboardConfig = notes;
+    res.json({ ok: true });
+  });
 });
 
 router.get("/globalRanking", (req, res) => {
   const levelIds = levels.map(l => l.id);
   const levelsRes = [];
   let idx = 0;
+  const userId = res.locals.user ? res.locals.user.id : null;
 
   function fetchNext() {
-    if (idx >= levelIds.length) return res.render("globalRanking", { levelsRes });
+    if (idx >= levelIds.length) {
+      if (!userId) return res.render("globalRanking", { levelsRes, userRanking: {} });
+
+      dao.getPositionsInRanking(userId, (err, positions) => {
+        if (err) return res.render("globalRanking", { levelsRes, userRanking: {} });
+        dao.getUserBestScores(userId, (err, scores) => {
+          if (err) return res.render("globalRanking", { levelsRes, userRanking: {} });
+          const userRanking = {};
+          positions.forEach(p => { userRanking[p.difficulty] = { position: p.rank_position }; });
+          scores.forEach(s => {
+            if (userRanking[s.difficulty]) userRanking[s.difficulty].points = s.points;
+            else userRanking[s.difficulty] = { points: s.points };
+          });
+          res.render("globalRanking", { levelsRes, userRanking });
+        });
+      });
+      return;
+    }
     const level = levels[idx++];
     dao.getTopRecordsByDifficulty(level.id, (err, result) => {
       if (err) return res.status(500).json({ message: "Error en globalRanking" });
